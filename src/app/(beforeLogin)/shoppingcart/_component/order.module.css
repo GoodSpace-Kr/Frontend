@@ -1,0 +1,108 @@
+.ordersummary {
+  width: 400px;
+  height: 500px;
+  border-radius: 8px;
+  border: 2px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 36px;
+  padding-right: 36px;
+}
+
+.summation {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.line {
+  width: 100%;
+  height: 1px;
+  background-color: #f3f3f3;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.items_result {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.items_result_a {
+  font-size: 12px;
+  color: #828282;
+  margin-bottom: 8px;
+}
+
+.items_result_b {
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.total_price {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.total_price_a {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.order_button {
+  width: 100%;
+  height: 40px;
+  background-color: black;
+  color: white;
+  border-radius: 4px;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.back_button {
+  width: 100%;
+  height: 40px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.memo {
+  width: 100%;
+  height: 92px;
+  background-color: #f3f3f3;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.memo_title {
+  font-size: 12px;
+  color: gray;
+  margin-bottom: 4px;
+}
+
+.memo_sub {
+  font-size: 10px;
+  margin-bottom: 4px;
+}
