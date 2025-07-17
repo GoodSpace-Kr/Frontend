@@ -1,13 +1,14 @@
-import styles from "../shoppingcart/shoppingcart.module.css";
+import styles from "@/app/(beforeLogin)/login/login.module.css";
 import Header from "@/app/(beforeLogin)/_component/header";
-import Section from "../shoppingcart/_component/section";
 import Footer from "@/app/(beforeLogin)/_component/footer";
-export default function ShoppingCart() {
+import Body from "./_component/body";
+
+export default function Login() {
   return (
     <>
       <div className={styles.container}>
         <Header />
-        <Section />
+        <Body />
         <Footer />
       </div>
     </>

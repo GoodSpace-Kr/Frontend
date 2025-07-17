@@ -1,4 +1,4 @@
-import styles from "@/app/(beforeLogin)/_component/detail.module.css";
+import styles from "@/app/(afterLogin)/_component/detail.module.css";
 import ItemImg from "../product/_component/image";
 import ItemIntroduce from "../product/_component/introduce";
 

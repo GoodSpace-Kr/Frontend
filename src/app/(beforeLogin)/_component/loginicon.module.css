@@ -1,0 +1,65 @@
+.login_icons {
+  width: 300px;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+}
+
+.kakao {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: #ffe700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.apple {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.google {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: #e94334;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.icon {
+  color: white;
+}
+.naver {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: #1ec800;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.facebook {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: #1777f1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}

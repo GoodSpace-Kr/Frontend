@@ -1,0 +1,95 @@
+.body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  column-gap: 32px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+.email {
+  width: 360px;
+  height: 48px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.email_input {
+  border: 1px solid #e3e3e3;
+  width: 250px;
+  height: 48px;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.email_check {
+  width: 100px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  cursor: pointer;
+  border: 1px solid gray;
+  border-radius: 4px;
+}
+
+.pw_input {
+  border: 1px solid #e3e3e3;
+  width: 360px;
+  height: 48px;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.message {
+  font-size: 12px;
+  color: #828282;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.check_input {
+  border: 1px solid #e3e3e3;
+  width: 360px;
+  height: 48px;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.signup_button {
+  width: 360px;
+  height: 44px;
+  background-color: black;
+  color: white;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.back_button {
+  width: 360px;
+  height: 44px;
+  background-color: #828282;
+  color: white;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}

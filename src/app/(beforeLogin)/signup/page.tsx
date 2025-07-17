@@ -1,0 +1,16 @@
+import styles from "@/app/(beforeLogin)/login/login.module.css";
+import Header from "@/app/(beforeLogin)/_component/header";
+import Footer from "@/app/(beforeLogin)/_component/footer";
+import Body from "./_component/body";
+
+export default function Signup() {
+  return (
+    <>
+      <div className={styles.container}>
+        <Header />
+        <Body />
+        <Footer />
+      </div>
+    </>
+  );
+}

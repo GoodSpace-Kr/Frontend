@@ -1,0 +1,22 @@
+import styles from "@/app/(afterLogin)/_component/main.module.css";
+import Header from "../_component/header";
+import Client from "../_component/client";
+import Introduce from "../_component/introduce";
+import ItemRight from "../_component/item1";
+import ItemLeft from "../_component/item2";
+import Footer from "../_component/footer";
+
+export default function Main() {
+  return (
+    <>
+      <div className={styles.container}>
+        <Header />
+        <Client />
+        <Introduce />
+        <ItemRight />
+        <ItemLeft />
+        <Footer />
+      </div>
+    </>
+  );
+}
