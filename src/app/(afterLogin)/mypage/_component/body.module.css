@@ -1,0 +1,38 @@
+.mypagebody {
+  min-height: 100vh;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  flex-direction: column;
+  column-gap: 32px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 32px;
+}
+
+.edit_button {
+  width: 200px;
+  height: 50px;
+  background-color: black;
+  color: white;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.status_boxs {
+  width: 700px;
+  height: 300px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  place-items: center;
+  margin-bottom: 12px;
+}

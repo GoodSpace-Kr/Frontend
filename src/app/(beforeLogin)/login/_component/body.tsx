@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import styles from "./body.module.css";
 import LoginIcons from "../../_component/loginicon";
+import Link from "next/link";
 
 export default function Body() {
   const router = useRouter();
@@ -35,8 +36,12 @@ export default function Body() {
         <input placeholder="이메일" className={styles.input}></input>
         <input placeholder="비밀번호" className={styles.input}></input>
         <div className={styles.find}>
-          <p className={styles.find_button}>이메일(아이디) 찾기</p>
-          <p className={styles.find_button}>비밀번호 찾기</p>
+          <Link href="/findemail" className={styles.find_button}>
+            이메일(아이디) 찾기
+          </Link>
+          <Link href="/findpw" className={styles.find_button}>
+            비밀번호 찾기
+          </Link>
         </div>
         <div className={styles.login_button} onClick={handleLogin}>
           로그인

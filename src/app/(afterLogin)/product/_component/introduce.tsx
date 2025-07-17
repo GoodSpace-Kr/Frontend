@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import styles from "../_component/introduce.module.css";
-import { FaHeart } from "react-icons/fa6";
-import Link from "next/link";
 
 export default function Introduce() {
   const [count, setCount] = useState(0);
@@ -25,11 +23,8 @@ export default function Introduce() {
   return (
     <>
       <div className={styles.introduce}>
-        <div className={styles.introduce_header}>
-          <p className={styles.item_name}>상품명</p>
-          <FaHeart className={styles.item_like} onClick={handleLike} />
-        </div>
-        <p className={styles.item_size}>상품 사이즈</p>
+        <p className={styles.item_name}>상품명</p>
+        <p className={styles.item_message}>상품에 대한 간단한 소개</p>
         <p className={styles.item_price}>상품 가격</p>
         <p className={styles.line}></p>
         <div className={styles.item_delivery}>
@@ -53,9 +48,9 @@ export default function Introduce() {
           <p className={styles.item_sentence_b}>금액표시</p>
         </div>
         <div className={styles.item_buy_button}>
-          <Link href="/shoppingcart" className={styles.item_shoppingcart}>
+          <div className={styles.item_shoppingcart} onClick={handleLike}>
             장바구니
-          </Link>
+          </div>
           <div className={styles.item_buy}>구매하기</div>
         </div>
       </div>

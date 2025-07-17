@@ -1,0 +1,25 @@
+.status_box {
+  width: 330px;
+  height: 90px;
+  border: 2px solid #e3e3e3;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.status_count {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.status_title {
+  font-size: 16px;
+  padding: 4px;
+}
+
+.status_descript {
+  font-size: 12px;
+  color: #838383;
+}

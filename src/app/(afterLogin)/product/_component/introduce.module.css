@@ -4,33 +4,23 @@
   height: 500px;
 }
 
-.introduce_header {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
 .item_name {
   font-size: 32px;
   font-weight: 400;
-}
-
-.item_like {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-}
-
-.item_size {
-  font-size: 16px;
-  color: #828282;
   margin-bottom: 8px;
 }
 
+.item_message {
+  width: 400px;
+  font-size: 16px;
+  color: #828282;
+  margin-bottom: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
 .item_price {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
 }

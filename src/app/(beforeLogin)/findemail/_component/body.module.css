@@ -1,0 +1,48 @@
+.findemail {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  column-gap: 32px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+.input {
+  border: 1px solid #e3e3e3;
+  width: 360px;
+  height: 48px;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.button {
+  width: 360px;
+  height: 44px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  color: white;
+  margin-bottom: 24px;
+  cursor: pointer;
+}
+
+.result {
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  font-size: 16px;
+  color: gray;
+}

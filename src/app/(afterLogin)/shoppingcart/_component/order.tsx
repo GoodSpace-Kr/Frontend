@@ -1,3 +1,6 @@
+"use client";
+
+import Link from "next/link";
 import styles from "../_component/order.module.css";
 import SummaryItem from "./summaryItem";
 export default function OrderSummary() {
@@ -27,7 +30,9 @@ export default function OrderSummary() {
           <p className={styles.total_price_a}>총 결제 금액</p>
         </div>
         <p className={styles.order_button}>주문 하기</p>
-        <p className={styles.back_button}>쇼핑 계속하기</p>
+        <Link href="/main" className={styles.back_button}>
+          쇼핑 계속하기
+        </Link>
         <div className={styles.memo}>
           <p className={styles.memo_title}>배송 안내</p>
           <p className={styles.memo_sub}>• 50,000원 이상 구매 시 무료 배송</p>
