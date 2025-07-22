@@ -1,0 +1,100 @@
+.orderbodypage {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin-top: 80px;
+  padding-top: 5%;
+  padding-bottom: 5%;
+  padding-left: 20%;
+  padding-right: 20%;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  padding-bottom: 64px;
+}
+
+.order_info {
+  font-size: 20px;
+  font-weight: 500;
+  padding-bottom: 8px;
+  border-bottom: 2px solid black;
+}
+
+.buy_agree {
+  font-size: 16px;
+  font-weight: 500;
+  padding-bottom: 8px;
+  border-bottom: 2px solid black;
+  margin-top: 64px;
+}
+
+.email_message {
+  font-size: 16px;
+  color: #939393;
+  padding-top: 12px;
+  margin-bottom: 64px;
+}
+
+.delivery_message {
+  height: 80px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  color: #828282;
+  margin-top: 12px;
+  margin-bottom: 64px;
+}
+
+.zips_input {
+  height: 80px;
+  display: flex;
+  justify-content: row;
+  align-items: center;
+  gap: 24px;
+  border-bottom: 1px solid #939393;
+}
+
+.zips_title {
+  width: 60px;
+  font-size: 16px;
+  color: #838383;
+}
+
+.zips_number {
+  width: 40%;
+  height: 60%;
+  padding: 10px;
+  border: none;
+  background-color: #f0f0f0;
+}
+
+.zips_find_button {
+  width: 16%;
+  height: 60%;
+  border: none;
+  background-color: black;
+  color: white;
+  font-size: 12px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.buy_button {
+  height: 60px;
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  cursor: pointer;
+}

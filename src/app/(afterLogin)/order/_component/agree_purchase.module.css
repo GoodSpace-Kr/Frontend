@@ -1,0 +1,29 @@
+.agree_purchase {
+  height: 120px;
+  border-bottom: 1px solid #939393;
+}
+
+.agree_purchase_header {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+}
+
+.button {
+  width: 16px;
+  height: 16px;
+  border: 1px solid black;
+}
+
+.agree_purchase_body {
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  font-size: 12px;
+  color: #838383;
+}

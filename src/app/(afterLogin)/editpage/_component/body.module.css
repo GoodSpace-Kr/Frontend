@@ -1,0 +1,60 @@
+.editpagebody {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  column-gap: 32px;
+  padding-top: 80px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 32px;
+}
+
+.editform {
+  width: 1000px;
+  height: 440px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.form {
+  width: 480px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form_title {
+  width: 480px;
+  font-size: 20px;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form_address {
+  width: 480px;
+  height: 72px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.save_button {
+  width: 400px;
+  height: 50px;
+  background-color: black;
+  color: white;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  cursor: pointer;
+}

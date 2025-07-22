@@ -1,0 +1,22 @@
+.terms_of_use {
+  height: 60px;
+  border-bottom: 1px solid #939393;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+}
+
+.button {
+  width: 16px;
+  height: 16px;
+  border: 1px solid black;
+}
+
+.show {
+  font-weight: 500;
+  border-bottom: 1px solid black;
+  cursor: pointer;
+}

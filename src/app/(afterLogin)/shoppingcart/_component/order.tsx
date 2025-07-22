@@ -29,7 +29,9 @@ export default function OrderSummary() {
           <p className={styles.total_price_a}>총 결제 금액</p>
           <p className={styles.total_price_a}>총 결제 금액</p>
         </div>
-        <p className={styles.order_button}>주문 하기</p>
+        <Link href="/order" className={styles.order_button}>
+          주문 하기
+        </Link>
         <Link href="/main" className={styles.back_button}>
           쇼핑 계속하기
         </Link>

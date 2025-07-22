@@ -1,6 +1,10 @@
+"use client";
+
 import styles from "./body.module.css";
 import StatusBox from "./statusbox";
 import Result from "./result";
+import Link from "next/link";
+
 const statuses = [
   { count: 0, title: "결제 확인", description: "주문하신 결제가 완료된 후 다음단계로 진행됩니다." },
   { count: 0, title: "제작 준비중", description: "주문하신 커스텀 상품을 확인하고, 제작을 준비하고 있습니다." },
@@ -15,7 +19,9 @@ export default function MypageBody() {
     <>
       <div className={styles.mypagebody}>
         <p className={styles.title}>사용자님, 반가워요👋</p>
-        <div className={styles.edit_button}>내 정보 수정</div>
+        <Link href="/editpage" className={styles.edit_button}>
+          내 정보 수정
+        </Link>
         <div className={styles.status_boxs}>
           {statuses.map((status) => (
             <StatusBox key={status.title} count={status.count} title={status.title} description={status.description} />

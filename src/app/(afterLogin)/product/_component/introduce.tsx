@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import styles from "../_component/introduce.module.css";
 
 export default function Introduce() {
@@ -51,7 +52,9 @@ export default function Introduce() {
           <div className={styles.item_shoppingcart} onClick={handleLike}>
             장바구니
           </div>
-          <div className={styles.item_buy}>구매하기</div>
+          <Link href="/order" className={styles.item_buy}>
+            구매하기
+          </Link>
         </div>
       </div>
     </>

@@ -9,7 +9,10 @@ export default function Header() {
   return (
     <>
       <div className={styles.header}>
-        <Image src={Logo} alt="logo" className={styles.logo} />
+        <Link href="/main" className={styles.logobox}>
+          <Image src={Logo} alt="logo" className={styles.logo} />
+        </Link>
+
         <div className={styles.nav}>
           <div className={styles.button}>사용자 이름</div>
           <Link href="/shoppingcart" className={styles.button}>

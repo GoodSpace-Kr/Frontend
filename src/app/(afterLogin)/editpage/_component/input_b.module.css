@@ -1,0 +1,39 @@
+.form_pw {
+  width: 480px;
+  height: 72px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.form_pw_box {
+  width: 300px;
+  height: 72px;
+}
+
+.form_title {
+  padding-bottom: 4px;
+  font-size: 12px;
+  color: #838383;
+}
+
+.input_a {
+  width: 320px;
+  height: 50px;
+  border-radius: 4px;
+  border: 1px solid #e6e6e6;
+  padding: 10px;
+}
+
+.find_pw_button {
+  width: 140px;
+  height: 40px;
+  background-color: black;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 24px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
