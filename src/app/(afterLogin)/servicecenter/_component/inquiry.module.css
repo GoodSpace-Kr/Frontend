@@ -1,0 +1,14 @@
+.inquiry_box {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.inquiry_box_title {
+  font-size: 12px;
+}
+
+.inquiry_box_result {
+  font-size: 12px;
+}

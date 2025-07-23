@@ -1,0 +1,36 @@
+.help_box {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+}
+
+.help_box_header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.help_box_title {
+  font-size: 12px;
+}
+
+.help_box_icon {
+  width: 20px;
+  height: 20px;
+}
+
+.help_box_body {
+  max-height: 0; /* 닫힌 상태 */
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.help_box_body.open {
+  min-height: 60px; /* 열렸을 때 충분히 큰 값 */
+  width: 100%;
+  display: flex;
+  padding: 8px;
+  font-size: 12px;
+  background-color: #f3f3f3;
+}

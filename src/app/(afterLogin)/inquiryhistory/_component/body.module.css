@@ -1,0 +1,61 @@
+.body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main {
+  width: 800px;
+  height: 600px;
+  margin-top: 80px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.back_button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.button_icon {
+  width: 20px;
+  height: 20px;
+}
+
+.button_text {
+  font-size: 16px;
+}
+
+.title {
+  width: 100%;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.inquiry_type {
+  height: 36px;
+  padding: 8px;
+  border: none;
+  width: 20%;
+  background-color: #f5f5f5;
+  color: #828282;
+  margin-bottom: 8px;
+}
+
+.historys {
+  width: 100%;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #828282;
+  padding-top: 20px;
+  gap: 16px;
+}

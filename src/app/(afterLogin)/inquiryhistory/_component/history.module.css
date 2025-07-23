@@ -1,0 +1,72 @@
+.history {
+  width: 100%;
+  height: 68px;
+  border-bottom: 1px solid #e3e3e3;
+  display: flex;
+  flex-direction: column;
+}
+
+.history_header {
+  width: 100%;
+  height: 32%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.history_header_text {
+  width: 180px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.history_header_text_a {
+  font-size: 12px;
+  color: #828282;
+}
+
+.status_pending {
+  font-size: 12px;
+  color: red;
+}
+
+.status_completed {
+  font-size: 12px;
+  color: green;
+}
+
+.history_header_button {
+  width: 72px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.history_header_button_edit {
+  font-size: 12px;
+  color: #828282;
+  cursor: pointer;
+}
+
+.history_header_button_delete {
+  font-size: 12px;
+  color: #828282;
+  cursor: pointer;
+}
+
+.history_body {
+  width: 100%;
+  height: 55%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.history_body_title {
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.history_body_date {
+  font-size: 12px;
+  color: #828282;
+}
