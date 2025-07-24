@@ -1,0 +1,29 @@
+.section {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  column-gap: 32px;
+}
+
+.section_container {
+  margin-top: 80px;
+  width: 1000px;
+  height: 560px;
+}
+
+.section_title {
+  font-size: 28px;
+  font-weight: 400;
+  padding-bottom: 12px;
+}
+
+.section_main {
+  width: 1040px;
+  height: 500px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}

@@ -9,6 +9,7 @@ import TotalPayment from "./total_payment";
 import AgreePurchase from "./agree_purchase";
 import TermsOfUse from "./termsofuse";
 import PersonalInfo from "./personal";
+import Link from "next/link";
 
 // Daum Postcode API 타입 정의
 interface DaumPostcodeData {
@@ -135,9 +136,9 @@ export default function OrderBodyPage() {
         <AgreePurchase />
         <TermsOfUse />
         <PersonalInfo />
-        <div className={styles.buy_button} onClick={handleOrder}>
+        <Link href="/resultorder" className={styles.buy_button} onClick={handleOrder}>
           결제하기
-        </div>
+        </Link>
       </div>
     </>
   );

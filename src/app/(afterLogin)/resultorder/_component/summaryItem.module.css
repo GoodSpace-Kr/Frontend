@@ -1,0 +1,14 @@
+.summary_items {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary_item_name {
+  font-size: 12px;
+}
+
+.summary_item_price {
+  font-size: 12px;
+}

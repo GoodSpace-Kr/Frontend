@@ -19,9 +19,13 @@ export default function MypageBody() {
     <>
       <div className={styles.mypagebody}>
         <p className={styles.title}>사용자님, 반가워요👋</p>
-        <Link href="/editpage" className={styles.edit_button}>
-          내 정보 수정
-        </Link>
+        <div className={styles.buttons}>
+          <Link href="/editpage" className={styles.edit_button}>
+            내 정보 수정
+          </Link>
+          <p className={styles.logout_button}>로그아웃</p>
+        </div>
+
         <div className={styles.status_boxs}>
           {statuses.map((status) => (
             <StatusBox key={status.title} count={status.count} title={status.title} description={status.description} />

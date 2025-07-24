@@ -74,8 +74,10 @@
 .zips_number {
   width: 50%;
   height: 60%;
-  padding: 10px;
-  border: none;
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+  font-size: 12px;
   background-color: #f0f0f0;
 }
 

@@ -21,4 +21,7 @@
   font-weight: 500;
   border-bottom: 1px solid black;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
