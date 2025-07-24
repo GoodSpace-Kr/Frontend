@@ -1,6 +1,7 @@
 import styles from "@/app/(beforeLogin)/_component/item.module.css";
 import Image from "next/image";
 import iImg from "../../../../public/item.jpg";
+import Link from "next/link";
 
 export default function ItemLeft() {
   return (
@@ -23,7 +24,9 @@ export default function ItemLeft() {
           <p className={styles.subsentence}>
             하고 싶은 말을 적을 수 있는 본문 텍스트. 요점, 인용문, 일화를 추가해 보세요.
           </p>
-          <div className={styles.button}>상세 보기</div>
+          <Link href="/login" className={styles.button}>
+            상세 보기
+          </Link>
         </div>
       </div>
     </>

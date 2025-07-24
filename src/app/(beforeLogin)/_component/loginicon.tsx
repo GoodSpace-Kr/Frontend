@@ -14,6 +14,21 @@ export default function LoginIcons() {
     window.location.href = "/api/authorization/kakao/redirection";
   };
 
+  const handleNaverLogin = () => {
+    // 서버에서 /authorization/kakao/redirection 호출
+    window.location.href = "/api/authorization/naver/redirection";
+  };
+
+  const handleGoogleLogin = () => {
+    // 서버에서 /authorization/kakao/redirection 호출
+    window.location.href = "/api/authorization/google/redirection";
+  };
+
+  const handleFacebookLogin = () => {
+    // 서버에서 /authorization/kakao/redirection 호출
+    window.location.href = "/api/authorization/facebook/redirection";
+  };
+
   return (
     <div className={styles.login_icons}>
       <div className={styles.kakao} onClick={handleKakaoLogin}>
@@ -22,13 +37,13 @@ export default function LoginIcons() {
       <div className={styles.apple}>
         <AiFillApple className={styles.icon} />
       </div>
-      <div className={styles.google}>
+      <div className={styles.google} onClick={handleGoogleLogin}>
         <FaGoogle className={styles.icon} />
       </div>
-      <div className={styles.naver}>
+      <div className={styles.naver} onClick={handleNaverLogin}>
         <SiNaver className={styles.icon} />
       </div>
-      <div className={styles.facebook}>
+      <div className={styles.facebook} onClick={handleFacebookLogin}>
         <FaFacebookF className={styles.icon} />
       </div>
     </div>
