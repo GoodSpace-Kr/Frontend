@@ -13,10 +13,8 @@ export default function AgreePurchase() {
           <p className={styles.message}>
             구매 후 취소 및 환불은 입금 상태 확인 전 가능하며, 배송 완료 후 단순 변심에 의한 교환/반품은 불가합니다.
           </p>
-          <p className={styles.message}>
-            결제 전 주문내용을 반드시 확인해 주시기 발바니다. 주문할 상품, 배송 정보를 확인하였으며, 구매에
-            동의하시겠습니까?
-          </p>
+          <p className={styles.message}>결제 전 주문내용을 반드시 확인해 주시기 바랍니다.</p>
+          <p className={styles.message}>주문할 상품, 배송 정보를 확인하였으며, 구매에 동의하시겠습니까?</p>
         </div>
       </div>
     </>

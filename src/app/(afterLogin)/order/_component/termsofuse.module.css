@@ -1,17 +1,17 @@
 .terms_of_use {
   height: 60px;
   border-bottom: 1px solid #939393;
-  padding-top: 12px;
-  padding-bottom: 12px;
+
   display: flex;
   flex-direction: row;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
+  font-size: 12px;
 }
 
 .button {
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   border: 1px solid black;
 }
 
