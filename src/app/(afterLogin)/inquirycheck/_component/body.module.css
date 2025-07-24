@@ -7,20 +7,24 @@
 
 .main {
   width: 800px;
-  height: 600px;
-  margin-top: 80px;
+  min-height: 600px;
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-direction: column;
+  margin-top: 80px;
 }
 
 .back_button {
+  width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-top: 20px;
+  margin-bottom: 32px;
   cursor: pointer;
+  background-color: white;
 }
 
 .button_icon {

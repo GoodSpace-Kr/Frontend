@@ -1,6 +1,8 @@
 import styles from "./body.module.css";
 import { IoArrowBackSharp } from "react-icons/io5";
 import Link from "next/link";
+import Question from "./question";
+import Answer from "./answer";
 
 export default function Body() {
   return (
@@ -13,6 +15,8 @@ export default function Body() {
               돌아가기
             </Link>
           </div>
+          <Question />
+          <Answer />
         </div>
       </div>
     </>

@@ -23,6 +23,10 @@ export default function History({ inquiry, onDelete }: HistoryProps): JSX.Elemen
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   const handleDelete = async (): Promise<void> => {
+    if (!confirm("정말로 삭제하시겠습니까?")) {
+      return;
+    }
+
     setIsDeleting(true);
     try {
       await onDelete(inquiry.id);
@@ -62,7 +66,9 @@ export default function History({ inquiry, onDelete }: HistoryProps): JSX.Elemen
             </p>
           </div>
           <div className={styles.history_header_button}>
-            <p className={styles.history_header_button_edit}>수정</p>
+            <Link href={`/inquiryedit?id=${inquiry.id}`} className={styles.history_header_button_edit}>
+              수정
+            </Link>
             <p
               className={styles.history_header_button_delete}
               onClick={handleDelete}
@@ -78,7 +84,7 @@ export default function History({ inquiry, onDelete }: HistoryProps): JSX.Elemen
         </div>
 
         <div className={styles.history_body}>
-          <Link href="/inquirycheck" className={styles.history_body_title}>
+          <Link href={`/inquirycheck?id=${inquiry.id}`} className={styles.history_body_title}>
             {inquiry.title}
           </Link>
           <p className={styles.history_body_date}>{formatDate(inquiry.date)}</p>
