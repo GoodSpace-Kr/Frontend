@@ -9,7 +9,9 @@ export default function Header() {
   return (
     <>
       <div className={styles.header}>
-        <Image src={Logo} alt="logo" className={styles.logo} />
+        <Link href="/" className={styles.logobox}>
+          <Image src={Logo} alt="logo" className={styles.logo} />
+        </Link>
         <div className={styles.nav}>
           <Link href="/signup" className={styles.button}>
             회원가입

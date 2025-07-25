@@ -25,8 +25,16 @@ export default function MypageBody() {
   const router = useRouter(); // ✅ 함수 내부로 이동
 
   const handleLogout = () => {
-    // 로그인 정보 제거
-    localStorage.removeItem("token");
+    // localStorage에서 토큰 제거
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+
+    // 쿠키에서 토큰 제거
+    document.cookie = "accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+    console.log("✅ 로그아웃 완료 - 모든 토큰 제거됨");
+
     // 로그아웃 후 페이지 이동
     router.push("/"); // 실제 경로 확인
   };

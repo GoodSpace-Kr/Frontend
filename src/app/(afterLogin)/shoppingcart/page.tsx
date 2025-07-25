@@ -1,3 +1,9 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { ApiClient } from "../../../utils/apiClient";
+import { TokenManager } from "../../../utils/tokenManager";
+
 import styles from "../shoppingcart/shoppingcart.module.css";
 import Header from "@/app/(afterLogin)/_component/header";
 import Section from "../shoppingcart/_component/section";

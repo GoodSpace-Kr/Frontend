@@ -1,3 +1,9 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { ApiClient } from "../../../utils/apiClient";
+import { TokenManager } from "../../../utils/tokenManager";
+
 import styles from "@/app/(afterLogin)/_component/main.module.css";
 import Header from "../_component/header";
 import Client from "../_component/client";

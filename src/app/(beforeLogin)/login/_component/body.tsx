@@ -41,12 +41,25 @@ export default function Body() {
 
       const data = JSON.parse(text);
 
-      // accessToken, refreshToken 저장
+      // localStorage에 저장 (기존)
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
 
+      // 쿠키에도 저장 (미들웨어에서 사용하기 위해) - 이 부분이 중요
+      document.cookie = `accessToken=${data.accessToken}; path=/`; // 토큰 자체 만료시간 사용
+      document.cookie = `refreshToken=${data.refreshToken}; path=/`; // 토큰 자체 만료시간 사용
+
+      console.log("✅ 토큰 저장 완료:");
+      console.log("- localStorage accessToken:", localStorage.getItem("accessToken"));
+      console.log("- localStorage refreshToken:", localStorage.getItem("refreshToken"));
+      console.log("- 쿠키 설정 완료");
+
       setMessage("로그인 성공!");
-      router.push("/main");
+
+      // 잠시 후 페이지 이동 (쿠키 설정이 완료되도록)
+      setTimeout(() => {
+        router.push("/main");
+      }, 100);
     } catch (err) {
       console.error(err);
       setMessage("네트워크 오류가 발생했습니다.");
@@ -54,7 +67,6 @@ export default function Body() {
       setIsLoading(false);
     }
   };
-
   const handleSignup = () => {
     router.push("/signup");
   };
