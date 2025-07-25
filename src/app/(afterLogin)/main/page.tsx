@@ -11,6 +11,7 @@ import Introduce from "../_component/introduce";
 import ItemRight from "../_component/item1";
 import ItemLeft from "../_component/item2";
 import Footer from "../_component/footer";
+import Explanation from "../_component/explanation";
 
 export default function Main() {
   return (
@@ -21,6 +22,7 @@ export default function Main() {
         <Introduce />
         <ItemRight />
         <ItemLeft />
+        <Explanation />
         <Footer />
       </div>
     </>

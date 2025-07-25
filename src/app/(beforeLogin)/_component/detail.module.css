@@ -6,3 +6,30 @@
   flex-direction: row;
   column-gap: 32px;
 }
+
+/* 태블릿 세로 및 모바일 (768px 이하) */
+@media (max-width: 768px) {
+  .detail {
+    flex-direction: column;
+    gap: 40px;
+    padding: 30px 20px;
+    min-height: auto;
+    align-items: center;
+  }
+}
+
+/* 모바일 (480px 이하) */
+@media (max-width: 480px) {
+  .detail {
+    gap: 30px;
+    padding: 20px 15px;
+  }
+}
+
+/* 큰 화면 (1200px 이상) */
+@media (min-width: 1200px) {
+  .detail {
+    gap: 60px;
+    padding: 60px 40px;
+  }
+}

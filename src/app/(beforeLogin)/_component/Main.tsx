@@ -5,6 +5,7 @@ import Introduce from "./introduce";
 import ItemRight from "./item1";
 import ItemLeft from "./item2";
 import Footer from "./footer";
+import Explanation from "./explanation";
 
 export default function Main() {
   return (
@@ -15,6 +16,7 @@ export default function Main() {
         <Introduce />
         <ItemRight />
         <ItemLeft />
+        <Explanation />
         <Footer />
       </div>
     </>

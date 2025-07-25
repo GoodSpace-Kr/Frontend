@@ -18,3 +18,24 @@
   font-size: 16px;
   color: #828282;
 }
+
+/* 태블릿 세로 및 모바일 (768px 이하) */
+@media (max-width: 768px) {
+  .name {
+    font-size: 36px;
+    margin-bottom: 16px;
+  }
+
+  .sentence {
+    font-size: 12px;
+    color: #828282;
+  }
+}
+
+/* 모바일 (480px 이하) */
+@media (max-width: 480px) {
+  .name {
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+}
