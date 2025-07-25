@@ -1,0 +1,39 @@
+.image {
+  margin-top: 80px;
+  width: 500px;
+  height: 500px;
+}
+
+.big_image {
+  position: relative; /* Next.js Image의 fill 속성을 위해 필요 */
+  width: 500px;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #f3f3f3;
+}
+
+.small_image {
+  width: 500px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.small_image_1 {
+  position: relative; /* Next.js Image의 fill 속성을 위해 필요 */
+  width: 70px;
+  height: 70px;
+  background-color: #f3f3f3;
+  cursor: pointer;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: border 0.2s ease;
+}
+
+/* 선택된 썸네일에 강조 효과 */
+.small_image_1.selected {
+  border-color: gray;
+}

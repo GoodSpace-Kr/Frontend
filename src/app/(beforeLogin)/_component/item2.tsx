@@ -24,7 +24,7 @@ export default function ItemLeft() {
           <p className={styles.subsentence}>
             하고 싶은 말을 적을 수 있는 본문 텍스트. 요점, 인용문, 일화를 추가해 보세요.
           </p>
-          <Link href="/login" className={styles.button}>
+          <Link href="/beforeproduct" className={styles.button}>
             상세 보기
           </Link>
         </div>
