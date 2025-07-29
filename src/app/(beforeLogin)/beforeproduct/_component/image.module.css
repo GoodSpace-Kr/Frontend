@@ -37,3 +37,100 @@
 .small_image_1.selected {
   border-color: gray;
 }
+
+/* 태블릿 세로 및 모바일 (768px 이하) */
+@media (max-width: 768px) {
+  .image {
+    margin-top: 0;
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    padding: 0 10px;
+  }
+
+  .big_image {
+    width: 100%;
+    height: 280px;
+  }
+
+  .small_image {
+    width: 100%;
+    height: 70px;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .small_image_1 {
+    width: 55px;
+    height: 55px;
+  }
+}
+
+/* 작은 모바일 (400px 이하) - 갤럭시 S8+ 등 */
+@media (max-width: 400px) {
+  .image {
+    max-width: 320px;
+    padding: 0 15px;
+  }
+
+  .big_image {
+    height: 240px;
+  }
+
+  .small_image {
+    height: 60px;
+    gap: 4px;
+  }
+
+  .small_image_1 {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+/* 매우 작은 모바일 (360px 이하) - 갤럭시 S8+ 정확한 크기 */
+@media (max-width: 360px) {
+  .image {
+    max-width: 100%;
+    padding: 0 5px;
+  }
+
+  .big_image {
+    height: 220px;
+  }
+
+  .small_image {
+    height: 55px;
+    gap: 3px;
+  }
+
+  .small_image_1 {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* 큰 화면 (1200px 이상) */
+@media (min-width: 1200px) {
+  .image {
+    width: 600px;
+    height: 600px;
+  }
+
+  .big_image {
+    width: 600px;
+    height: 480px;
+  }
+
+  .small_image {
+    width: 600px;
+    height: 120px;
+    gap: 16px;
+  }
+
+  .small_image_1 {
+    width: 80px;
+    height: 80px;
+  }
+}

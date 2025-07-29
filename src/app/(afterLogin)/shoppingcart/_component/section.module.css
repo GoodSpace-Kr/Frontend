@@ -27,3 +27,75 @@
   align-items: center;
   flex-direction: row;
 }
+
+/* 태블릿 세로 및 모바일 (768px 이하) */
+@media (max-width: 768px) {
+  .section {
+    padding: 20px 10px;
+    min-height: auto;
+  }
+
+  .section_container {
+    margin-top: 0;
+    width: 100%;
+    max-width: 700px;
+    height: auto;
+  }
+
+  .section_title {
+    font-size: 24px;
+    text-align: center;
+    padding-bottom: 20px;
+  }
+
+  .section_main {
+    width: 100%;
+    height: auto;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+  }
+}
+
+/* 작은 모바일 (400px 이하) */
+@media (max-width: 400px) {
+  .section {
+    padding: 15px 5px;
+  }
+
+  .section_container {
+    max-width: 380px;
+  }
+
+  .section_title {
+    font-size: 22px;
+    padding-bottom: 15px;
+  }
+
+  .section_main {
+    gap: 25px;
+  }
+}
+
+/* 매우 작은 모바일 (360px 이하) */
+@media (max-width: 360px) {
+  .section {
+    padding: 10px 2px;
+    box-sizing: border-box;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .section_container {
+    max-width: 100%;
+  }
+
+  .section_title {
+    font-size: 20px;
+    padding-bottom: 12px;
+  }
+
+  .section_main {
+    gap: 20px;
+  }
+}

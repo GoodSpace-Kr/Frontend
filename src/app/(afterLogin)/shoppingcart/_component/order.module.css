@@ -106,3 +106,153 @@
   font-size: 10px;
   margin-bottom: 4px;
 }
+
+/* 태블릿 세로 및 모바일 (768px 이하) */
+@media (max-width: 768px) {
+  .ordersummary {
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    padding: 20px 30px;
+  }
+
+  .summation {
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .line {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .items_result_a,
+  .items_result_b {
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .total_price {
+    margin-bottom: 15px;
+  }
+
+  .total_price_a {
+    font-size: 15px;
+  }
+
+  .order_button,
+  .back_button {
+    height: 45px;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .memo {
+    height: auto;
+    padding: 12px 20px;
+  }
+
+  .memo_title {
+    font-size: 13px;
+  }
+
+  .memo_sub {
+    font-size: 11px;
+  }
+}
+
+/* 작은 모바일 (400px 이하) */
+@media (max-width: 400px) {
+  .ordersummary {
+    max-width: 360px;
+    padding: 15px 20px;
+  }
+
+  .summation {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .items_result_a,
+  .items_result_b {
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  .total_price_a {
+    font-size: 14px;
+  }
+
+  .order_button,
+  .back_button {
+    height: 42px;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .memo {
+    padding: 10px 15px;
+  }
+
+  .memo_title {
+    font-size: 12px;
+  }
+
+  .memo_sub {
+    font-size: 10px;
+  }
+}
+
+/* 매우 작은 모바일 (360px 이하) */
+@media (max-width: 360px) {
+  .ordersummary {
+    max-width: 100%;
+    padding: 12px 15px;
+    margin: 0 5px;
+  }
+
+  .summation {
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+
+  .line {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
+  .items_result_a,
+  .items_result_b {
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+
+  .total_price {
+    margin-bottom: 12px;
+  }
+
+  .total_price_a {
+    font-size: 13px;
+  }
+
+  .order_button,
+  .back_button {
+    height: 60px;
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .memo {
+    height: auto;
+    padding: 8px 12px;
+  }
+
+  .memo_title {
+    font-size: 11px;
+  }
+
+  .memo_sub {
+    font-size: 9px;
+  }
+}

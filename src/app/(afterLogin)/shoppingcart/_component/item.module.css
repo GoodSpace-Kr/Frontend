@@ -112,3 +112,148 @@
 .delete_button:hover {
   font-weight: 500;
 }
+
+/* 태블릿 세로 및 모바일 (768px 이하) */
+@media (max-width: 768px) {
+  .item {
+    height: 140px;
+    padding: 20px;
+    margin-bottom: 15px;
+  }
+
+  .item_img {
+    width: 80px;
+  }
+
+  .item_info {
+    width: 140px;
+    gap: 8px;
+  }
+
+  .item_name {
+    font-size: 14px;
+  }
+
+  .item_size {
+    font-size: 11px;
+  }
+
+  .item_price {
+    font-size: 14px;
+  }
+
+  .count_plus,
+  .count_minus,
+  .count_result {
+    font-size: 14px;
+  }
+
+  .delete_button {
+    font-size: 11px;
+  }
+}
+
+/* 작은 모바일 (400px 이하) */
+@media (max-width: 400px) {
+  .item {
+    height: 120px;
+    padding: 15px;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .item_left {
+    width: 100%;
+    height: 60%;
+    gap: 10px;
+  }
+
+  .item_img {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+  }
+
+  .item_info {
+    width: auto;
+    flex: 1;
+    gap: 4px;
+  }
+
+  .item_name {
+    font-size: 13px;
+  }
+
+  .item_size {
+    font-size: 10px;
+  }
+
+  .item_price {
+    font-size: 13px;
+  }
+
+  .item_right {
+    width: 100%;
+    height: 40%;
+    display: flex;
+    gap: 10px;
+  }
+
+  .item_count {
+    flex: 1;
+    height: 100%;
+  }
+
+  .count_plus,
+  .count_minus,
+  .count_result {
+    font-size: 12px;
+  }
+
+  .delete_button {
+    width: 60px;
+    height: 100%;
+    font-size: 10px;
+  }
+}
+
+/* 매우 작은 모바일 (360px 이하) */
+@media (max-width: 360px) {
+  .item {
+    height: 110px;
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+
+  .item_img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .item_info {
+    gap: 3px;
+  }
+
+  .item_name {
+    font-size: 12px;
+  }
+
+  .item_size {
+    font-size: 9px;
+  }
+
+  .item_price {
+    font-size: 12px;
+  }
+
+  .count_plus,
+  .count_minus,
+  .count_result {
+    font-size: 11px;
+  }
+
+  .delete_button {
+    width: 50px;
+    font-size: 9px;
+  }
+}
