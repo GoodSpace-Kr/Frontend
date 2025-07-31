@@ -1,3 +1,4 @@
+/* section.module.css */
 .section {
   min-height: 100vh;
   display: flex;
@@ -5,11 +6,14 @@
   align-items: center;
   flex-direction: column;
   column-gap: 32px;
+  margin-top: 80px;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .section_container {
-  margin-top: 80px;
-  width: 1000px;
+  width: 1200px; /* 1000px → 1200px로 증가 */
+  max-width: 100%;
   height: 560px;
 }
 
@@ -20,7 +24,8 @@
 }
 
 .section_main {
-  width: 1040px;
+  width: 1240px; /* 1040px → 1240px로 증가 */
+  max-width: 100%;
   height: 500px;
   display: flex;
   justify-content: space-between;
@@ -28,17 +33,30 @@
   flex-direction: row;
 }
 
+/* 큰 태블릿 (1024px 이하) */
+@media (max-width: 1024px) {
+  .section_container {
+    width: 100%;
+    max-width: 950px; /* 더 넓게 활용 */
+  }
+
+  .section_main {
+    width: 100%;
+    max-width: 980px; /* 더 넓게 활용 */
+  }
+}
+
 /* 태블릿 세로 및 모바일 (768px 이하) */
 @media (max-width: 768px) {
   .section {
-    padding: 20px 10px;
+    padding: 20px 15px; /* 패딩 조정 */
     min-height: auto;
   }
 
   .section_container {
     margin-top: 0;
     width: 100%;
-    max-width: 700px;
+    max-width: 750px; /* 700px → 750px로 증가 */
     height: auto;
   }
 
@@ -60,11 +78,11 @@
 /* 작은 모바일 (400px 이하) */
 @media (max-width: 400px) {
   .section {
-    padding: 15px 5px;
+    padding: 15px 8px; /* 패딩 증가 */
   }
 
   .section_container {
-    max-width: 380px;
+    max-width: 390px; /* 380px → 390px로 증가 */
   }
 
   .section_title {
@@ -80,7 +98,7 @@
 /* 매우 작은 모바일 (360px 이하) */
 @media (max-width: 360px) {
   .section {
-    padding: 10px 2px;
+    padding: 10px 5px; /* 패딩 증가 */
     box-sizing: border-box;
     width: 100%;
     overflow-x: hidden;

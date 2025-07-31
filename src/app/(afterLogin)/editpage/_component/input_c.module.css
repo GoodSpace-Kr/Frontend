@@ -3,11 +3,14 @@
   height: 72px;
   display: flex;
   justify-content: space-between;
+  box-sizing: border-box;
+  gap: 10px;
 }
 
 .form_zipcode_box {
   width: 300px;
   height: 72px;
+  flex: 1;
 }
 
 .form_title {
@@ -22,6 +25,7 @@
   border-radius: 4px;
   border: 1px solid #e6e6e6;
   padding: 10px;
+  box-sizing: border-box;
 }
 
 .find_zipcode_button {
@@ -36,6 +40,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .cancle_zipcode_button {
@@ -50,4 +55,112 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
+}
+
+/* 태블릿 크기 (768px 이하) */
+@media (max-width: 768px) {
+  .form_zipcode {
+    width: 100%;
+    height: 68px;
+    gap: 8px;
+  }
+
+  .form_zipcode_box {
+    width: auto;
+    flex: 1;
+  }
+
+  .form_title {
+    font-size: 11px;
+  }
+
+  .input_a {
+    width: 100%;
+    height: 46px;
+    padding: 8px;
+  }
+
+  .find_zipcode_button {
+    width: 80px;
+    height: 36px;
+    font-size: 11px;
+    margin-top: 22px;
+  }
+
+  .cancle_zipcode_button {
+    width: 60px;
+    height: 36px;
+    font-size: 11px;
+    margin-top: 22px;
+  }
+}
+
+/* 모바일 크기 (480px 이하) */
+@media (max-width: 480px) {
+  .form_zipcode {
+    width: 100%;
+    height: 64px;
+    gap: 6px;
+  }
+
+  .form_title {
+    font-size: 10px;
+    padding-bottom: 3px;
+  }
+
+  .input_a {
+    width: 100%;
+    height: 42px;
+    padding: 6px;
+    font-size: 14px;
+  }
+
+  .find_zipcode_button {
+    width: 70px;
+    height: 34px;
+    font-size: 10px;
+    margin-top: 20px;
+  }
+
+  .cancle_zipcode_button {
+    width: 50px;
+    height: 34px;
+    font-size: 10px;
+    margin-top: 20px;
+  }
+}
+
+/* 매우 작은 모바일 (360px 이하) */
+@media (max-width: 360px) {
+  .form_zipcode {
+    width: 100%;
+    height: 60px;
+    gap: 4px;
+  }
+
+  .form_title {
+    font-size: 9px;
+  }
+
+  .input_a {
+    width: 100%;
+    height: 40px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  .find_zipcode_button {
+    width: 60px;
+    height: 32px;
+    font-size: 9px;
+    margin-top: 18px;
+  }
+
+  .cancle_zipcode_button {
+    width: 45px;
+    height: 32px;
+    font-size: 9px;
+    margin-top: 18px;
+  }
 }

@@ -15,17 +15,50 @@ export default function Body() {
   const [message, setMessage] = useState("");
   const [isEmailVerified, setIsEmailVerified] = useState(false);
 
+  // 비밀번호 유효성 검사
+  const validatePassword = (password: string, email: string) => {
+    // 1️⃣ 영어, 숫자, 특수문자 포함 & 8자 이상
+    const complexityRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+    if (!complexityRegex.test(password)) {
+      return "비밀번호는 8자 이상, 영어/숫자/특수문자를 모두 포함해야 합니다.";
+    }
+
+    // 2️⃣ 동일 문자 3회 연속 불가
+    if (/(.)\1\1/.test(password)) {
+      return "같은 문자를 3회 이상 연속으로 사용할 수 없습니다.";
+    }
+
+    // 2️⃣-2 연속 증가/감소 문자 3자리 이상 불가 (abc, 123, cba 등)
+    const isSequential = (str: string) => {
+      const seq = str.toLowerCase();
+      for (let i = 0; i < seq.length - 2; i++) {
+        const a = seq.charCodeAt(i);
+        const b = seq.charCodeAt(i + 1);
+        const c = seq.charCodeAt(i + 2);
+        if (b - a === 1 && c - b === 1) return true; // 오름차순
+        if (a - b === 1 && b - c === 1) return true; // 내림차순
+      }
+      return false;
+    };
+    if (isSequential(password)) {
+      return "연속된 문자를 3자 이상 사용할 수 없습니다.";
+    }
+
+    // 3️⃣ 이메일 형식 불가 (혹시 비밀번호가 이메일과 유사한 경우 방지)
+    if (email && password.includes("@")) {
+      return "비밀번호에 '@'는 사용할 수 없습니다.";
+    }
+    if (email && password.toLowerCase().includes(email.split("@")[0].toLowerCase())) {
+      return "비밀번호에 이메일과 유사한 문자열은 사용할 수 없습니다.";
+    }
+
+    return ""; // 유효
+  };
+
   // 이메일 인증번호 발송 API 호출
   const sendVerificationCode = async () => {
     if (!email) {
       setMessage("이메일을 입력해주세요.");
-      return;
-    }
-
-    // 이메일 형식 검증
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setMessage("올바른 이메일 형식을 입력해주세요.");
       return;
     }
 
@@ -141,10 +174,13 @@ export default function Body() {
       setMessage("이메일 인증을 완료해주세요.");
       return;
     }
-    if (!password) {
-      setMessage("비밀번호를 입력해주세요.");
+    // 비밀번호 검증
+    const passwordError = validatePassword(password, email);
+    if (passwordError) {
+      setMessage(passwordError);
       return;
     }
+
     if (password !== confirmPassword) {
       setMessage("비밀번호가 일치하지 않습니다.");
       return;

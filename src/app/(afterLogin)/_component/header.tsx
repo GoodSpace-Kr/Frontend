@@ -14,7 +14,7 @@ export default function Header() {
         </Link>
 
         <div className={styles.nav}>
-          <div className={styles.button}>사용자 이름</div>
+          <div className={styles.hello}>안녕하세요</div>
           <Link href="/shoppingcart" className={styles.button}>
             장바구니
           </Link>

@@ -33,7 +33,7 @@ export default function FindEmail() {
       <input placeholder="비밀번호 재설정" className={styles.input} />
       <input placeholder="비밀번호 확인" className={styles.input} />
       <Link href="/login" className={styles.button}>
-        로그인하기
+        비밀번호 변경
       </Link>
     </div>
   );

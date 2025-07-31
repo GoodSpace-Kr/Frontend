@@ -1,6 +1,53 @@
+/* itemlist.module.css */
 .itemlist {
-  width: 600px;
-  height: 500px;
+  width: 100%;
+  max-width: 750px; /* 600px → 750px로 증가 */
+  height: auto;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* 큰 태블릿 (1024px 이하) */
+@media (max-width: 1024px) {
+  .itemlist {
+    max-width: 680px; /* 더 넓게 활용 */
+    padding: 0 12px;
+  }
+}
+
+/* 태블릿 세로 (768px 이하) */
+@media (max-width: 768px) {
+  .itemlist {
+    max-width: 100%;
+    padding: 0 8px; /* 패딩 증가 */
+  }
+}
+
+/* 작은 태블릿/큰 모바일 (600px 이하) */
+@media (max-width: 600px) {
+  .itemlist {
+    padding: 0 6px; /* 패딩 증가 */
+  }
+}
+
+/* 모바일 (480px 이하) */
+@media (max-width: 480px) {
+  .itemlist {
+    padding: 0 4px; /* 패딩 증가 */
+  }
+}
+
+/* 작은 모바일 (400px 이하) */
+@media (max-width: 400px) {
+  .itemlist {
+    padding: 0 3px; /* 패딩 증가 */
+  }
+}
+
+/* 매우 작은 모바일 (360px 이하) */
+@media (max-width: 360px) {
+  .itemlist {
+    padding: 0 2px; /* 최소 패딩 유지 */
+  }
 }

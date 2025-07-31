@@ -1,53 +1,64 @@
 .editpagebody {
   min-height: 100vh;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
   column-gap: 32px;
-  padding-top: 80px;
+  padding: 120px 20px 20px 20px;
+  box-sizing: border-box;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .title {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 32px;
+  text-align: center;
 }
 
 .editform {
-  width: 1000px;
-  height: 440px;
+  width: 100%;
+  max-width: 1000px;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
+  gap: 20px;
+  box-sizing: border-box;
 }
 
 .form {
-  width: 480px;
-  height: 400px;
+  flex: 1;
+  max-width: 480px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .form_title {
-  width: 480px;
+  width: 100%;
   font-size: 20px;
   font-weight: 500;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 8px;
 }
 
 .form_address {
-  width: 480px;
-  height: 72px;
+  width: 100%;
   display: flex;
   justify-content: space-between;
+  gap: 8px;
+  box-sizing: border-box;
 }
 
 .save_button {
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
   height: 50px;
   background-color: black;
   color: white;
@@ -55,6 +66,157 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 12px;
+  font-size: 14px;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save_button:hover {
+  background-color: #333;
+}
+
+/* 태블릿 크기 (1024px 이하) - 아이패드 포함 */
+@media (max-width: 1024px) {
+  .editpagebody {
+    padding: 100px 20px 20px 20px;
+    justify-content: flex-start;
+  }
+
+  .title {
+    font-size: 22px;
+    margin-bottom: 24px;
+  }
+
+  .editform {
+    flex-direction: column;
+    gap: 24px;
+    max-width: 600px;
+    width: 100%;
+  }
+
+  .form {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .form_title {
+    font-size: 18px;
+  }
+
+  .form_address {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .save_button {
+    font-size: 16px;
+    height: 48px;
+    max-width: 100%;
+  }
+}
+
+/* 태블릿 크기 (768px 이하) */
+@media (max-width: 768px) {
+  .editpagebody {
+    padding: 120px 12px 20px 12px;
+    justify-content: flex-start;
+  }
+
+  .title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .editform {
+    flex-direction: column;
+    gap: 20px;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .form {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .form_title {
+    font-size: 17px;
+  }
+
+  .form_address {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .save_button {
+    font-size: 15px;
+    height: 46px;
+    max-width: 100%;
+  }
+}
+
+/* 모바일 크기 (480px 이하) */
+@media (max-width: 480px) {
+  .editpagebody {
+    padding: 140px 10px 20px 10px;
+    justify-content: flex-start;
+  }
+
+  .title {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  .editform {
+    gap: 16px;
+    width: 100%;
+  }
+
+  .form {
+    gap: 8px;
+    width: 100%;
+  }
+
+  .form_title {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .save_button {
+    font-size: 14px;
+    height: 42px;
+    max-width: 100%;
+  }
+}
+
+/* 매우 작은 모바일 (360px 이하) */
+@media (max-width: 360px) {
+  .editpagebody {
+    padding: 140px 6px 20px 6px;
+    justify-content: flex-start;
+  }
+
+  .title {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .editform {
+    gap: 12px;
+    width: 100%;
+  }
+
+  .form {
+    width: 100%;
+  }
+
+  .form_title {
+    font-size: 14px;
+  }
+
+  .save_button {
+    font-size: 13px;
+    height: 40px;
+    max-width: 100%;
+  }
 }
