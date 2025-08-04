@@ -19,7 +19,7 @@ interface InquiryData {
 export default function Body(): JSX.Element {
   const [inquiries, setInquiries] = useState<InquiryData[]>([]);
   const [filteredInquiries, setFilteredInquiries] = useState<InquiryData[]>([]);
-  const [selectedType, setSelectedType] = useState<string>("1");
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // 문의 유형 맵핑
@@ -147,21 +147,6 @@ export default function Body(): JSX.Element {
     }
   };
 
-  // 문의 유형 필터링
-  const handleTypeFilter = (e: ChangeEvent<HTMLSelectElement>): void => {
-    const selectedValue = e.target.value;
-    setSelectedType(selectedValue);
-
-    if (selectedValue === "1") {
-      // 전체 보기
-      setFilteredInquiries(inquiries);
-    } else {
-      // 특정 유형만 필터링
-      const filtered = inquiries.filter((inquiry) => inquiry.type === selectedValue);
-      setFilteredInquiries(filtered);
-    }
-  };
-
   // 컴포넌트 마운트 시 데이터 가져오기
   useEffect(() => {
     fetchInquiries();
@@ -179,15 +164,6 @@ export default function Body(): JSX.Element {
           </div>
 
           <p className={styles.title}>문의 내역</p>
-
-          <select name="type" value={selectedType} onChange={handleTypeFilter} className={styles.inquiry_type}>
-            <option value="1">문의 유형</option>
-            <option value="2">상품 관련 문의</option>
-            <option value="3">배송 관련 문의</option>
-            <option value="4">교환/반품 관련 문의</option>
-            <option value="5">결제/환불 관련 문의</option>
-            <option value="6">기타 문의</option>
-          </select>
 
           <div className={styles.historys}>
             {isLoading ? (

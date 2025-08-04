@@ -5,8 +5,9 @@ import styles from "./body.module.css";
 import { IoArrowBackSharp } from "react-icons/io5";
 import { FiFilePlus } from "react-icons/fi";
 import Link from "next/link";
+import { TokenManager } from "@/utils/tokenManager";
 
-interface FormData {
+interface FormDataState {
   title: string;
   type: string;
   content: string;
@@ -14,9 +15,9 @@ interface FormData {
 }
 
 export default function Body(): JSX.Element {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<FormDataState>({
     title: "",
-    type: "1",
+    type: "1", // 1 = 기본값
     content: "",
     files: [],
   });
@@ -93,18 +94,49 @@ export default function Body(): JSX.Element {
     setIsSubmitting(true);
 
     try {
+      // ✅ type 매핑: UI → 서버 전송용
+      const typeMapping: Record<string, string> = {
+        "2": "DELIVERY",
+        "3": "ORDER",
+        "4": "ITEM",
+      };
+      const serverType = typeMapping[formData.type] || "";
+
+      // ✅ question 데이터를 JSON으로 준비
+      const questionData = {
+        title: formData.title,
+        type: serverType,
+        content: formData.content,
+      };
+
       const submitData = new FormData();
-      submitData.append("title", formData.title);
-      submitData.append("type", formData.type);
-      submitData.append("content", formData.content);
 
-      // 파일들 추가
-      formData.files.forEach((file, index) => {
-        submitData.append(`files[${index}]`, file);
-      });
+      // ✅ question 부분을 JSON blob으로 추가
+      submitData.append("question", new Blob([JSON.stringify(questionData)], { type: "application/json" }));
 
-      const response = await fetch("/api/inquiry", {
+      // ✅ 파일들을 file 부분으로 추가 (서버에서 List<MultipartFile>로 받음)
+      if (formData.files.length > 0) {
+        formData.files.forEach((file) => {
+          submitData.append("file", file);
+        });
+      }
+
+      // ✅ TokenManager로 액세스 토큰 가져오기
+      const token = TokenManager.getAccessToken();
+
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        // 필요시 로그인 페이지로 리다이렉트
+        // window.location.href = "/login";
+        return;
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/qna`, {
         method: "POST",
+        headers: {
+          // ✅ JWT 토큰 추가 (Content-Type은 자동으로 설정됨)
+          Authorization: `Bearer ${token}`,
+        },
         body: submitData,
       });
 
@@ -117,13 +149,59 @@ export default function Body(): JSX.Element {
           content: "",
           files: [],
         });
-        // 파일 input 초기화
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
-        }
+        if (fileInputRef.current) fileInputRef.current.value = "";
       } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "서버 오류가 발생했습니다.");
+        // ✅ 응답이 JSON이 아닐 수도 있으니 안전하게 처리
+        let errorMessage = "서버 오류가 발생했습니다.";
+
+        // 401 Unauthorized인 경우 토큰 재발급 시도
+        if (response.status === 401) {
+          console.log("토큰 만료, 재발급 시도 중...");
+          const newToken = await TokenManager.refreshAccessToken();
+
+          if (newToken) {
+            // 새 토큰으로 재시도
+            const retryResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/qna`, {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${newToken}`,
+              },
+              body: submitData,
+            });
+
+            if (retryResponse.ok) {
+              alert("문의가 성공적으로 접수되었습니다.");
+              // 폼 초기화
+              setFormData({
+                title: "",
+                type: "1",
+                content: "",
+                files: [],
+              });
+              if (fileInputRef.current) fileInputRef.current.value = "";
+              return;
+            }
+          } else {
+            alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+            return;
+          }
+        }
+
+        try {
+          const responseText = await response.text();
+          if (responseText) {
+            try {
+              const errorData = JSON.parse(responseText);
+              errorMessage = errorData.message || errorMessage;
+            } catch {
+              // JSON이 아니면 텍스트 그대로 사용
+              errorMessage = responseText;
+            }
+          }
+        } catch (textError) {
+          console.error("응답 읽기 실패:", textError);
+        }
+        throw new Error(errorMessage);
       }
     } catch (error) {
       console.error("Error submitting inquiry:", error);
@@ -135,11 +213,9 @@ export default function Body(): JSX.Element {
 
   const getTypeText = (value: string): string => {
     const types: Record<string, string> = {
-      "2": "상품 관련 문의",
-      "3": "배송 관련 문의",
-      "4": "교환/반품 관련 문의",
-      "5": "결제/환불 관련 문의",
-      "6": "기타 문의",
+      "2": "배송 문의",
+      "3": "주문 문의",
+      "4": "상품 문의",
     };
     return types[value] || "문의 유형을 선택해주세요.";
   };
@@ -156,6 +232,7 @@ export default function Body(): JSX.Element {
           </div>
           <p className={styles.title}>문의하기</p>
 
+          {/* 제목 */}
           <div className={styles.inquiry_title}>
             <p className={styles.inquiry_title_title}>제목</p>
             <input
@@ -168,18 +245,18 @@ export default function Body(): JSX.Element {
             />
           </div>
 
+          {/* 문의 유형 */}
           <div className={styles.inquiry_title}>
             <p className={styles.inquiry_title_title}>문의 유형</p>
             <select name="type" value={formData.type} onChange={handleInputChange} className={styles.inquiry_type}>
               <option value="1">문의 유형을 선택해주세요.</option>
-              <option value="2">상품 관련 문의</option>
-              <option value="3">배송 관련 문의</option>
-              <option value="4">교환/반품 관련 문의</option>
-              <option value="5">결제/환불 관련 문의</option>
-              <option value="6">기타 문의</option>
+              <option value="2">배송 문의</option>
+              <option value="3">주문 문의</option>
+              <option value="4">상품 문의</option>
             </select>
           </div>
 
+          {/* 내용 */}
           <div className={styles.inquiry_title}>
             <p className={styles.inquiry_title_title}>내용</p>
             <textarea
@@ -191,6 +268,7 @@ export default function Body(): JSX.Element {
             />
           </div>
 
+          {/* 파일 첨부 */}
           <div className={styles.inquiry_title}>
             <p className={styles.inquiry_title_title}>파일 첨부</p>
             <div
@@ -219,6 +297,7 @@ export default function Body(): JSX.Element {
             />
           </div>
 
+          {/* 제출 버튼 */}
           <div className={styles.inquiry_button_box}>
             <p
               className={styles.inquiry_button}
