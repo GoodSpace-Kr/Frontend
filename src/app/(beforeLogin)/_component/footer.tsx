@@ -5,6 +5,7 @@ import { MdFacebook } from "react-icons/md";
 import { BsInstagram } from "react-icons/bs";
 import { FaYoutube } from "react-icons/fa6";
 import { FaXTwitter } from "react-icons/fa6";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -28,9 +29,15 @@ export default function Footer() {
           </div>
           <div className={styles.menu_item}>
             <p className={styles.menu_item_title}>Help</p>
-            <p className={styles.menu_item_list}>고객센터</p>
-            <p className={styles.menu_item_list}>구매 및 결제 안내</p>
-            <p className={styles.menu_item_list}>제작 및 디자인 안내</p>
+            <Link href="/servicecenter" className={styles.menu_item_list}>
+              고객센터
+            </Link>
+            <Link href="/beforetermsofuse" className={styles.menu_item_list}>
+              이용약관
+            </Link>
+            <Link href="/beforeprivacypolicy" className={styles.menu_item_list}>
+              개인정보처리방침
+            </Link>
           </div>
           <div className={styles.menu_item}>
             <p className={styles.menu_item_title}>Contact us</p>

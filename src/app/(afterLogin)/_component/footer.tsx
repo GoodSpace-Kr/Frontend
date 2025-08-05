@@ -32,8 +32,12 @@ export default function Footer() {
             <Link href="/servicecenter" className={styles.menu_item_list}>
               고객센터
             </Link>
-            <p className={styles.menu_item_list}>구매 및 결제 안내</p>
-            <p className={styles.menu_item_list}>제작 및 디자인 안내</p>
+            <Link href="/aftertermsofuse" className={styles.menu_item_list}>
+              이용약관
+            </Link>
+            <Link href="/afterprivacypolicy" className={styles.menu_item_list}>
+              개인정보처리방침
+            </Link>
           </div>
           <div className={styles.menu_item}>
             <p className={styles.menu_item_title}>Contact us</p>
