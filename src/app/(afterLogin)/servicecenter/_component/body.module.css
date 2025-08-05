@@ -12,10 +12,12 @@
   font-size: 24px;
   font-weight: bold;
   padding: 18px;
+  text-align: center; /* 중앙 정렬 */
 }
 
 .search {
-  width: 500px;
+  width: 100%;
+  max-width: 500px; /* 최대 너비 설정 */
   height: 50px;
   border: 2px solid #e3e3e3;
   border-radius: 24px;
@@ -24,18 +26,19 @@
   gap: 4px;
   padding-left: 10px;
   align-items: center;
-  margin-bottom: 36px;
+  margin-bottom: 24px;
 }
 
 .search_icon {
   width: 24px;
   height: 24px;
+  flex-shrink: 0; /* 아이콘 크기 고정 */
 }
 
 .search_input {
   border: none;
   padding: 10px;
-  width: 440px;
+  width: 90%;
 }
 
 .search_input:focus {
@@ -43,20 +46,19 @@
 }
 
 .main {
-  width: 800px;
+  width: 100%;
+  max-width: 800px; /* 최대 너비 설정 */
   min-height: 500px;
   border-top: 2px solid #e3e3e3;
-  padding-top: 28px;
-  padding-bottom: 28px;
-  padding-left: 36px;
-  padding-right: 36px;
+  padding: 28px 12px;
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 20px;
 }
 
 .help {
-  width: 320px;
+  flex: 1;
+  min-width: 280px; /* 최소 너비 설정 */
 }
 
 .help_title {
@@ -75,7 +77,8 @@
 }
 
 .inquiry {
-  width: 398px;
+  flex: 1;
+  min-width: 280px; /* 최소 너비 설정 */
 }
 
 .inquiry_header {
@@ -103,6 +106,7 @@
   color: white;
   font-size: 12px;
   border-radius: 8px;
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
 }
 
 .inquiry_boxs {
@@ -110,6 +114,7 @@
   flex-direction: column;
   gap: 16px;
   margin-bottom: 16px;
+  font-size: 12px;
 }
 
 .entire_inquiry {
@@ -117,4 +122,125 @@
   color: #838383;
   border-bottom: 1px solid #838383;
   cursor: pointer;
+}
+
+/* 태블릿 크기 (768px 이하) */
+@media (max-width: 768px) {
+  .body {
+    margin-top: 40px;
+    padding: 0 16px;
+  }
+
+  .title {
+    font-size: 20px;
+    padding: 12px;
+  }
+
+  .main {
+    flex-direction: column; /* 세로 정렬로 변경 */
+    padding: 20px 24px;
+    gap: 32px;
+  }
+
+  .help_title,
+  .inquiry_title {
+    font-size: 18px;
+  }
+
+  .search {
+    height: 45px;
+    margin-bottom: 24px;
+  }
+
+  .search_icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .inquiry_button {
+    width: 90px;
+    height: 26px;
+    font-size: 11px;
+  }
+}
+
+/* 모바일 크기 (480px 이하) */
+@media (max-width: 480px) {
+  .body {
+    margin-top: 20px;
+    padding: 0 12px;
+  }
+
+  .title {
+    font-size: 18px;
+    padding: 8px;
+  }
+
+  .main {
+    padding: 16px 20px;
+    gap: 24px;
+  }
+
+  .help_title,
+  .inquiry_title {
+    font-size: 16px;
+  }
+
+  .search {
+    height: 40px;
+    margin-bottom: 20px;
+    padding-left: 8px;
+  }
+
+  .search_icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .search_input {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .inquiry_header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .inquiry_button {
+    width: 80px;
+    height: 24px;
+    font-size: 10px;
+    align-self: flex-end;
+  }
+
+  .help,
+  .inquiry {
+    min-width: unset;
+  }
+}
+
+/* 매우 작은 화면 (320px 이하) */
+@media (max-width: 320px) {
+  .body {
+    padding: 0 8px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .main {
+    padding: 12px 16px;
+  }
+
+  .help_title,
+  .inquiry_title {
+    font-size: 14px;
+  }
+
+  .search_input {
+    font-size: 12px;
+  }
 }

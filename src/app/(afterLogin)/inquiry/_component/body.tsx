@@ -131,7 +131,7 @@ export default function Body(): JSX.Element {
         return;
       }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/qna`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/qna`, {
         method: "POST",
         headers: {
           // ✅ JWT 토큰 추가 (Content-Type은 자동으로 설정됨)
@@ -161,7 +161,7 @@ export default function Body(): JSX.Element {
 
           if (newToken) {
             // 새 토큰으로 재시도
-            const retryResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/qna`, {
+            const retryResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/qna`, {
               method: "POST",
               headers: {
                 Authorization: `Bearer ${newToken}`,
@@ -271,20 +271,51 @@ export default function Body(): JSX.Element {
           {/* 파일 첨부 */}
           <div className={styles.inquiry_title}>
             <p className={styles.inquiry_title_title}>파일 첨부</p>
+
+            {/* 파일 업로드 영역 */}
             <div
-              className={styles.inquiry_file}
+              className={styles.file_upload_area}
               onClick={handleFileClick}
               onDragOver={handleDragOver}
               onDrop={handleDrop}
-              style={{ cursor: "pointer" }}
             >
-              <FiFilePlus className={styles.file_icon} />
-              <p className={styles.file_message}>
-                {formData.files.length > 0
-                  ? `${formData.files.length}개 파일 첨부됨: ${formData.files.map((file) => file.name).join(", ")}`
-                  : "첨부할 파일을 끌어오거나 영역을 클릭하여 파일을 첨부할 수 있습니다"}
-              </p>
+              <FiFilePlus className={styles.file_upload_icon} />
+              <p className={styles.file_upload_title}>파일을 여기로 드래그하거나 클릭하여 업로드</p>
+              <p className={styles.file_upload_subtitle}>JPG, PNG, PDF, DOC, HWP, ZIP 등 지원</p>
             </div>
+
+            {/* 파일 목록 */}
+            {formData.files.length > 0 && (
+              <div className={styles.file_list_container}>
+                <div className={styles.file_list_header}>
+                  <span className={styles.file_count_text}>첨부된 파일 ({formData.files.length})</span>
+                </div>
+
+                {/* 파일 목록 */}
+                {formData.files.map((file, index) => (
+                  <div key={index} className={styles.file_item_new}>
+                    <div className={styles.file_icon_new}>
+                      <span className={styles.file_extension_text}>
+                        {file.name.split(".").pop()?.toUpperCase() || "FILE"}
+                      </span>
+                    </div>
+                    <div className={styles.file_info}>
+                      <p className={styles.file_name}>{file.name}</p>
+                      <p className={styles.file_status_new}>첨부된 파일 • {(file.size / 1024).toFixed(1)} KB</p>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeFile(index);
+                      }}
+                      className={styles.file_remove_button}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* 숨겨진 파일 input */}
             <input

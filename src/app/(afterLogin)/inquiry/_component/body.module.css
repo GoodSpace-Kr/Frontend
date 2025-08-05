@@ -7,11 +7,12 @@
 
 .main {
   width: 800px;
-  height: 600px;
-  margin-top: 80px;
+  min-height: 600px;
+  margin-top: 120px;
   display: flex;
   justify-content: center;
   flex-direction: column;
+  margin-bottom: 20px;
 }
 
 .back_button {
@@ -125,4 +126,178 @@
   border-radius: 12px;
   font-size: 12px;
   cursor: pointer;
+}
+
+/* 파일 업로드 영역 */
+.file_upload_area {
+  width: 50%;
+  cursor: pointer;
+  border: 2px dashed #e0e0e0;
+  border-radius: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  background-color: #fafafa;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.file_upload_area:hover {
+  border-color: #4285f4;
+  background-color: #f8f9ff;
+}
+
+.file_upload_icon {
+  font-size: 48px;
+  color: #4285f4;
+  margin-bottom: 12px;
+}
+
+.file_upload_title {
+  font-size: 12px;
+  color: #333;
+  margin: 0 0 8px 0;
+  font-weight: 500;
+}
+
+.file_upload_subtitle {
+  font-size: 12px;
+  color: #888;
+  margin: 0;
+}
+
+/* 파일 목록 컨테이너 */
+.file_list_container {
+  width: 40%;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.file_list_header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.file_count_text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 기존 파일 스타일 */
+.file_item_existing {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+}
+
+.file_item_existing:hover {
+  background-color: #e9ecef;
+}
+
+.file_icon_existing {
+  width: 40px;
+  height: 40px;
+  background-color: #4285f4;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+/* 새 파일 스타일 */
+.file_item_new {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #e8f5e8;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #c3e6c3;
+  transition: all 0.2s ease;
+}
+
+.file_item_new:hover {
+  background-color: #d4edd4;
+}
+
+.file_icon_new {
+  width: 40px;
+  height: 40px;
+  background-color: #28a745;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+/* 파일 확장자 텍스트 */
+.file_extension_text {
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* 파일 정보 */
+.file_info {
+  flex: 1;
+  min-width: 0;
+}
+
+.file_name {
+  margin: 0 0 2px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file_status_existing {
+  margin: 0;
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.file_status_new {
+  margin: 0;
+  font-size: 12px;
+  color: #155724;
+}
+
+/* 파일 삭제 버튼 */
+.file_remove_button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background-color: #dc3545;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  margin-left: 8px;
+  transition: all 0.2s ease;
+}
+
+.file_remove_button:hover {
+  background-color: #c82333;
+  transform: scale(1.1);
 }

@@ -1,0 +1,13 @@
+.termsofuse {
+  min-height: 100vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+  column-gap: 32px;
+  padding: 120px 20px 20px 20px;
+  box-sizing: border-box;
+  width: 100%;
+  overflow-x: hidden;
+  margin-top: 80px;
+}
