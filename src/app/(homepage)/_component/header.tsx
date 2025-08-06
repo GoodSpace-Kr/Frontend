@@ -1,0 +1,19 @@
+"use client";
+
+import styles from "@/app/(homepage)/_component/header.module.css";
+import Logo from "../../../../public/logo.jpg";
+import Image from "next/image";
+import Link from "next/link";
+
+export default function Header() {
+  return (
+    <>
+      <div className={styles.header}>
+        <Link href="/" className={styles.logobox}>
+          <Image src={Logo} alt="logo" className={styles.logo} />
+        </Link>
+        <div className={styles.nav}></div>
+      </div>
+    </>
+  );
+}

@@ -3,20 +3,220 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  width: 100%;
+  min-width: 1000px;
   height: 800px;
   text-align: center;
+  overflow: hidden; /* 애니메이션 효과를 위해 추가 */
+
+  /* 애니메이션 초기 상태 */
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: opacity, transform;
+}
+
+.introduce.animate {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .name {
   font-size: 48px;
   font-weight: bold;
   margin-bottom: 24px;
+
+  /* 그라데이션 텍스트 효과 */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+
+  /* 애니메이션 초기 상태 */
+  opacity: 0;
+  transform: translateY(60px);
+  transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s;
+  will-change: opacity, transform;
+}
+
+.introduce.animate .name {
+  opacity: 1;
+  transform: translateY(0);
+  animation: textGradientShift 3s ease-in-out infinite alternate;
 }
 
 .sentence {
   font-size: 16px;
   color: #828282;
+
+  /* 애니메이션 초기 상태 */
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s;
+  will-change: opacity, transform;
+}
+
+.introduce.animate .sentence {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 텍스트 그라데이션 애니메이션 */
+@keyframes textGradientShift {
+  0% {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+  }
+  50% {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+  }
+  100% {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+  }
+}
+
+/* 추가 고급 효과 옵션들 */
+
+/* 옵션 1: 타이핑 효과 */
+.name.typing {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 3px solid #667eea;
+  animation: typing 2s steps(20) 1s forwards, blink 1s infinite;
+  width: 0;
+}
+
+.introduce.animate .name.typing {
+  width: 100%;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    border-color: #667eea;
+  }
+  51%,
+  100% {
+    border-color: transparent;
+  }
+}
+
+/* 옵션 2: 글자별 순차 등장 */
+.name.stagger span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.introduce.animate .name.stagger span {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.introduce.animate .name.stagger span:nth-child(1) {
+  transition-delay: 0.1s;
+}
+.introduce.animate .name.stagger span:nth-child(2) {
+  transition-delay: 0.2s;
+}
+.introduce.animate .name.stagger span:nth-child(3) {
+  transition-delay: 0.3s;
+}
+.introduce.animate .name.stagger span:nth-child(4) {
+  transition-delay: 0.4s;
+}
+.introduce.animate .name.stagger span:nth-child(5) {
+  transition-delay: 0.5s;
+}
+.introduce.animate .name.stagger span:nth-child(6) {
+  transition-delay: 0.6s;
+}
+.introduce.animate .name.stagger span:nth-child(7) {
+  transition-delay: 0.7s;
+}
+.introduce.animate .name.stagger span:nth-child(8) {
+  transition-delay: 0.8s;
+}
+.introduce.animate .name.stagger span:nth-child(9) {
+  transition-delay: 0.9s;
+}
+.introduce.animate .name.stagger span:nth-child(10) {
+  transition-delay: 1s;
+}
+
+/* 옵션 3: 3D 회전 효과 */
+.name.rotate3d {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.introduce.animate .name.rotate3d {
+  animation: rotate3d 2s ease-out;
+}
+
+@keyframes rotate3d {
+  0% {
+    transform: rotateX(90deg) translateY(50px);
+    opacity: 0;
+  }
+  50% {
+    transform: rotateX(45deg) translateY(25px);
+    opacity: 0.5;
+  }
+  100% {
+    transform: rotateX(0deg) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* 옵션 4: 네온 글로우 효과 */
+.name.neon {
+  color: #fff;
+  text-shadow: 0 0 5px #667eea, 0 0 10px #667eea, 0 0 15px #667eea, 0 0 20px #667eea, 0 0 35px #667eea, 0 0 40px #667eea;
+  background: none;
+  -webkit-text-fill-color: #fff;
+}
+
+.introduce.animate .name.neon {
+  animation: neonFlicker 2s ease-in-out infinite alternate;
+}
+
+@keyframes neonFlicker {
+  0%,
+  100% {
+    text-shadow: 0 0 5px #667eea, 0 0 10px #667eea, 0 0 15px #667eea, 0 0 20px #667eea, 0 0 35px #667eea,
+      0 0 40px #667eea;
+  }
+  50% {
+    text-shadow: 0 0 2px #667eea, 0 0 5px #667eea, 0 0 8px #667eea, 0 0 12px #667eea, 0 0 18px #667eea, 0 0 20px #667eea;
+  }
+}
+
+/* 문장에 대한 추가 효과 */
+.sentence.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s;
+}
+
+.introduce.animate .sentence.fade-up {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* 태블릿 세로 및 모바일 (768px 이하) */
@@ -30,6 +230,15 @@
     font-size: 12px;
     color: #828282;
   }
+
+  /* 모바일에서는 애니메이션 시간 단축 */
+  .name {
+    transition-duration: 0.8s;
+  }
+
+  .sentence {
+    transition-duration: 0.8s;
+  }
 }
 
 /* 모바일 (480px 이하) */
@@ -37,5 +246,26 @@
   .name {
     font-size: 32px;
     margin-bottom: 16px;
+  }
+
+  /* 모바일에서는 3D 효과 비활성화 (성능 최적화) */
+  .name.rotate3d {
+    animation: none;
+    transform: none;
+  }
+
+  .introduce.animate .name.rotate3d {
+    animation: simpleFadeUp 1s ease-out;
+  }
+}
+
+@keyframes simpleFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

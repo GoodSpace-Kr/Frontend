@@ -1,0 +1,17 @@
+.client {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh; /* 초기에는 전체 화면 높이 */
+  text-align: center;
+
+  /* 그라데이션 배경 */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background-size: 300% 300%;
+  animation: gradientShift 8s ease infinite;
+
+  /* 오버레이로 투명도 조절 */
+  position: relative;
+}

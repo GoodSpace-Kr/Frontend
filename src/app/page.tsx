@@ -1,5 +1,4 @@
-import Main from "@/app/(beforeLogin)/_component/Main";
-
+import HomePage from "./(homepage)/homepage";
 export default function Home() {
-  return <Main />;
+  return <HomePage />;
 }

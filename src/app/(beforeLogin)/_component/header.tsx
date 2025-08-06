@@ -1,11 +1,20 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import styles from "@/app/(beforeLogin)/_component/header.module.css";
 import Logo from "../../../../public/logo.jpg";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Header() {
+  // URL에서 clientId 가져오기
+  const searchParams = useSearchParams();
+  const clientId = searchParams.get("clientId");
+
+  // clientId가 있으면 URL에 추가, 없으면 기본 URL 사용
+  const loginUrl = clientId ? `/login?clientId=${clientId}` : "/login";
+  const signupUrl = clientId ? `/signup?clientId=${clientId}` : "/signup";
+
   return (
     <>
       <div className={styles.header}>
@@ -13,10 +22,10 @@ export default function Header() {
           <Image src={Logo} alt="logo" className={styles.logo} />
         </Link>
         <div className={styles.nav}>
-          <Link href="/signup" className={styles.button}>
+          <Link href={signupUrl} className={styles.button}>
             회원가입
           </Link>
-          <Link href="/login" className={styles.loginButton}>
+          <Link href={loginUrl} className={styles.loginButton}>
             로그인
           </Link>
         </div>

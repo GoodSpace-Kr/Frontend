@@ -1,32 +1,46 @@
+"use client";
+
 import styles from "@/app/(afterLogin)/_component/item.module.css";
 import Image from "next/image";
-import iImg from "../../../../public/item.jpg";
 import Link from "next/link";
 
-export default function ItemRight() {
+interface ItemProps {
+  name: string;
+  landingPageDescription: string;
+  titleImageUrl: string;
+  imageUrls: string[];
+  reverse?: boolean; // true이면 왼쪽 이미지, 오른쪽 텍스트
+}
+
+export default function ItemRight({
+  name,
+  landingPageDescription,
+  titleImageUrl,
+  imageUrls,
+  reverse = false,
+}: ItemProps) {
   return (
     <>
-      <div className={styles.item}>
+      <div className={`${styles.item} ${reverse ? styles.reverse : ""}`}>
+        {/* 텍스트 영역 */}
         <div className={styles.introduce}>
-          <p className={styles.title}>상품 1 - 아이템</p>
-          <p className={styles.subtitle}>부제목</p>
-          <p className={styles.subsentence}>
-            하고 싶은 말을 적을 수 있는 본문 텍스트. 요점, 인용문, 일화를 추가해 보세요.
-          </p>
-          <p className={styles.subtitle}>부제목</p>
-          <p className={styles.subsentence}>
-            하고 싶은 말을 적을 수 있는 본문 텍스트. 요점, 인용문, 일화를 추가해 보세요.
-          </p>
-          <p className={styles.subtitle}>부제목</p>
-          <p className={styles.subsentence}>
-            하고 싶은 말을 적을 수 있는 본문 텍스트. 요점, 인용문, 일화를 추가해 보세요.
-          </p>
-          <Link href="/product" className={styles.button}>
+          <p className={styles.title}>{name}</p>
+          <p className={styles.subsentence}>{landingPageDescription}</p>
+
+          <Link
+            href={{
+              pathname: "/beforeproduct",
+              query: { images: JSON.stringify(imageUrls) }, // 상세보기용 이미지 배열
+            }}
+            className={styles.button}
+          >
             상세 보기
           </Link>
         </div>
+
+        {/* 이미지 영역 */}
         <div className={styles.img}>
-          <Image src={iImg} alt="Item Image" className={styles.iImg} />
+          <Image src={titleImageUrl || "/fallback.jpg"} alt={name} className={styles.iImg} width={600} height={400} />
         </div>
       </div>
     </>

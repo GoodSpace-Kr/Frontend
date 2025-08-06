@@ -30,6 +30,17 @@ declare global {
     daum: {
       Postcode: DaumPostcode;
     };
+    AUTHNICE: {
+      requestPay: (options: {
+        clientId: string;
+        method: string;
+        orderId: string;
+        amount: number;
+        goodsName: string;
+        returnUrl: string;
+        fnError: (result: { errorMsg: string }) => void;
+      }) => void;
+    };
   }
 }
 
@@ -45,6 +56,19 @@ export default function OrderBodyPage() {
   const [address, setAddress] = useState("");
   const [detailAddress, setDetailAddress] = useState("");
   const [loaded, setLoaded] = useState(false);
+  const [nicepayLoaded, setNicepayLoaded] = useState(false);
+
+  // 더미 결제 정보 데이터
+  const [orderData] = useState({
+    orderCount: 3,
+    productAmount: 45000,
+    shippingFee: 3000,
+    totalAmount: 48000,
+    items: [
+      { id: 1, name: "프리미엄 티셔츠", size: "L", price: 15000, count: 2 },
+      { id: 2, name: "데님 청바지", size: "32", price: 15000, count: 1 },
+    ],
+  });
 
   // Daum Postcode API 스크립트 로드
   useEffect(() => {
@@ -57,6 +81,20 @@ export default function OrderBodyPage() {
       document.body.appendChild(script);
     } else {
       setLoaded(true);
+    }
+  }, []);
+
+  // Nicepay 스크립트 로드
+  useEffect(() => {
+    if (!document.getElementById("nicepay-script")) {
+      const script = document.createElement("script");
+      script.id = "nicepay-script";
+      script.src = "https://pay.nicepay.co.kr/v1/js/";
+      script.async = true;
+      script.onload = () => setNicepayLoaded(true);
+      document.body.appendChild(script);
+    } else {
+      setNicepayLoaded(true);
     }
   }, []);
 
@@ -79,8 +117,22 @@ export default function OrderBodyPage() {
   };
 
   // 주문 처리 핸들러
-  const handleOrder = () => {
-    const orderData = {
+  const handleOrder = (e: React.MouseEvent) => {
+    e.preventDefault(); // Link의 기본 동작 방지
+
+    if (!nicepayLoaded) {
+      alert("결제 시스템을 아직 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+
+    // 필수 입력값 검증
+    if (!name || !phone || !email || !receiver || !phone1 || !zipcode || !address) {
+      alert("필수 입력 항목을 모두 입력해주세요.");
+      return;
+    }
+
+    const finalOrderData = {
+      // 입력 정보
       name,
       phone,
       email,
@@ -90,9 +142,56 @@ export default function OrderBodyPage() {
       zipcode,
       address,
       detailAddress,
+      // 결제 정보
+      orderCount: orderData.orderCount,
+      productAmount: orderData.productAmount,
+      shippingFee: orderData.shippingFee,
+      totalAmount: orderData.totalAmount,
     };
-    console.log("주문 데이터:", orderData);
-    // 실제 주문 처리 로직 구현
+
+    console.log("주문 데이터:", finalOrderData);
+
+    // Nicepay 결제 요청
+    serverAuth();
+  };
+
+  // Nicepay 결제 함수
+  const serverAuth = () => {
+    window.AUTHNICE.requestPay({
+      clientId: "S2_fb903ce81792411ab6c459ec3a2a82c6",
+      method: "card",
+      orderId: "1", // 매번 다른 orderId 생성
+      amount: orderData.totalAmount, // 실제 결제 금액
+      goodsName: `주문상품 ${orderData.orderCount}개`,
+      returnUrl: "http://13.209.4.64:8080/payment/verify", // API를 호출할 Endpoint
+      fnError: function (result) {
+        alert("결제 오류: " + result.errorMsg);
+      },
+    });
+
+    // 결제 성공 시 주문 데이터를 sessionStorage에 저장
+    const finalOrderData = {
+      name,
+      phone,
+      email,
+      receiver,
+      phone1,
+      phone2,
+      zipcode,
+      address,
+      detailAddress,
+      orderCount: orderData.orderCount,
+      productAmount: orderData.productAmount,
+      shippingFee: orderData.shippingFee,
+      totalAmount: orderData.totalAmount,
+      items: orderData.items,
+      orderDate: new Date().toISOString(),
+    };
+
+    // 브라우저 환경에서만 sessionStorage 사용
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("orderResult", JSON.stringify(finalOrderData));
+    }
   };
 
   return (
@@ -128,10 +227,10 @@ export default function OrderBodyPage() {
 
         <MemoBox />
         <p className={styles.order_info}>총 결제 정보</p>
-        <TotalPayment title="주문 개수" value="개" />
-        <TotalPayment title="총 상품 금액" value="원" />
-        <TotalPayment title="배송비" value="원" />
-        <TotalPayment title="총 결제 금액" value="원" />
+        <TotalPayment title="주문 개수" value={`${orderData.orderCount}개`} />
+        <TotalPayment title="총 상품 금액" value={`${orderData.productAmount.toLocaleString()}원`} />
+        <TotalPayment title="배송비" value={`${orderData.shippingFee.toLocaleString()}원`} />
+        <TotalPayment title="총 결제 금액" value={`${orderData.totalAmount.toLocaleString()}원`} />
         <p className={styles.buy_agree}>구매 전 확인 및 동의하기</p>
         <AgreePurchase />
         <TermsOfUse />

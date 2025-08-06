@@ -4,12 +4,15 @@ import styles from "@/app/(afterLogin)/_component/header.module.css";
 import Logo from "../../../../public/logo.jpg";
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
 export default function Header() {
+  const params = useParams();
+  const clientId = params.clientId;
   return (
     <>
       <div className={styles.header}>
-        <Link href="/main" className={styles.logobox}>
+        <Link href={clientId ? `/main?clientId=${clientId}` : "/main"} className={styles.logobox}>
           <Image src={Logo} alt="logo" className={styles.logo} />
         </Link>
 

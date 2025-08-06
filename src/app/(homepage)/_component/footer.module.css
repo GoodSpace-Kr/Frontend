@@ -1,0 +1,201 @@
+.footer {
+  width: 85%;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 200px;
+  padding: 20px;
+  border-top: 1px solid #e6e6e6;
+}
+
+.logo {
+  width: 50%;
+  height: auto;
+  max-width: 50%;
+  object-fit: contain;
+  margin-bottom: 60px;
+}
+
+.logos {
+  width: 200px;
+  height: 80%;
+}
+
+.sns {
+  width: 80%;
+  height: 28%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.icon {
+  width: 20px;
+  height: auto;
+  cursor: pointer;
+}
+
+.menus {
+  width: 800px;
+  height: 80%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu_item {
+  width: 230px;
+  height: 100%;
+}
+
+.menu_item_title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.menu_item_list {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.menu_item_list:hover {
+  font-weight: 450;
+}
+
+.menu_item_list_a {
+  font-size: 12px;
+  margin-bottom: 16px;
+}
+
+/* 태블릿 (768px 이하) */
+@media (max-width: 768px) {
+  .footer {
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+    gap: 40px;
+    min-height: auto;
+  }
+
+  .logos {
+    width: 100%;
+    max-width: 300px;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .logo {
+    width: 100px;
+  }
+
+  .sns {
+    width: 140px;
+    justify-content: center;
+    gap: 16px;
+    margin: 0 auto;
+  }
+
+  .icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .menus {
+    width: 100%;
+    flex-direction: column;
+    margin-left: 0;
+    gap: 30px;
+    align-items: center;
+  }
+
+  .menu_item {
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+    min-width: auto;
+  }
+
+  .menu_item_title {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .menu_item_list,
+  .menu_item_list_a {
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+}
+
+/* 모바일 (480px 이하) */
+@media (max-width: 480px) {
+  .footer {
+    padding: 25px 15px;
+    gap: 30px;
+  }
+
+  .logos {
+    max-width: 250px;
+    gap: 12px;
+  }
+
+  .logo {
+    width: 80px;
+  }
+
+  .sns {
+    width: 120px;
+    gap: 12px;
+    margin: 0 auto;
+  }
+
+  .icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .menus {
+    gap: 25px;
+  }
+
+  .menu_item {
+    max-width: 280px;
+  }
+
+  .menu_item_title {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+
+  .menu_item_list,
+  .menu_item_list_a {
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+}
+
+/* 큰 화면에서의 추가 최적화 (1200px 이상) */
+@media (min-width: 1200px) {
+  .footer {
+    padding: 50px 40px;
+  }
+
+  .menus {
+    margin-left: 80px;
+    gap: 60px;
+  }
+
+  .menu_item_title {
+    font-size: 18px;
+  }
+
+  .menu_item_list,
+  .menu_item_list_a {
+    font-size: 13px;
+  }
+}

@@ -1,0 +1,671 @@
+.body {
+  display: flex;
+  align-items: center;
+  padding-top: 200px;
+  flex-direction: column;
+  width: 100%;
+  min-height: 200vh; /* 초기에는 전체 화면 높이 */
+  text-align: center;
+  margin-top: 80px;
+  padding-bottom: 200px;
+  gap: 16px;
+  color: white;
+
+  /* 그라데이션 배경 */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background-size: 300% 300%;
+  animation: gradientShift 8s ease infinite;
+
+  /* 오버레이로 투명도 조절 */
+  position: relative;
+  overflow: hidden;
+
+  /* 스크롤 시 높이 확장을 위한 transition */
+  transition: min-height 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: min-height;
+}
+
+.body.expanded {
+  min-height: 200vh; /* 스크롤 시 2배 높이로 확장 */
+}
+
+.body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.body > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* 텍스트 컨테이너 */
+.text_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+
+  /* 초기 상태 */
+  opacity: 0;
+  transform: translateY(60px);
+  transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: opacity, transform;
+}
+
+.body.animate .text_container {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.body.text_exit .text_container {
+  opacity: 0;
+  transform: translateY(-60px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* 추가 컨텐츠 영역 */
+.additional_content {
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 800px;
+  padding: 0 20px;
+
+  /* 초기 상태 */
+  opacity: 0;
+  transform: translateX(-50%) translateY(100px);
+  transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: opacity, transform;
+}
+
+.body.show_additional .additional_content {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.additional_title {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 24px;
+
+  /* 그라데이션 텍스트 */
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 30%, #ffffff 60%, #e0e0e0 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+
+  /* 애니메이션 */
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s;
+}
+
+.body.show_additional .additional_title {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.additional_text {
+  font-size: 18px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+
+  /* 애니메이션 */
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s;
+}
+
+.body.show_additional .additional_text {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hello {
+  font-size: 92px;
+  font-weight: bold;
+
+  /* 그라데이션 텍스트 효과 */
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 30%, #ffffff 60%, #e0e0e0 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  background-size: 300% 300%;
+  animation: textGradientFlow 4s ease-in-out infinite;
+
+  /* 텍스트 섀도우 효과 */
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+
+  /* 애니메이션 초기 상태 */
+  opacity: 0;
+  transform: translateY(80px) scale(0.9);
+  transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s;
+  will-change: opacity, transform;
+}
+
+.body.animate .hello {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.body.exit .hello {
+  opacity: 0;
+  transform: translateY(-50px) scale(0.95);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.int {
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  line-height: 1.6;
+
+  /* 그라데이션 텍스트 효과 */
+  background: linear-gradient(45deg, #ffffff 0%, #e8e8e8 50%, #ffffff 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+
+  /* 애니메이션 초기 상태 */
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: opacity, transform;
+}
+
+.int:nth-child(2) {
+  transition-delay: 0.6s;
+}
+
+.int:nth-child(3) {
+  transition-delay: 0.9s;
+}
+
+.body.animate .int {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.body.exit .int {
+  opacity: 0;
+  transform: translateY(-30px);
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.body.exit .int:nth-child(2) {
+  transition-delay: 0.1s;
+}
+
+.body.exit .int:nth-child(3) {
+  transition-delay: 0.2s;
+}
+
+/* 배경 그라데이션 애니메이션 */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 텍스트 그라데이션 흐름 효과 */
+@keyframes textGradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 스핀 애니메이션 */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 추가 고급 효과 옵션들 */
+
+/* 옵션 1: 타이핑 효과 */
+.hello.typing {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 3px solid white;
+  animation: typing 3s steps(10) 1s forwards, blink 1s infinite 1s;
+  width: 0;
+  background: none;
+  -webkit-text-fill-color: white;
+  color: white;
+}
+
+.body.animate .hello.typing {
+  width: 100%;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    border-color: white;
+  }
+  51%,
+  100% {
+    border-color: transparent;
+  }
+}
+
+/* 옵션 2: 글자별 순차 등장 */
+.hello.stagger span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.body.animate .hello.stagger span {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.body.animate .hello.stagger span:nth-child(1) {
+  transition-delay: 0.1s;
+}
+.body.animate .hello.stagger span:nth-child(2) {
+  transition-delay: 0.2s;
+}
+.body.animate .hello.stagger span:nth-child(3) {
+  transition-delay: 0.3s;
+}
+.body.animate .hello.stagger span:nth-child(4) {
+  transition-delay: 0.4s;
+}
+.body.animate .hello.stagger span:nth-child(5) {
+  transition-delay: 0.5s;
+}
+
+/* 옵션 3: 네온 글로우 효과 */
+.hello.neon {
+  color: white;
+  text-shadow: 0 0 10px #667eea, 0 0 20px #667eea, 0 0 30px #667eea, 0 0 40px #667eea;
+  background: none;
+  -webkit-text-fill-color: white;
+  animation: neonPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes neonPulse {
+  0% {
+    text-shadow: 0 0 10px #667eea, 0 0 20px #667eea, 0 0 30px #667eea, 0 0 40px #667eea;
+  }
+  100% {
+    text-shadow: 0 0 5px #667eea, 0 0 10px #667eea, 0 0 15px #667eea, 0 0 20px #667eea, 0 0 35px #764ba2,
+      0 0 40px #764ba2;
+  }
+}
+
+/* 클라이언트 박스 영역 */
+.client_box {
+  width: 100%;
+  min-height: 100vh;
+  margin-top: 200px;
+  padding-top: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.client_box_search {
+  width: 50%;
+  height: 64px;
+  padding-left: 20px;
+  background-color: white;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.client_box_search:focus-within {
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.search_icon {
+  width: 24px;
+  height: 24px;
+  color: #667eea;
+}
+
+.search_input {
+  width: 90%;
+  height: 60px;
+  font-size: 20px;
+  border: none;
+  background: transparent;
+}
+
+.search_input:focus {
+  outline: none;
+}
+
+.search_input::placeholder {
+  color: #999;
+}
+
+.client_list {
+  width: 50%;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  gap: 24px;
+}
+
+.client_item {
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 24px;
+  gap: 20px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.client_item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.client_type {
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 8px;
+
+  /* 그라데이션 텍스트 효과 */
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 50%, #ffffff 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.client_img_box {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.client_img {
+  width: calc(33.333% - 14px); /* 3개씩 나열되도록 계산 (gap 20px 고려) */
+  height: 180px;
+  border-radius: 15px;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.client_img:hover {
+  transform: scale(1.05);
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4), 0 6px 24px rgba(0, 0, 0, 0.3);
+}
+
+.client_image {
+  width: 100%;
+  height: 100%;
+  border-radius: 13px;
+  object-fit: cover;
+}
+
+/* 클라이언트 fallback 스타일 */
+.client_fallback {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+
+.client_avatar {
+  font-size: 24px;
+  margin-bottom: 8px;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.client_name {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.client_type_text {
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+/* 로딩 스피너 */
+.loading_spinner {
+  font-size: 20px;
+  animation: spin 1s linear infinite;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* 텍스트 스타일들 */
+.error_text {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.no_result_text {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.no_data_text {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+/* 로딩 상태 스켈레톤 효과 */
+.client_img.loading {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.1) 75%
+  );
+  background-size: 200% 100%;
+  animation: imageLoading 1.5s infinite;
+}
+
+@keyframes imageLoading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* 태블릿 세로 및 모바일 (768px 이하) */
+@media (max-width: 768px) {
+  .hello {
+    font-size: 64px;
+  }
+
+  .int {
+    font-size: 16px;
+    padding: 0 20px;
+  }
+
+  .additional_title {
+    font-size: 36px;
+  }
+
+  .additional_text {
+    font-size: 16px;
+  }
+
+  .client_box_search {
+    width: 80%;
+  }
+
+  .client_list {
+    width: 80%;
+  }
+
+  .client_img {
+    width: calc(50% - 10px); /* 태블릿에서는 2개씩 */
+  }
+
+  /* 모바일에서는 애니메이션 단순화 */
+  .hello {
+    transition-duration: 1s;
+  }
+
+  .int {
+    transition-duration: 0.8s;
+  }
+}
+
+/* 모바일 (480px 이하) */
+@media (max-width: 480px) {
+  .hello {
+    font-size: 48px;
+  }
+
+  .int {
+    font-size: 14px;
+    padding: 0 15px;
+  }
+
+  .additional_title {
+    font-size: 28px;
+  }
+
+  .additional_text {
+    font-size: 14px;
+  }
+
+  .body {
+    gap: 12px;
+  }
+
+  .body.expanded {
+    min-height: 180vh; /* 모바일에서는 조금 더 작게 */
+  }
+
+  .client_box_search {
+    width: 90%;
+    height: 56px;
+    padding-left: 16px;
+  }
+
+  .search_input {
+    font-size: 16px;
+  }
+
+  .client_list {
+    width: 90%;
+  }
+
+  .client_img {
+    width: 100%; /* 모바일에서는 1개씩 */
+    height: 160px;
+  }
+
+  .client_img_box {
+    gap: 15px;
+  }
+
+  .client_type {
+    font-size: 24px;
+  }
+
+  .client_avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+
+  .client_name {
+    font-size: 11px;
+  }
+
+  .client_type_text {
+    font-size: 9px;
+  }
+
+  /* 모바일에서는 복잡한 효과 비활성화 */
+  .hello {
+    background: white;
+    background-clip: text;
+    -webkit-background-clip: text;
+    animation: none;
+  }
+}

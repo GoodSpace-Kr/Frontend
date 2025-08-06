@@ -2,141 +2,214 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f3f3f3;
   width: 100%;
-  min-height: 500px;
-  margin-bottom: 60px;
-  gap: 100px;
-  padding: 40px 20px;
+  max-width: 1200px; /* 최대 너비 설정 */
+  min-height: 600px;
+  margin: 0 auto 100px auto; /* 가운데 정렬 추가 */
+  gap: 60px;
+  padding: 60px 40px;
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f9f9f9 0%, #f3f3f3 100%);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
+.item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reverse {
+  flex-direction: row-reverse;
+}
+
+/* 텍스트 영역 */
 .introduce {
-  width: 400px;
-  max-width: 100%;
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
   height: auto;
-  min-height: 450px;
-}
-
-.title {
-  font-size: 36px;
-  font-weight: bold;
-  margin-bottom: 24px;
-}
-
-.subtitle {
-  font-size: 16px;
-  font-weight: 500;
-  margin-bottom: 8px;
-}
-
-.subsentence {
-  font-size: 16px;
-  color: #828282;
-  margin-bottom: 24px;
-  line-height: 1.5;
-}
-
-.button {
-  width: 120px;
-  height: 36px;
-  background-color: black;
-  color: white;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
+}
+
+.introduce.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.title {
+  font-size: clamp(28px, 4vw, 42px); /* 반응형 폰트 크기 */
+  font-weight: 700;
+  margin-bottom: 24px;
+  line-height: 1.2;
+  background: linear-gradient(90deg, #000 0%, #333 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  text-align: center;
+}
+
+.title::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: #000;
+  border-radius: 2px;
+}
+
+.subsentence {
+  font-size: clamp(16px, 2vw, 18px); /* 반응형 폰트 크기 */
+  color: #555;
+  margin-bottom: 36px;
+  line-height: 1.7;
+  font-weight: 400;
+  text-align: center;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 140px;
+  height: 48px;
+  background-color: #000;
+  color: white;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+  z-index: -1;
 }
 
 .button:hover {
-  background-color: #333333;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 }
 
+.button:hover::before {
+  left: 100%;
+}
+
+.button svg {
+  transition: transform 0.3s ease;
+}
+
+.button:hover svg {
+  transform: translateX(4px);
+}
+
+/* 이미지 영역 */
 .img {
-  width: 400px;
+  flex: 1;
+  min-width: 300px;
+  max-width: 550px;
   height: 400px;
-  max-width: 100%;
-  background-color: white;
-  border-radius: 8px;
+  border-radius: 16px;
   overflow: hidden;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
 }
 
-.iImg {
-  height: 100%;
+.slideInRight {
+  transform: translateX(50px);
+}
+
+.slideInLeft {
+  transform: translateX(-50px);
+}
+
+.img.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.imageWrapper {
   width: 100%;
-  object-fit: cover;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
-/* 태블릿 세로 및 모바일 (768px 이하) */
+.imageWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지 비율 유지하며 영역 채움 */
+  object-position: center;
+}
+
+/* 태블릿 대응 */
 @media (max-width: 768px) {
   .item {
     flex-direction: column;
     gap: 40px;
+    padding: 40px 20px;
     min-height: auto;
-    padding: 30px 20px;
+  }
+
+  .reverse {
+    flex-direction: column;
   }
 
   .introduce {
     width: 100%;
-    max-width: 500px;
-    min-height: auto;
-    text-align: center;
-  }
-
-  .title {
-    font-size: 28px;
-    margin-bottom: 20px;
-  }
-
-  .subtitle {
-    font-size: 15px;
-  }
-
-  .subsentence {
-    font-size: 14px;
-    margin-bottom: 20px;
+    max-width: none;
   }
 
   .img {
     width: 100%;
-    max-width: 400px;
+    max-width: none;
     height: 300px;
   }
 
-  .button {
-    margin: 0 auto;
+  .title::after {
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 
-/* 모바일 (480px 이하) */
+/* 모바일 대응 */
 @media (max-width: 480px) {
   .item {
+    padding: 30px 15px;
     gap: 30px;
-    padding: 20px 15px;
-    margin-bottom: 40px;
-  }
-
-  .introduce {
-    max-width: 100%;
-  }
-
-  .title {
-    font-size: 24px;
-    margin-bottom: 16px;
-  }
-
-  .subtitle {
-    font-size: 14px;
-    margin-bottom: 6px;
-  }
-
-  .subsentence {
-    font-size: 13px;
-    margin-bottom: 16px;
   }
 
   .img {
@@ -144,8 +217,8 @@
   }
 
   .button {
-    width: 100px;
-    height: 32px;
-    font-size: 11px;
+    width: 120px;
+    height: 44px;
+    font-size: 14px;
   }
 }

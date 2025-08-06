@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import styles from "@/app/(afterLogin)/_component/main.module.css";
+import styles from "@/app/(beforeLogin)/_component/main.module.css";
 import Header from "../_component/header";
 import Client from "../_component/client";
 import Introduce from "../_component/introduce";
@@ -113,7 +113,6 @@ export default function Main() {
         description={clientData?.introduction || "설명"}
         animationType="neon"
         delay={200}
-        enableMarkdown={true} // 마크다운 활성화
       />
 
       {/* items를 좌우 교차 배치 */}
