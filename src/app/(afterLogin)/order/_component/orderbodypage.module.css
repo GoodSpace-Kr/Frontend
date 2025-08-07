@@ -105,3 +105,24 @@
   font-size: 12px;
   cursor: pointer;
 }
+
+.order_title {
+  font-size: 12px;
+  padding-top: 8px;
+  color: #828282;
+  font-size: bold;
+  display: flex;
+  justify-content: row;
+  align-items: center;
+}
+
+.order_count {
+  font-size: 12px;
+  font-size: bold;
+  height: 52px;
+  display: flex;
+  justify-content: row;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}

@@ -238,7 +238,26 @@ export default function Body({
     setImageLoadStates((prev) => ({ ...prev, [clientId]: false }));
   }, []);
 
-  // ✅ 클릭 시 landingpage 이동
+  // ✅ 로그인 상태 확인 함수
+  const isLoggedIn = useCallback((): boolean => {
+    if (typeof window === "undefined") return false;
+
+    // 쿠키에서 토큰 확인 (미들웨어와 동일한 방식)
+    const accessToken = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("accessToken="))
+      ?.split("=")[1];
+
+    const refreshToken = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("refreshToken="))
+      ?.split("=")[1];
+
+    // accessToken 또는 refreshToken 중 하나라도 있으면 로그인된 상태로 간주
+    return !!(accessToken || refreshToken);
+  }, []);
+
+  // ✅ 클릭 시 로그인 상태에 따라 경로 분기
   const handleClientClick = useCallback(
     (client: ClientData): void => {
       console.log("클라이언트 선택:", client);
@@ -247,9 +266,16 @@ export default function Body({
         clientId: client.id,
       });
 
-      router.push(`/landingpage?${queryParams.toString()}`); // ✅ App Router 방식
+      // 로그인 상태에 따라 경로 분기
+      if (isLoggedIn()) {
+        // 로그인된 상태: /main으로 이동
+        router.push(`/main?${queryParams.toString()}`);
+      } else {
+        // 로그인 안된 상태: /landingpage로 이동
+        router.push(`/landingpage?${queryParams.toString()}`);
+      }
     },
-    [router]
+    [router, isLoggedIn]
   );
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {

@@ -6,6 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface ItemProps {
+  id: number;
+  clientId: string;
   name: string;
   landingPageDescription: string;
   titleImageUrl: string;
@@ -14,6 +16,8 @@ interface ItemProps {
 }
 
 export default function ItemRight({
+  id,
+  clientId,
   name,
   landingPageDescription,
   titleImageUrl,
@@ -65,7 +69,11 @@ export default function ItemRight({
         <Link
           href={{
             pathname: "/beforeproduct",
-            query: { images: JSON.stringify(imageUrls) },
+            query: {
+              images: JSON.stringify(imageUrls),
+              itemId: id.toString(), // 아이템 ID 추가
+              clientId: clientId, // clientId 추가
+            },
           }}
           className={styles.button}
         >

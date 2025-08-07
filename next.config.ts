@@ -29,6 +29,7 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
+    unoptimized: false, // true로 설정하면 이미지 최적화를 비활성화
   },
 
   // 기존 프록시 설정 유지

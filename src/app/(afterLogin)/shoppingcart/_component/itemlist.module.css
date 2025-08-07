@@ -1,8 +1,7 @@
 /* itemlist.module.css */
 .itemlist {
-  width: 100%;
+  width: 40%;
   max-width: 750px; /* 600px → 750px로 증가 */
-  height: auto;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;

@@ -1,12 +1,23 @@
 import styles from "../_component/summaryItem.module.css";
 
-export default function SummaryItem() {
+interface SummaryItemProps {
+  name: string;
+  quantity: number;
+  price: number;
+}
+
+export default function SummaryItem({ name, quantity, price }: SummaryItemProps) {
+  // 가격 포맷팅 함수
+  const formatPrice = (price: number): string => {
+    return price.toLocaleString("ko-KR") + "원";
+  };
+
   return (
-    <>
-      <div className={styles.summary_items}>
-        <p className={styles.summary_item_name}>상품 이름 (상품 개수)</p>
-        <p className={styles.summary_item_price}>상품 가격</p>
-      </div>
-    </>
+    <div className={styles.summary_items}>
+      <p className={styles.summary_item_name}>
+        {name} ({quantity}개)
+      </p>
+      <p className={styles.summary_item_price}>{formatPrice(price)}</p>
+    </div>
   );
 }

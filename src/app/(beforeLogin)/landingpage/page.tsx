@@ -119,11 +119,13 @@ export default function Main() {
       {clientData?.items.map((item, index) => (
         <Item
           key={item.id}
+          id={item.id} // 아이템 ID 전달
           name={item.name}
           landingPageDescription={item.landingPageDescription}
           titleImageUrl={replaceLocalUrl(item.titleImageUrl)}
           imageUrls={item.imageUrls.map((url) => replaceLocalUrl(url))}
-          reverse={index % 2 === 1} // 홀수 번째는 반전 배치
+          clientId={clientId || ""} // clientId 전달
+          reverse={index % 2 === 1}
         />
       ))}
       <Explanation />

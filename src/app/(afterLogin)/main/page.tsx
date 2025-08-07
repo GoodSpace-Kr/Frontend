@@ -34,6 +34,7 @@ export default function Main() {
   const clientId = searchParams.get("clientId"); // ✅ 쿼리에서 clientId 가져오기
 
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   // 로컬 URL을 서버 URL로 변환하는 함수
   const replaceLocalUrl = (url: string): string => {
@@ -54,13 +55,17 @@ export default function Main() {
   };
 
   useEffect(() => {
-    if (!clientId) return;
+    if (!clientId) {
+      setLoading(false);
+      return;
+    }
 
     const fetchClient = async () => {
       try {
+        setLoading(true);
         const fullUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/client/${clientId}`;
 
-        console.log("Fetching URL:", fullUrl); // 디버깅용 로그 추가
+        console.log("Fetching URL:", fullUrl); // URL 로그
 
         const res = await fetch(fullUrl, {
           method: "GET",
@@ -72,7 +77,7 @@ export default function Main() {
           credentials: "omit",
         });
 
-        console.log("Response status:", res.status); // 응답 상태 로그
+        console.log("Response status:", res.status); // 응답 상태 코드 로그
 
         if (!res.ok) {
           const errorText = await res.text();
@@ -81,54 +86,78 @@ export default function Main() {
         }
 
         const data: ClientApiResponse = await res.json();
-        console.log("Fetched data:", data); // 데이터 로그
-        setClientData(data);
+        console.log("Fetched data:", data); // 전체 데이터 로그
+
+        // URL 변환을 적용한 데이터 설정
+        const processedData = {
+          ...data,
+          profileImageUrl: replaceLocalUrl(data.profileImageUrl),
+          backgroundImageUrl: replaceLocalUrl(data.backgroundImageUrl),
+        };
+
+        setClientData(processedData);
       } catch (err) {
         console.error("Fetch error:", err);
         setError(err instanceof Error ? err.message : "알 수 없는 오류 발생");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchClient();
   }, [clientId]);
 
+  // 렌더링 직전에 상태 확인
+  console.log("Rendering with clientData:", clientData);
+
   if (!clientId) return <div>❌ clientId 없음</div>;
   if (error) return <div>❌ {error}</div>;
 
   return (
     <div className={styles.container}>
-      <Header />
+      {/* ✅ 헤더에 클라이언트 데이터 전달 */}
+      <Header clientData={clientData} />
 
-      {clientData && (
-        <Client
-          profileImageUrl={replaceLocalUrl(clientData.profileImageUrl)}
-          backgroundImageUrl={replaceLocalUrl(clientData.backgroundImageUrl)}
-          clientName={clientData.name}
-          animationType="premium"
-        />
+      {loading ? (
+        <div className={styles.loading_container}>
+          <div className={styles.loading_spinner}>로딩 중...</div>
+        </div>
+      ) : (
+        <>
+          {clientData && (
+            <Client
+              profileImageUrl={clientData.profileImageUrl}
+              backgroundImageUrl={clientData.backgroundImageUrl}
+              clientName={clientData.name}
+              animationType="premium"
+            />
+          )}
+
+          <Introduce
+            companyName={clientData?.name || "회사명"}
+            description={clientData?.introduction || "설명"}
+            animationType="neon"
+            delay={200}
+            enableMarkdown={true} // 마크다운 활성화
+          />
+
+          {/* items를 좌우 교차 배치 */}
+          {clientData?.items.map((item, index) => (
+            <Item
+              key={item.id}
+              id={item.id} // 아이템 ID 전달
+              name={item.name}
+              landingPageDescription={item.landingPageDescription}
+              titleImageUrl={replaceLocalUrl(item.titleImageUrl)}
+              imageUrls={item.imageUrls.map((url) => replaceLocalUrl(url))}
+              clientId={clientId || ""} // clientId 전달
+              reverse={index % 2 === 1}
+            />
+          ))}
+          <Explanation />
+          <Footer />
+        </>
       )}
-
-      <Introduce
-        companyName={clientData?.name || "회사명"}
-        description={clientData?.introduction || "설명"}
-        animationType="neon"
-        delay={200}
-        enableMarkdown={true} // 마크다운 활성화
-      />
-
-      {/* items를 좌우 교차 배치 */}
-      {clientData?.items.map((item, index) => (
-        <Item
-          key={item.id}
-          name={item.name}
-          landingPageDescription={item.landingPageDescription}
-          titleImageUrl={replaceLocalUrl(item.titleImageUrl)}
-          imageUrls={item.imageUrls.map((url) => replaceLocalUrl(url))}
-          reverse={index % 2 === 1} // 홀수 번째는 반전 배치
-        />
-      ))}
-      <Explanation />
-      <Footer />
     </div>
   );
 }

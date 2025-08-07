@@ -1,11 +1,33 @@
+"use client";
+
+import { useState } from "react";
 import styles from "./agree_purchase.module.css";
 
-export default function AgreePurchase() {
+interface AgreePurchaseProps {
+  onToggle?: (isAgreed: boolean) => void; // 부모 컴포넌트에서 상태를 받고 싶을 때 사용
+}
+
+export default function AgreePurchase({ onToggle }: AgreePurchaseProps) {
+  const [isAgreed, setIsAgreed] = useState<boolean>(false);
+
+  const handleToggle = (): void => {
+    const newValue = !isAgreed;
+    setIsAgreed(newValue);
+
+    // 부모 컴포넌트에 상태 변경 알림
+    if (onToggle) {
+      onToggle(newValue);
+    }
+  };
+
   return (
     <>
       <div className={styles.agree_purchase}>
         <div className={styles.agree_purchase_header}>
-          <p className={styles.button}></p>
+          <p
+            className={`${styles.button} ${isAgreed ? styles.button_checked : styles.button_unchecked}`}
+            onClick={handleToggle}
+          ></p>
           <p>주문 상품 구매 동의(필수)</p>
         </div>
         <div className={styles.agree_purchase_body}>

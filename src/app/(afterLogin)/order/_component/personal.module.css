@@ -25,3 +25,37 @@
   justify-content: center;
   align-items: center;
 }
+
+/* 기존 CSS에 추가할 스타일 */
+
+.button {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  /* 기존 버튼 스타일 유지 */
+}
+
+.button:hover {
+  opacity: 0.8;
+}
+
+.button_checked {
+  background-color: #000;
+  border: 2px solid #000;
+}
+
+.button_unchecked {
+  background-color: #fff;
+  border: 2px solid #ddd;
+}
+
+/* 체크마크 표시 (선택사항) */
+.button_checked::after {
+  content: "✓";
+  color: #fff;
+  font-size: 12px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

@@ -95,11 +95,6 @@ export default function Body({ clientId }: BodyProps) {
     }
   };
 
-  // 비밀번호 찾기와 이메일 찾기 페이지 링크에도 clientId 전달
-  const getFindEmailLink = () => {
-    return clientId ? `/findemail?clientId=${clientId}` : "/findemail";
-  };
-
   const getFindPwLink = () => {
     return clientId ? `/findpw?clientId=${clientId}` : "/findpw";
   };
@@ -136,9 +131,6 @@ export default function Body({ clientId }: BodyProps) {
       )}
 
       <div className={styles.find}>
-        <Link href={getFindEmailLink()} className={styles.find_button}>
-          이메일(아이디) 찾기
-        </Link>
         <Link href={getFindPwLink()} className={styles.find_button}>
           비밀번호 찾기
         </Link>
