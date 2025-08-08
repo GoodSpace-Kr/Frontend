@@ -1,36 +1,22 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback, JSX } from "react";
-import { useRouter } from "next/navigation"; // ✅ App Router용
+import { useRouter } from "next/navigation";
 import styles from "./body.module.css";
 import { BsSearch } from "react-icons/bs";
+import { useClient } from "@/app/contexts/ClientContext";
 
-// 서버 URL 상수 추가
+// 서버 URL 상수
 const SERVER_URL = "http://13.209.4.64:8080";
 const LOCAL_URL = "http://localhost:3000";
 
-// URL을 변환하는 함수
-const replaceLocalUrl = (url: string): string => {
-  if (!url) return "";
-
-  // localhost URL을 서버 URL로 변환
-  if (url.includes(LOCAL_URL)) {
-    return url.replace(LOCAL_URL, SERVER_URL);
-  }
-
-  // 상대 경로를 서버 URL로 변환
-  if (!url.startsWith("http")) {
-    const cleanPath: string = url.startsWith("/") ? url.substring(1) : url;
-    return `${SERVER_URL}/${cleanPath}`;
-  }
-
-  return url;
-};
-
+// 타입 정의들
 interface ClientData {
   id: string;
   name: string;
   profileImageUrl: string;
+  backgroundImageUrl?: string;
+  introduction?: string;
   clientType: string;
 }
 
@@ -52,15 +38,51 @@ interface ApiResponse {
   [key: string]: unknown;
 }
 
+// API에서 받아오는 원본 클라이언트 데이터 타입
+interface RawClientData {
+  id?: string;
+  name?: string;
+  clientName?: string;
+  profileImageUrl?: string;
+  imageUrl?: string;
+  image?: string;
+  avatar?: string;
+  backgroundImageUrl?: string;
+  introduction?: string;
+  clientType?: string;
+  type?: string;
+  [key: string]: unknown;
+}
+
+// URL 변환 함수
+const replaceLocalUrl = (url: string): string => {
+  if (!url) return "";
+
+  if (url.includes(LOCAL_URL)) {
+    return url.replace(LOCAL_URL, SERVER_URL);
+  }
+
+  if (!url.startsWith("http")) {
+    const cleanPath: string = url.startsWith("/") ? url.substring(1) : url;
+    return `${SERVER_URL}/${cleanPath}`;
+  }
+
+  return url;
+};
+
 export default function Body({
   welcomeText = "환영합니다",
   description1 = "여기는 클라이언트별로 준비된 특별한 굿즈의 공간입니다",
   description2 = "지금, 당신의 선택으로 여정을 시작해 보세요",
   animationType = "gradient",
 }: BodyProps): JSX.Element {
-  const router = useRouter(); // ✅ 변경
+  const router = useRouter();
+  const { setSelectedClient } = useClient();
 
+  // Refs
   const bodyRef = useRef<HTMLDivElement>(null);
+
+  // State 정의
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isExiting, setIsExiting] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -69,7 +91,7 @@ export default function Body({
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // ✅ API에서 클라이언트 데이터 가져오기
+  // API 호출 함수
   const fetchClients = useCallback(async (): Promise<void> => {
     try {
       setLoading(true);
@@ -79,7 +101,7 @@ export default function Body({
       const endpoint: string = "/client";
       const fullUrl: string = `${baseUrl}${endpoint}`;
 
-      console.log("Fetching clients from:", fullUrl); // 디버깅용 로그
+      console.log("Fetching clients from:", fullUrl);
 
       const response: Response = await fetch(fullUrl, {
         method: "GET",
@@ -96,41 +118,36 @@ export default function Body({
       }
 
       const data: unknown = await response.json();
-      let clients: unknown[] = [];
+      let clients: RawClientData[] = [];
 
+      // API 응답 데이터 파싱
       if (Array.isArray(data)) {
-        clients = data;
+        clients = data as RawClientData[];
       } else if (data && typeof data === "object") {
         const apiResponse = data as ApiResponse;
         if (apiResponse.data && Array.isArray(apiResponse.data)) {
-          clients = apiResponse.data;
+          clients = apiResponse.data as RawClientData[];
         } else if (apiResponse.clients && Array.isArray(apiResponse.clients)) {
-          clients = apiResponse.clients;
+          clients = apiResponse.clients as RawClientData[];
         }
       }
 
-      console.log("Raw client data:", clients); // 원본 데이터 로그
-
-      // ✅ API 응답 가공
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const processedClients: ClientData[] = clients.map((client: any, index: number): ClientData => {
+      // 클라이언트 데이터 가공
+      const processedClients: ClientData[] = clients.map((client: RawClientData, index: number): ClientData => {
         let imageUrl: string = client.profileImageUrl || client.imageUrl || client.image || client.avatar || "";
-
-        // URL 변환 처리 - localhost를 서버 URL로 변경
         imageUrl = replaceLocalUrl(imageUrl);
-
-        console.log(`Client ${index} image URL:`, imageUrl); // 변환된 URL 로그
 
         return {
           id: client.id || `client-${index}`,
           name: client.name || client.clientName || `클라이언트 ${index + 1}`,
           profileImageUrl: imageUrl,
+          backgroundImageUrl: client.backgroundImageUrl || "",
+          introduction: client.introduction || "",
           clientType: client.clientType || client.type || "기타",
         };
       });
 
-      console.log("Processed clients:", processedClients); // 처리된 데이터 로그
-
+      // 클라이언트 타입별로 그룹화
       const groupedClients: Record<string, ClientData[]> = processedClients.reduce(
         (acc: Record<string, ClientData[]>, client: ClientData) => {
           const type: string = client.clientType;
@@ -159,11 +176,11 @@ export default function Body({
     }
   }, []);
 
+  // Effects
   useEffect(() => {
     fetchClients();
   }, [fetchClients]);
 
-  // ✅ Intersection Observer
   useEffect(() => {
     const observer: IntersectionObserver = new IntersectionObserver(
       ([entry]: IntersectionObserverEntry[]) => {
@@ -185,26 +202,12 @@ export default function Body({
     };
   }, [isVisible]);
 
-  // ✅ 글자 분리 (stagger 효과용)
+  // 유틸리티 함수들
   const splitTextToSpans = useCallback(
     (text: string): JSX.Element[] =>
       text.split("").map((char: string, index: number) => <span key={index}>{char === " " ? "\u00A0" : char}</span>),
     []
   );
-
-  // ✅ 검색 필터링
-  const filteredClientTypes: ClientType[] = clientTypes
-    .map(
-      (clientType: ClientType): ClientType => ({
-        ...clientType,
-        clients: clientType.clients.filter(
-          (client: ClientData): boolean =>
-            client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            client.clientType.toLowerCase().includes(searchTerm.toLowerCase())
-        ),
-      })
-    )
-    .filter((clientType: ClientType): boolean => clientType.clients.length > 0);
 
   const getHelloClassName = useCallback((): string => {
     let className: string = styles.hello;
@@ -229,58 +232,182 @@ export default function Body({
     );
   }, [animationType, getHelloClassName, splitTextToSpans, welcomeText]);
 
+  // 이벤트 핸들러들
   const handleImageLoad = useCallback((clientId: string): void => {
-    setImageLoadStates((prev) => ({ ...prev, [clientId]: true }));
+    setImageLoadStates((prev: Record<string, boolean>) => ({
+      ...prev,
+      [clientId]: true,
+    }));
   }, []);
 
   const handleImageError = useCallback((clientId: string): void => {
     console.error(`이미지 로드 실패: ${clientId}`);
-    setImageLoadStates((prev) => ({ ...prev, [clientId]: false }));
+    setImageLoadStates((prev: Record<string, boolean>) => ({
+      ...prev,
+      [clientId]: false,
+    }));
   }, []);
 
-  // ✅ 로그인 상태 확인 함수
   const isLoggedIn = useCallback((): boolean => {
     if (typeof window === "undefined") return false;
 
-    // 쿠키에서 토큰 확인 (미들웨어와 동일한 방식)
-    const accessToken = document.cookie
+    const accessToken: string | undefined = document.cookie
       .split("; ")
-      .find((row) => row.startsWith("accessToken="))
+      .find((row: string) => row.startsWith("accessToken="))
       ?.split("=")[1];
 
-    const refreshToken = document.cookie
+    const refreshToken: string | undefined = document.cookie
       .split("; ")
-      .find((row) => row.startsWith("refreshToken="))
+      .find((row: string) => row.startsWith("refreshToken="))
       ?.split("=")[1];
 
-    // accessToken 또는 refreshToken 중 하나라도 있으면 로그인된 상태로 간주
     return !!(accessToken || refreshToken);
   }, []);
 
-  // ✅ 클릭 시 로그인 상태에 따라 경로 분기
   const handleClientClick = useCallback(
     (client: ClientData): void => {
       console.log("클라이언트 선택:", client);
+
+      // Context에 선택된 클라이언트 저장
+      setSelectedClient(client);
 
       const queryParams = new URLSearchParams({
         clientId: client.id,
       });
 
-      // 로그인 상태에 따라 경로 분기
       if (isLoggedIn()) {
-        // 로그인된 상태: /main으로 이동
         router.push(`/main?${queryParams.toString()}`);
       } else {
-        // 로그인 안된 상태: /landingpage로 이동
         router.push(`/landingpage?${queryParams.toString()}`);
       }
     },
-    [router, isLoggedIn]
+    [router, isLoggedIn, setSelectedClient]
   );
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchTerm(e.target.value);
   }, []);
+
+  // 검색 필터링
+  const filteredClientTypes: ClientType[] = clientTypes
+    .map(
+      (clientType: ClientType): ClientType => ({
+        ...clientType,
+        clients: clientType.clients.filter(
+          (client: ClientData): boolean =>
+            client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            client.clientType.toLowerCase().includes(searchTerm.toLowerCase())
+        ),
+      })
+    )
+    .filter((clientType: ClientType): boolean => clientType.clients.length > 0);
+
+  // 렌더링 헬퍼 함수들
+  const renderLoadingState = (): JSX.Element => (
+    <div className={styles.client_item}>
+      <p className={styles.client_type}># 로딩 중...</p>
+      <div className={styles.client_img_box}>
+        {Array.from({ length: 3 }, (_, index: number) => (
+          <div key={index} className={`${styles.client_img} ${styles.loading}`}>
+            <div className={styles.loading_spinner}>⟳</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderErrorState = (): JSX.Element => (
+    <div className={styles.client_item}>
+      <p className={styles.client_type}># 오류 발생</p>
+      <div className={styles.client_img_box}>
+        <div className={styles.client_img}>
+          <span className={styles.error_text}>{error}</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderNoSearchResults = (): JSX.Element => (
+    <div className={styles.client_item}>
+      <p className={styles.client_type}># 검색 결과 없음</p>
+      <div className={styles.client_img_box}>
+        <div className={styles.client_img}>
+          <span className={styles.no_result_text}>&quot;{searchTerm}&quot;에 대한 결과가 없습니다</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderNoData = (): JSX.Element => (
+    <div className={styles.client_item}>
+      <p className={styles.client_type}># 데이터 없음</p>
+      <div className={styles.client_img_box}>
+        <div className={styles.client_img}>
+          <span className={styles.no_data_text}>등록된 클라이언트가 없습니다</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderClientImage = (client: ClientData): JSX.Element => {
+    const hasImage = client.profileImageUrl && imageLoadStates[client.id] !== false;
+
+    if (hasImage) {
+      return (
+        <img
+          src={client.profileImageUrl}
+          alt={client.name}
+          onLoad={() => handleImageLoad(client.id)}
+          onError={() => handleImageError(client.id)}
+          className={styles.client_image}
+        />
+      );
+    }
+
+    return (
+      <div className={styles.client_fallback}>
+        <div className={styles.client_avatar}>{client.name.charAt(0).toUpperCase()}</div>
+        <div className={styles.client_name}>{client.name}</div>
+        <div className={styles.client_type_text}>{client.clientType}</div>
+      </div>
+    );
+  };
+
+  const renderClientList = (): JSX.Element => {
+    if (loading) return renderLoadingState();
+    if (error) return renderErrorState();
+    if (filteredClientTypes.length === 0) {
+      return searchTerm ? renderNoSearchResults() : renderNoData();
+    }
+
+    return (
+      <>
+        {filteredClientTypes.map((clientType: ClientType, typeIndex: number) => (
+          <div key={typeIndex} className={styles.client_item}>
+            <p className={styles.client_type}># {clientType.type}</p>
+            <div className={styles.client_img_box}>
+              {clientType.clients.map((client: ClientData) => (
+                <div
+                  key={client.id}
+                  className={styles.client_img}
+                  onClick={() => handleClientClick(client)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e: React.KeyboardEvent) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      handleClientClick(client);
+                    }
+                  }}
+                >
+                  {renderClientImage(client)}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </>
+    );
+  };
 
   return (
     <div ref={bodyRef} className={getBodyClassName()}>
@@ -296,78 +423,11 @@ export default function Body({
             placeholder="클라이언트 검색"
             value={searchTerm}
             onChange={handleSearchChange}
+            type="text"
           />
         </div>
 
-        <div className={styles.client_list}>
-          {loading ? (
-            <div className={styles.client_item}>
-              <p className={styles.client_type}># 로딩 중...</p>
-              <div className={styles.client_img_box}>
-                {Array.from({ length: 3 }, (_, index: number) => (
-                  <div key={index} className={`${styles.client_img} ${styles.loading}`}>
-                    <div className={styles.loading_spinner}>⟳</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : error ? (
-            <div className={styles.client_item}>
-              <p className={styles.client_type}># 오류 발생</p>
-              <div className={styles.client_img_box}>
-                <div className={styles.client_img}>
-                  <span className={styles.error_text}>{error}</span>
-                </div>
-              </div>
-            </div>
-          ) : filteredClientTypes.length > 0 ? (
-            filteredClientTypes.map((clientType: ClientType, typeIndex: number) => (
-              <div key={typeIndex} className={styles.client_item}>
-                <p className={styles.client_type}># {clientType.type}</p>
-                <div className={styles.client_img_box}>
-                  {clientType.clients.map((client: ClientData) => (
-                    <div key={client.id} className={styles.client_img} onClick={() => handleClientClick(client)}>
-                      {client.profileImageUrl && imageLoadStates[client.id] !== false ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={client.profileImageUrl}
-                          alt={client.name}
-                          onLoad={() => handleImageLoad(client.id)}
-                          onError={() => handleImageError(client.id)}
-                          className={styles.client_image}
-                        />
-                      ) : (
-                        <div className={styles.client_fallback}>
-                          <div className={styles.client_avatar}>{client.name.charAt(0).toUpperCase()}</div>
-                          <div className={styles.client_name}>{client.name}</div>
-                          <div className={styles.client_type_text}>{client.clientType}</div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))
-          ) : searchTerm ? (
-            <div className={styles.client_item}>
-              <p className={styles.client_type}># 검색 결과 없음</p>
-              <div className={styles.client_img_box}>
-                <div className={styles.client_img}>
-                  <span className={styles.no_result_text}>&quot;{searchTerm}&quot;에 대한 결과가 없습니다</span>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className={styles.client_item}>
-              <p className={styles.client_type}># 데이터 없음</p>
-              <div className={styles.client_img_box}>
-                <div className={styles.client_img}>
-                  <span className={styles.no_data_text}>등록된 클라이언트가 없습니다</span>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+        <div className={styles.client_list}>{renderClientList()}</div>
       </div>
     </div>
   );

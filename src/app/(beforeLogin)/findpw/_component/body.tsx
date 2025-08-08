@@ -97,6 +97,7 @@ export default function FindEmail() {
         },
         body: JSON.stringify({
           email: email.trim(),
+          shouldAlreadyExist: true, // 가입된 이메일만 인증번호 발송
         }),
       });
 
@@ -110,6 +111,8 @@ export default function FindEmail() {
     } catch (error) {
       console.error("인증 코드 전송 오류:", error);
       alert(error instanceof Error ? error.message : "인증 코드 전송 중 오류가 발생했습니다.");
+      // 오류 발생 시 코드 입력 폼 숨기기
+      setShowCodeInput(false);
     } finally {
       setLoading(false);
     }
@@ -152,7 +155,7 @@ export default function FindEmail() {
     }
   };
 
-  // 비밀번호 변경
+  // ✅ 새로운 API로 변경된 비밀번호 변경 함수
   const handleChangePassword = async () => {
     if (!isEmailVerified) {
       alert("먼저 이메일 인증을 완료해주세요.");
@@ -179,23 +182,60 @@ export default function FindEmail() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/password`, {
+      console.log("비밀번호 변경 API 호출 시작...");
+
+      // ✅ 새로운 forget-password API 사용
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/forget-password`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          prevPassword: "", // 비밀번호 찾기에서는 이전 비밀번호가 필요없을 수 있음
-          newPassword: newPassword.trim(),
+          email: email.trim(),
+          password: newPassword.trim(),
         }),
       });
 
+      console.log("API 응답 상태:", response.status);
+
       if (response.ok) {
+        // 성공 응답 처리
+        const responseData = await response.json();
+        console.log("성공 응답:", responseData);
+
         alert("비밀번호가 성공적으로 변경되었습니다.");
-        router.push("/login");
       } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "비밀번호 변경에 실패했습니다.");
+        // 에러 응답 처리
+        let errorMessage = "비밀번호 변경에 실패했습니다.";
+
+        try {
+          const errorData = await response.json();
+          console.log("에러 응답:", errorData);
+          errorMessage = errorData.message || errorMessage;
+        } catch (parseError) {
+          console.error("에러 응답 파싱 실패:", parseError);
+          // 응답을 텍스트로 읽어보기
+          const responseText = await response.text();
+          console.log("에러 응답 텍스트:", responseText);
+        }
+
+        // 특정 에러 코드별 처리
+        if (response.status === 400) {
+          errorMessage = "잘못된 요청입니다. 이메일이나 비밀번호를 확인해주세요.";
+        } else if (response.status === 404) {
+          errorMessage = "해당 이메일로 가입된 계정을 찾을 수 없습니다.";
+        } else if (response.status === 403) {
+          errorMessage = "이메일 인증이 완료되지 않았습니다. 다시 인증해주세요.";
+          // 인증 상태 초기화
+          setIsEmailVerified(false);
+          setShowPasswordInput(false);
+          setShowCodeInput(false);
+          setVerificationCode("");
+        } else if (response.status === 500) {
+          errorMessage = "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+        }
+
+        throw new Error(errorMessage);
       }
     } catch (error) {
       console.error("비밀번호 변경 오류:", error);
@@ -276,12 +316,10 @@ export default function FindEmail() {
 
           {/* 비밀번호 조건 안내 */}
           <div className={styles.password_guide}>
-            <p>비밀번호 조건:</p>
-            <ul>
-              <li>영어, 숫자, 특수문자 포함 8자 이상</li>
-              <li>연속된 문자 3자 이상 사용 불가 (abc, 123, aaa 등)</li>
-              <li>이메일 아이디 포함 불가</li>
-            </ul>
+            <p className={styles.a}>비밀번호 조건:</p>
+            <p className={styles.a}>영어, 숫자, 특수문자 포함 8자 이상</p>
+            <p className={styles.a}>연속된 문자 3자 이상 사용 불가 (abc, 123, aaa 등)</p>
+            <p className={styles.a}>이메일 아이디 포함 불가</p>
           </div>
 
           <div

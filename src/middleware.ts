@@ -39,7 +39,8 @@ export async function middleware(request: NextRequest) {
   console.log("🔥 미들웨어 실행됨:", request.nextUrl.pathname);
 
   const { pathname } = request.nextUrl;
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  // ✅ 수정: API 서버 URL을 NEXT_PUBLIC_BASE_URL로 변경 (백엔드 서버 주소)
+  const API_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8080";
 
   // afterLogin 그룹의 모든 경로를 보호
   const isAfterLoginRoute =
@@ -97,8 +98,8 @@ export async function middleware(request: NextRequest) {
     console.log("🔄 Access Token 만료, 재발급 시도");
 
     try {
-      // 스웨거에 맞춰 엔드포인트 수정 - reissue 사용
-      const response = await fetch(`${API_URL}/api/authorization/reissue`, {
+      // ✅ 수정: reissue API 엔드포인트 경로 수정 (백엔드 스웨거 스펙에 맞춤)
+      const response = await fetch(`${API_URL}/authorization/reissue`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -126,18 +127,20 @@ export async function middleware(request: NextRequest) {
         const tokenData = await response.json();
         if (tokenData.accessToken) {
           res.cookies.set("accessToken", tokenData.accessToken, {
-            httpOnly: false,
+            httpOnly: false, // ✅ 프론트엔드에서도 접근 가능하도록 설정
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
             path: "/",
+            maxAge: 7 * 24 * 60 * 60, // 7일
           });
         }
         if (tokenData.refreshToken) {
           res.cookies.set("refreshToken", tokenData.refreshToken, {
-            httpOnly: true,
+            httpOnly: true, // ✅ 보안을 위해 httpOnly 유지
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
             path: "/",
+            maxAge: 7 * 24 * 60 * 60, // 7일
           });
         }
       } catch (jsonError) {

@@ -16,10 +16,12 @@ interface CartItem {
 }
 
 interface ItemListProps {
-  onCartUpdate?: () => void; // 장바구니 업데이트 시 호출할 콜백
+  onCartUpdate?: () => void;
+  selectedItems: number[];
+  onSelectionChange: (selectedItems: number[]) => void;
 }
 
-export default function ItemList({ onCartUpdate }: ItemListProps) {
+export default function ItemList({ onCartUpdate, selectedItems, onSelectionChange }: ItemListProps) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -96,14 +98,44 @@ export default function ItemList({ onCartUpdate }: ItemListProps) {
   // 장바구니 아이템 삭제
   const removeCartItem = (cartItemId: number) => {
     setCartItems((prev) => prev.filter((cartItem) => cartItem.id !== cartItemId));
+    // 삭제된 아이템이 선택되어 있었다면 선택 목록에서도 제거
+    const updatedSelection = selectedItems.filter((id) => id !== cartItemId);
+    onSelectionChange(updatedSelection);
     if (onCartUpdate) {
       onCartUpdate();
+    }
+  };
+
+  // 개별 아이템 선택/해제
+  const toggleItemSelection = (cartItemId: number) => {
+    if (selectedItems.includes(cartItemId)) {
+      onSelectionChange(selectedItems.filter((id) => id !== cartItemId));
+    } else {
+      onSelectionChange([...selectedItems, cartItemId]);
+    }
+  };
+
+  // 전체 선택/해제
+  const toggleAllSelection = () => {
+    if (selectedItems.length === cartItems.length) {
+      // 전체 해제
+      onSelectionChange([]);
+    } else {
+      // 전체 선택
+      onSelectionChange(cartItems.map((item) => item.id));
     }
   };
 
   useEffect(() => {
     fetchCartItems();
   }, []);
+
+  // 새로운 아이템이 로드되면 기본적으로 모든 아이템 선택
+  useEffect(() => {
+    if (cartItems.length > 0 && selectedItems.length === 0) {
+      onSelectionChange(cartItems.map((item) => item.id));
+    }
+  }, [cartItems]);
 
   if (loading) {
     return (
@@ -129,10 +161,26 @@ export default function ItemList({ onCartUpdate }: ItemListProps) {
     );
   }
 
+  const isAllSelected = cartItems.length > 0 && selectedItems.length === cartItems.length;
+
   return (
     <div className={styles.itemlist}>
+      <div className={styles.selection_header}>
+        <label className={styles.select_all}>
+          <input type="checkbox" checked={isAllSelected} onChange={toggleAllSelection} className={styles.checkbox} />
+          전체 선택 ({selectedItems.length}/{cartItems.length})
+        </label>
+      </div>
+
       {cartItems.map((cartItem) => (
-        <Item key={cartItem.id} cartItem={cartItem} onUpdate={updateCartItem} onRemove={removeCartItem} />
+        <Item
+          key={cartItem.id}
+          cartItem={cartItem}
+          isSelected={selectedItems.includes(cartItem.id)}
+          onUpdate={updateCartItem}
+          onRemove={removeCartItem}
+          onToggleSelect={toggleItemSelection}
+        />
       ))}
     </div>
   );

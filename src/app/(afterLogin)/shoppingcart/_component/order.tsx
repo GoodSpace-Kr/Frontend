@@ -18,10 +18,11 @@ interface CartItem {
 }
 
 interface OrderSummaryProps {
-  refreshTrigger?: number; // 장바구니 업데이트 시 재조회를 위한 trigger
+  refreshTrigger?: number;
+  selectedItems: number[];
 }
 
-export default function OrderSummary({ refreshTrigger }: OrderSummaryProps) {
+export default function OrderSummary({ refreshTrigger, selectedItems }: OrderSummaryProps) {
   const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -88,8 +89,11 @@ export default function OrderSummary({ refreshTrigger }: OrderSummaryProps) {
     fetchCartItems();
   }, [refreshTrigger]);
 
-  // 총 상품 금액 계산
-  const totalItemsPrice = cartItems.reduce((total, cartItem) => {
+  // 선택된 아이템들만 필터링
+  const selectedCartItems = cartItems.filter((cartItem) => selectedItems.includes(cartItem.id));
+
+  // 선택된 상품들의 총 금액 계산
+  const totalItemsPrice = selectedCartItems.reduce((total, cartItem) => {
     return total + cartItem.item.price * cartItem.quantity;
   }, 0);
 
@@ -104,15 +108,15 @@ export default function OrderSummary({ refreshTrigger }: OrderSummaryProps) {
 
   // 장바구니에서 주문하기 핸들러
   const handleCartOrder = () => {
-    if (cartItems.length === 0) {
-      alert("장바구니가 비어있습니다.");
+    if (selectedCartItems.length === 0) {
+      alert("주문할 상품을 선택해주세요.");
       return;
     }
 
-    // 장바구니 주문 데이터 생성
+    // 선택된 장바구니 주문 데이터 생성
     const orderData = {
       type: "cart", // 장바구니 주문 타입
-      items: cartItems.map((cartItem) => ({
+      items: selectedCartItems.map((cartItem) => ({
         id: cartItem.id,
         name: cartItem.item.name,
         price: cartItem.item.price,
@@ -120,7 +124,7 @@ export default function OrderSummary({ refreshTrigger }: OrderSummaryProps) {
         titleImageUrl: cartItem.item.titleImageUrl,
         totalPrice: cartItem.item.price * cartItem.quantity,
       })),
-      orderCount: cartItems.reduce((total, cartItem) => total + cartItem.quantity, 0),
+      orderCount: selectedCartItems.reduce((total, cartItem) => total + cartItem.quantity, 0),
       productAmount: totalItemsPrice,
       shippingFee: shippingFee,
       totalAmount: finalPrice,
@@ -148,41 +152,55 @@ export default function OrderSummary({ refreshTrigger }: OrderSummaryProps) {
     <div className={styles.ordersummary}>
       <p className={styles.summation}>주문 요약</p>
 
-      {cartItems.map((cartItem) => (
-        <SummaryItem
-          key={cartItem.id}
-          name={cartItem.item.name}
-          quantity={cartItem.quantity}
-          price={cartItem.item.price * cartItem.quantity}
-        />
-      ))}
+      {selectedCartItems.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "2rem", color: "#666" }}>주문할 상품을 선택해주세요</div>
+      ) : (
+        <>
+          {selectedCartItems.map((cartItem) => (
+            <SummaryItem
+              key={cartItem.id}
+              name={cartItem.item.name}
+              quantity={cartItem.quantity}
+              price={cartItem.item.price * cartItem.quantity}
+            />
+          ))}
 
-      <div className={styles.line}></div>
+          <div className={styles.line}></div>
 
-      <div className={styles.items_result}>
-        <p className={styles.items_result_a}>상품 금액</p>
-        <p className={styles.items_result_b}>{formatPrice(totalItemsPrice)}</p>
-      </div>
+          <div className={styles.items_result}>
+            <p className={styles.items_result_a}>상품 금액</p>
+            <p className={styles.items_result_b}>{formatPrice(totalItemsPrice)}</p>
+          </div>
 
-      <div className={styles.items_result}>
-        <p className={styles.items_result_a}>배송비</p>
-        <p className={styles.items_result_b}>{shippingFee === 0 ? "무료" : formatPrice(shippingFee)}</p>
-      </div>
+          <div className={styles.items_result}>
+            <p className={styles.items_result_a}>배송비</p>
+            <p className={styles.items_result_b}>{shippingFee === 0 ? "무료" : formatPrice(shippingFee)}</p>
+          </div>
 
-      <div className={styles.items_result}>
-        <p className={styles.items_result_a}>할인</p>
-        <p className={styles.items_result_b}>{discountAmount === 0 ? "-" : `-${formatPrice(discountAmount)}`}</p>
-      </div>
+          <div className={styles.items_result}>
+            <p className={styles.items_result_a}>할인</p>
+            <p className={styles.items_result_b}>{discountAmount === 0 ? "-" : `-${formatPrice(discountAmount)}`}</p>
+          </div>
 
-      <div className={styles.line}></div>
+          <div className={styles.line}></div>
 
-      <div className={styles.total_price}>
-        <p className={styles.total_price_a}>총 결제 금액</p>
-        <p className={styles.total_price_a}>{formatPrice(finalPrice)}</p>
-      </div>
+          <div className={styles.total_price}>
+            <p className={styles.total_price_a}>총 결제 금액</p>
+            <p className={styles.total_price_a}>{formatPrice(finalPrice)}</p>
+          </div>
+        </>
+      )}
 
-      <button className={styles.order_button} onClick={handleCartOrder}>
-        주문 하기
+      <button
+        className={styles.order_button}
+        onClick={handleCartOrder}
+        disabled={selectedCartItems.length === 0}
+        style={{
+          opacity: selectedCartItems.length === 0 ? 0.5 : 1,
+          cursor: selectedCartItems.length === 0 ? "not-allowed" : "pointer",
+        }}
+      >
+        주문 하기 ({selectedCartItems.length}개 상품)
       </button>
 
       <Link href="/main" className={styles.back_button}>

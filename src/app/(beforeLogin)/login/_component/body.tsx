@@ -151,7 +151,8 @@ export default function Body({ clientId }: BodyProps) {
         회원가입
       </div>
 
-      <LoginIcons />
+      {/* clientId를 LoginIcons 컴포넌트에 전달 */}
+      <LoginIcons clientId={clientId} />
     </div>
   );
 }

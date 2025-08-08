@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./body.module.css";
 import LoginIcons from "../../_component/loginicon";
 import Link from "next/link";
 
 export default function Body() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [showCodeInput, setShowCodeInput] = useState(false);
   const [email, setEmail] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
@@ -14,6 +17,16 @@ export default function Body() {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [isEmailVerified, setIsEmailVerified] = useState(false);
+
+  // ✅ URL에서 clientId 추출
+  const clientId = searchParams.get("clientId");
+
+  // 디버깅을 위한 로그
+  useEffect(() => {
+    if (clientId) {
+      console.log("회원가입 페이지에서 받은 clientId:", clientId);
+    }
+  }, [clientId]);
 
   // 비밀번호 유효성 검사
   const validatePassword = (password: string, email: string) => {
@@ -204,8 +217,13 @@ export default function Body() {
       if (response.ok) {
         const data = await response.json();
         setMessage("회원가입이 완료되었습니다!");
-        // 성공시 로그인 페이지로 이동하거나 다른 처리
+        // ✅ 성공시 로그인 페이지로 이동 (clientId 유지)
         console.log("회원가입 성공:", data);
+
+        setTimeout(() => {
+          const loginUrl = clientId ? `/login?clientId=${clientId}` : "/login";
+          router.push(loginUrl);
+        }, 1500);
       } else {
         const errorData = await response.json();
         setMessage(errorData.message || "회원가입에 실패했습니다.");
@@ -223,6 +241,11 @@ export default function Body() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // ✅ 돌아가기 링크에도 clientId 유지
+  const getBackLink = () => {
+    return clientId ? `/login?clientId=${clientId}` : "/login";
   };
 
   return (
@@ -311,11 +334,14 @@ export default function Body() {
       >
         {isLoading ? "처리중..." : "가입하기"}
       </div>
-      <Link href="/" className={styles.back_button}>
+
+      {/* ✅ 돌아가기 링크에 clientId 유지 */}
+      <Link href={getBackLink()} className={styles.back_button}>
         돌아가기
       </Link>
 
-      <LoginIcons />
+      {/* ✅ LoginIcons 컴포넌트에 clientId 전달 */}
+      <LoginIcons clientId={clientId} />
     </div>
   );
 }

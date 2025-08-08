@@ -101,3 +101,47 @@
 .loginButton:hover {
   background-color: #333333;
 }
+
+/* 기존 CSS에 추가할 스타일들 */
+
+.client_img.clickable {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.client_img.clickable:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.client_img.clickable:active {
+  transform: scale(0.98);
+}
+
+/* 클릭 힌트 스타일 */
+.click_hint {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.client_img.clickable:hover .click_hint {
+  opacity: 1;
+}
+
+/* 접근성을 위한 포커스 스타일 */
+.client_img.clickable:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}

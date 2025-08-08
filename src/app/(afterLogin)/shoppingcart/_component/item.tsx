@@ -17,15 +17,17 @@ interface CartItem {
 
 interface ItemProps {
   cartItem: CartItem;
+  isSelected: boolean;
   onUpdate: (cartItemId: number, newQuantity: number) => void;
   onRemove: (cartItemId: number) => void;
+  onToggleSelect: (cartItemId: number) => void;
 }
 
-export default function Item({ cartItem, onUpdate, onRemove }: ItemProps) {
+export default function Item({ cartItem, isSelected, onUpdate, onRemove, onToggleSelect }: ItemProps) {
   const [count, setCount] = useState(cartItem.quantity);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [pendingQuantity, setPendingQuantity] = useState(cartItem.quantity); // 임시 수량 저장
+  const [pendingQuantity, setPendingQuantity] = useState(cartItem.quantity);
 
   // 가격 포맷팅 함수
   const formatPrice = (price: number): string => {
@@ -205,6 +207,14 @@ export default function Item({ cartItem, onUpdate, onRemove }: ItemProps) {
 
   return (
     <div className={styles.item}>
+      <div className={styles.item_checkbox}>
+        <input
+          type="checkbox"
+          checked={isSelected}
+          onChange={() => onToggleSelect(cartItem.id)}
+          className={styles.checkbox}
+        />
+      </div>
       <div className={styles.item_left}>
         <div className={styles.item_img}>
           {cartItem.item.titleImageUrl && (

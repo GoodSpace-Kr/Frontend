@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import styles from "@/app/(afterLogin)/_component/main.module.css";
 import Header from "../_component/header";
 import Client from "../_component/client";
@@ -31,10 +31,46 @@ interface ClientApiResponse {
 export default function Main() {
   const [clientData, setClientData] = useState<ClientApiResponse | null>(null);
   const searchParams = useSearchParams();
-  const clientId = searchParams.get("clientId"); // ✅ 쿼리에서 clientId 가져오기
-
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [clientId, setClientId] = useState<string | null>(null);
+
+  // 소셜 로그인 후 clientId 복원 및 URL 업데이트
+  useEffect(() => {
+    const initializeClientId = () => {
+      // 1. URL에서 clientId 확인
+      let currentClientId = searchParams.get("clientId");
+
+      // 2. URL에 clientId가 없으면 localStorage에서 확인 (소셜 로그인 케이스)
+      if (!currentClientId) {
+        const pendingClientId = localStorage.getItem("pendingClientId");
+        if (pendingClientId) {
+          currentClientId = pendingClientId;
+          // 사용했으니 삭제
+          localStorage.removeItem("pendingClientId");
+
+          // URL을 clientId가 포함된 형태로 업데이트
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.set("clientId", currentClientId);
+          router.replace(newUrl.pathname + newUrl.search);
+
+          console.log("🔄 소셜 로그인 후 clientId 복원:", currentClientId);
+        }
+      }
+
+      // 3. clientId 상태 업데이트
+      setClientId(currentClientId);
+
+      if (currentClientId) {
+        console.log("✅ Main 페이지에서 clientId 확인:", currentClientId);
+      } else {
+        console.log("ℹ️ 일반 메인 페이지 (clientId 없음)");
+      }
+    };
+
+    initializeClientId();
+  }, [searchParams, router]);
 
   // 로컬 URL을 서버 URL로 변환하는 함수
   const replaceLocalUrl = (url: string): string => {
@@ -54,6 +90,7 @@ export default function Main() {
     return url;
   };
 
+  // clientId가 설정된 후 클라이언트 데이터 fetch
   useEffect(() => {
     if (!clientId) {
       setLoading(false);
@@ -65,7 +102,7 @@ export default function Main() {
         setLoading(true);
         const fullUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/client/${clientId}`;
 
-        console.log("Fetching URL:", fullUrl); // URL 로그
+        console.log("📡 Fetching URL:", fullUrl);
 
         const res = await fetch(fullUrl, {
           method: "GET",
@@ -77,16 +114,16 @@ export default function Main() {
           credentials: "omit",
         });
 
-        console.log("Response status:", res.status); // 응답 상태 코드 로그
+        console.log("📊 Response status:", res.status);
 
         if (!res.ok) {
           const errorText = await res.text();
-          console.error("Error response:", errorText);
+          console.error("❌ Error response:", errorText);
           throw new Error(`서버 오류: ${res.status}`);
         }
 
         const data: ClientApiResponse = await res.json();
-        console.log("Fetched data:", data); // 전체 데이터 로그
+        console.log("📦 Fetched data:", data);
 
         // URL 변환을 적용한 데이터 설정
         const processedData = {
@@ -97,7 +134,7 @@ export default function Main() {
 
         setClientData(processedData);
       } catch (err) {
-        console.error("Fetch error:", err);
+        console.error("❌ Fetch error:", err);
         setError(err instanceof Error ? err.message : "알 수 없는 오류 발생");
       } finally {
         setLoading(false);
@@ -105,13 +142,31 @@ export default function Main() {
     };
 
     fetchClient();
-  }, [clientId]);
+  }, [clientId]); // clientId 의존성으로 변경
 
   // 렌더링 직전에 상태 확인
-  console.log("Rendering with clientData:", clientData);
+  console.log("🎨 Rendering with clientData:", clientData);
 
-  if (!clientId) return <div>❌ clientId 없음</div>;
-  if (error) return <div>❌ {error}</div>;
+  // clientId가 없으면 일반 메인 페이지 또는 에러 메시지 표시
+  if (!clientId) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading_container}>
+          <div className={styles.loading_spinner}>ℹ️ 일반 메인 페이지 (특정 클라이언트 정보 없음)</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading_container}>
+          <div className={styles.loading_spinner}>❌ {error}</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -120,7 +175,7 @@ export default function Main() {
 
       {loading ? (
         <div className={styles.loading_container}>
-          <div className={styles.loading_spinner}>로딩 중...</div>
+          <div className={styles.loading_spinner}>🔄 로딩 중... (Client ID: {clientId})</div>
         </div>
       ) : (
         <>
