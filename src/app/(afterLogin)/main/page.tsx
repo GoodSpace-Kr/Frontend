@@ -11,7 +11,7 @@ import Footer from "../_component/footer";
 import Explanation from "../_component/explanation";
 
 // 서버 URL 상수
-const SERVER_URL = "http://13.209.4.64:8080";
+const SERVER_URL = "https://goodspace.duckdns.org/api";
 const LOCAL_URL = "http://localhost:3000";
 
 interface ClientApiResponse {

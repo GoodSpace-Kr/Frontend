@@ -8,7 +8,11 @@ const nextConfig = {
 
   // 이미지 도메인 설정 추가
   images: {
-    domains: ["localhost", "13.209.4.64"],
+    domains: [
+      "localhost",
+      "13.209.4.64",
+      "goodspace.duckdns.org", // 추가
+    ],
     remotePatterns: [
       {
         protocol: "http",
@@ -26,6 +30,11 @@ const nextConfig = {
         protocol: "http",
         hostname: "localhost",
         port: "8080",
+        pathname: "/**",
+      },
+      {
+        protocol: "https", // https로 변경
+        hostname: "goodspace.duckdns.org",
         pathname: "/**",
       },
     ],
