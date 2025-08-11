@@ -7,7 +7,7 @@ import { BsSearch } from "react-icons/bs";
 import { useClient } from "@/app/contexts/ClientContext";
 
 // 서버 URL 상수
-const SERVER_URL = "http://13.209.4.64:8080";
+const SERVER_URL = "https://goodspace.duckdns.org/api";
 const LOCAL_URL = "http://localhost:3000";
 
 // 타입 정의들
@@ -354,6 +354,7 @@ export default function Body({
 
     if (hasImage) {
       return (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           src={client.profileImageUrl}
           alt={client.name}
