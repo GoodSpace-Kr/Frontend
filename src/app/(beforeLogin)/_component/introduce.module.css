@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  min-width: 1000px;
+  min-width: 900px;
   height: 800px;
   text-align: center;
   overflow: hidden; /* 애니메이션 효과를 위해 추가 */

@@ -9,7 +9,6 @@ import TotalPayment from "./total_payment";
 import AgreePurchase from "./agree_purchase";
 import TermsOfUse from "./termsofuse";
 import PersonalInfo from "./personal";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { TokenManager } from "@/utils/tokenManager";
 
@@ -163,6 +162,53 @@ export default function OrderBodyPage() {
     }).open();
   };
 
+  // 주문 취소 API 호출 함수 (로그 추가)
+  const cancelOrder = async (orderId: number, reason?: string) => {
+    console.log(`[CANCEL ORDER] 호출됨 - orderId: ${orderId}, reason: ${reason || "이유 없음"}`);
+    try {
+      let accessToken = TokenManager.getAccessToken();
+      if (!accessToken) {
+        accessToken = await TokenManager.refreshAccessToken();
+        if (!accessToken) {
+          throw new Error("로그인이 필요합니다.");
+        }
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/order/cancel/${orderId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      console.log(`[CANCEL ORDER] 응답 상태: ${response.status}`);
+
+      if (response.status === 403) {
+        console.warn("[CANCEL ORDER] 403 발생 → 토큰 갱신 시도");
+        const newToken = await TokenManager.refreshAccessToken();
+        if (newToken) {
+          const retryResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/order/cancel/${orderId}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${newToken}`,
+            },
+          });
+          console.log(`[CANCEL ORDER] 재시도 응답 상태: ${retryResponse.status}`);
+          if (!retryResponse.ok) {
+            throw new Error("주문 취소 실패");
+          }
+        } else {
+          TokenManager.clearTokens();
+          throw new Error("세션이 만료되었습니다. 다시 로그인해주세요.");
+        }
+      } else if (!response.ok) {
+        throw new Error("주문 취소 실패");
+      }
+    } catch (error) {
+      console.error("주문 취소 중 오류:", error);
+    }
+  };
+
   // 주문 생성 API 호출 함수
   const createOrder = async (): Promise<number> => {
     try {
@@ -243,9 +289,6 @@ export default function OrderBodyPage() {
         }
       }
 
-      console.log("=== 결제 검증 API 호출 ===");
-      console.log("결제 검증 데이터:", paymentData);
-
       const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/payment/verify`, {
         method: "POST",
         headers: {
@@ -270,15 +313,12 @@ export default function OrderBodyPage() {
           if (!retryResponse.ok) {
             throw new Error("결제 검증 실패");
           }
-          console.log("결제 검증 성공");
         } else {
           TokenManager.clearTokens();
           throw new Error("세션이 만료되었습니다. 다시 로그인해주세요.");
         }
       } else if (!response.ok) {
         throw new Error("결제 검증 실패");
-      } else {
-        console.log("결제 검증 성공");
       }
     } catch (error) {
       console.error("결제 검증 중 오류:", error);
@@ -323,97 +363,136 @@ export default function OrderBodyPage() {
         paymentWindow.document.write(htmlContent);
         paymentWindow.document.close();
 
-        // 결제 완료 감지를 위한 주기적 체크
-        const checkPaymentComplete = setInterval(() => {
-          try {
-            // 결제창이 닫혔는지 확인
-            if (paymentWindow.closed) {
-              console.log("결제창이 닫혔습니다 - 결제 완료로 간주");
-              clearInterval(checkPaymentComplete);
+        let paymentCompleted = false;
+        let paymentCancelled = false;
 
-              // 결제 검증 없이 바로 페이지 이동 (임시)
-              console.log("결제 완료 - 결과 페이지로 이동");
-              router.push("/resultorder");
+        // 결제 완료/취소 감지를 위한 주기적 체크
+        const checkPaymentStatus = setInterval(() => {
+          try {
+            if (paymentWindow.closed) {
+              clearInterval(checkPaymentStatus);
+              if (!paymentCompleted) {
+                paymentCancelled = true;
+                alert("결제가 취소되었습니다.");
+                cancelOrder(orderId, "결제창이 닫힘");
+                return;
+              }
               return;
             }
 
-            // 결제창 URL 체크 (가능한 경우)
             try {
               const currentUrl = paymentWindow.location.href;
               if (currentUrl.includes("success") || currentUrl.includes("complete") || currentUrl.includes("approve")) {
-                console.log("결제 완료 URL 감지");
-                clearInterval(checkPaymentComplete);
+                paymentCompleted = true;
+                clearInterval(checkPaymentStatus);
                 paymentWindow.close();
+                saveOrderResult(orderId);
                 router.push("/resultorder");
+              } else if (currentUrl.includes("cancel") || currentUrl.includes("fail") || currentUrl.includes("error")) {
+                paymentCancelled = true;
+                clearInterval(checkPaymentStatus);
+                paymentWindow.close();
+                alert("결제가 취소되었습니다.");
+                cancelOrder(orderId, `URL 감지: ${currentUrl}`);
               }
-            } catch (e) {
-              // CORS 오류는 무시
-            }
+            } catch (e) {}
           } catch (error) {
             console.error("결제 상태 체크 중 오류:", error);
           }
-        }, 2000);
+        }, 1000);
 
-        // 메시지 리스너 (결제창에서 postMessage를 보내는 경우)
+        // 메시지 리스너
         const messageListener = (event: MessageEvent) => {
-          console.log("결제창 메시지 수신:", event.data);
-
-          if (
-            event.data &&
-            (event.data.type === "PAYMENT_COMPLETE" ||
-              event.data.status === "success" ||
-              (typeof event.data === "string" && event.data.includes("success")))
-          ) {
-            console.log("결제 완료 메시지 감지");
-            clearInterval(checkPaymentComplete);
+          if (event.data && (event.data.type === "PAYMENT_COMPLETE" || event.data.status === "success")) {
+            paymentCompleted = true;
+            clearInterval(checkPaymentStatus);
             window.removeEventListener("message", messageListener);
             paymentWindow.close();
-
-            // 실제 결제 데이터가 있는 경우에만 검증 시도
-            if (event.data.paymentData && event.data.paymentData.authResultCode && event.data.paymentData.tid) {
-              console.log("실제 결제 데이터로 검증 시도");
-              console.log("받은 결제 데이터:", event.data.paymentData);
-
+            if (event.data.paymentData) {
               verifyPayment(event.data.paymentData)
                 .then(() => {
-                  console.log("결제 검증 성공!");
+                  saveOrderResult(orderId);
                   router.push("/resultorder");
                 })
-                .catch((error) => {
-                  console.error("결제 검증 실패:", error);
-                  // 검증 실패해도 결제는 완료된 상태이므로 결과 페이지로 이동
-                  alert("결제는 완료되었지만 검증에 실패했습니다. 고객센터에 문의해주세요.");
+                .catch(() => {
+                  alert("결제는 완료되었지만 검증에 실패했습니다.");
+                  saveOrderResult(orderId);
                   router.push("/resultorder");
                 });
             } else {
-              console.log("결제 데이터가 없어 검증 없이 페이지 이동");
+              saveOrderResult(orderId);
               router.push("/resultorder");
             }
+          } else if (
+            event.data &&
+            (event.data.type === "PAYMENT_CANCEL" || event.data.status === "cancel" || event.data.status === "fail")
+          ) {
+            paymentCancelled = true;
+            clearInterval(checkPaymentStatus);
+            window.removeEventListener("message", messageListener);
+            paymentWindow.close();
+            alert("결제가 취소되었습니다.");
+            cancelOrder(orderId, `postMessage 취소: ${event.data.status || event.data.type}`);
           }
         };
 
         window.addEventListener("message", messageListener);
 
-        // 60초 후 자동 정리
+        // 타임아웃
         setTimeout(() => {
-          clearInterval(checkPaymentComplete);
-          window.removeEventListener("message", messageListener);
-        }, 60000);
+          if (!paymentCompleted && !paymentCancelled) {
+            clearInterval(checkPaymentStatus);
+            window.removeEventListener("message", messageListener);
+            if (!paymentWindow.closed) paymentWindow.close();
+            alert("결제 시간이 초과되었습니다. 다시 시도해주세요.");
+            cancelOrder(orderId, "결제 타임아웃");
+          }
+        }, 300000);
       } else {
         throw new Error("팝업이 차단되었습니다. 팝업 차단을 해제해주세요.");
       }
     } catch (error) {
       console.error("결제창 호출 중 오류:", error);
+      cancelOrder(orderId, "결제창 호출 실패");
       throw error;
+    }
+  };
+
+  // 주문 결과 저장
+  const saveOrderResult = (orderId: number) => {
+    const orderResult = {
+      orderId,
+      name,
+      phone,
+      email,
+      receiver,
+      phone1,
+      phone2,
+      zipcode,
+      address,
+      detailAddress,
+      orderCount: orderData.orderCount,
+      productAmount: orderData.productAmount,
+      shippingFee: orderData.shippingFee,
+      totalAmount: orderData.totalAmount,
+      items: orderData.items.map((item) => ({
+        ...item,
+        titleImageUrl: item.titleImageUrl?.startsWith("http")
+          ? item.titleImageUrl
+          : `${process.env.NEXT_PUBLIC_BASE_URL}${item.titleImageUrl}`,
+      })),
+      orderType: orderData.type,
+      orderDate: new Date().toISOString(),
+    };
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("orderResult", JSON.stringify(orderResult));
     }
   };
 
   const handleOrder = async (e: React.MouseEvent) => {
     e.preventDefault();
-
     if (isOrdering) return;
 
-    // 토큰 확인
     const accessToken = TokenManager.getAccessToken();
     if (!accessToken) {
       try {
@@ -423,20 +502,18 @@ export default function OrderBodyPage() {
           router.push("/login");
           return;
         }
-      } catch (error) {
+      } catch {
         alert("로그인이 필요합니다.");
         router.push("/login");
         return;
       }
     }
 
-    // 필수 입력값 검증
     if (!name || !phone || !email || !receiver || !phone1 || !zipcode || !address) {
       alert("필수 입력 항목을 모두 입력해주세요.");
       return;
     }
 
-    // 동의 항목 검증
     if (!isPurchaseAgreed || !isTermsAgreed || !isPersonalInfoAgreed) {
       alert("모든 약관에 동의해주세요.");
       return;
@@ -450,49 +527,10 @@ export default function OrderBodyPage() {
     setIsOrdering(true);
 
     try {
-      // 1. 주문 생성
       const orderId = await createOrder();
-      console.log("주문 생성 완료. Order ID:", orderId);
-
-      // 2. 주문 결과 데이터를 sessionStorage에 저장
-      const orderResult = {
-        orderId,
-        name,
-        phone,
-        email,
-        receiver,
-        phone1,
-        phone2,
-        zipcode,
-        address,
-        detailAddress,
-        orderCount: orderData.orderCount,
-        productAmount: orderData.productAmount,
-        shippingFee: orderData.shippingFee,
-        totalAmount: orderData.totalAmount,
-        items: orderData.items.map((item) => ({
-          ...item,
-          // 이미지 URL이 상대 경로인 경우 절대 경로로 변환
-          titleImageUrl: item.titleImageUrl
-            ? item.titleImageUrl.startsWith("http")
-              ? item.titleImageUrl
-              : `${process.env.NEXT_PUBLIC_BASE_URL}${item.titleImageUrl}`
-            : undefined,
-        })),
-        orderType: orderData.type,
-        orderDate: new Date().toISOString(),
-      };
-
-      if (typeof window !== "undefined") {
-        sessionStorage.setItem("orderResult", JSON.stringify(orderResult));
-      }
-
-      // 3. 결제창 띄우기
       const goodsName = getOrderTitle();
       const amount = orderData.totalAmount;
-
       await openPaymentWindow(orderId, amount, goodsName);
-      console.log("결제창 호출 완료");
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "주문 처리 중 오류가 발생했습니다.";
       alert(errorMessage);
@@ -501,10 +539,8 @@ export default function OrderBodyPage() {
     }
   };
 
-  // 모든 동의 항목이 체크되었는지 확인
   const isAllAgreed = isPurchaseAgreed && isTermsAgreed && isPersonalInfoAgreed;
 
-  // 상품명 표시를 위한 함수
   const getOrderTitle = () => {
     if (orderData.items.length === 0) return "주문 상품 없음";
     if (orderData.items.length === 1) return orderData.items[0].name;

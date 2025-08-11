@@ -5,7 +5,7 @@
 }
 
 .item_name {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 400;
   margin-bottom: 8px;
 }
@@ -86,6 +86,7 @@
   width: 180px;
   height: 40px;
   background-color: #e0e0e0;
+  border: none;
   border-radius: 4px;
   display: flex;
   justify-content: center;
