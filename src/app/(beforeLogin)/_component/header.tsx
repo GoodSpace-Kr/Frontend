@@ -1,12 +1,13 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import styles from "@/app/(beforeLogin)/_component/header.module.css";
 import Logo from "../../../../public/logo.jpg";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Header() {
+function HeaderContent() {
   // URL에서 clientId 가져오기
   const searchParams = useSearchParams();
   const clientId = searchParams.get("clientId");
@@ -31,5 +32,32 @@ export default function Header() {
         </div>
       </div>
     </>
+  );
+}
+
+// Fallback 헤더 (로딩 중일 때 표시)
+function HeaderFallback() {
+  return (
+    <div className={styles.header}>
+      <Link href="/" className={styles.logobox}>
+        <Image src={Logo} alt="logo" className={styles.logo} />
+      </Link>
+      <div className={styles.nav}>
+        <Link href="/signup" className={styles.button}>
+          회원가입
+        </Link>
+        <Link href="/login" className={styles.loginButton}>
+          로그인
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+export default function Header() {
+  return (
+    <Suspense fallback={<HeaderFallback />}>
+      <HeaderContent />
+    </Suspense>
   );
 }

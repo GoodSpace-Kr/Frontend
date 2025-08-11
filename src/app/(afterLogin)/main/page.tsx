@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import styles from "@/app/(afterLogin)/_component/main.module.css";
 import Header from "../_component/header";
@@ -28,7 +28,7 @@ interface ClientApiResponse {
   }>;
 }
 
-export default function Main() {
+function MainContent() {
   const [clientData, setClientData] = useState<ClientApiResponse | null>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -223,5 +223,13 @@ export default function Main() {
         </>
       )}
     </div>
+  );
+}
+
+export default function Main() {
+  return (
+    <Suspense fallback={<div>로딩 중...</div>}>
+      <MainContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import styles from "@/app/(beforeLogin)/_component/main.module.css";
 import Header from "../_component/header";
@@ -28,7 +28,7 @@ interface ClientApiResponse {
   }>;
 }
 
-export default function Main() {
+function MainContent() {
   const [clientData, setClientData] = useState<ClientApiResponse | null>(null);
   const searchParams = useSearchParams();
   const clientId = searchParams.get("clientId"); // ✅ 쿼리에서 clientId 가져오기
@@ -131,5 +131,33 @@ export default function Main() {
       <Explanation />
       <Footer />
     </div>
+  );
+}
+
+// Fallback 컴포넌트 (로딩 중일 때 표시)
+function MainFallback() {
+  return (
+    <div className={styles.container}>
+      <Header />
+      <div
+        style={{
+          padding: "40px 20px",
+          textAlign: "center",
+          fontSize: "18px",
+          color: "#666",
+        }}
+      >
+        페이지를 로딩하고 있습니다...
+      </div>
+      <Footer />
+    </div>
+  );
+}
+
+export default function Main() {
+  return (
+    <Suspense fallback={<MainFallback />}>
+      <MainContent />
+    </Suspense>
   );
 }

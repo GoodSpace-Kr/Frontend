@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Modal from "./file";
 import styles from "./question.module.css";
@@ -29,7 +29,7 @@ interface QuestionData {
   questionFileDtos: FileData[];
 }
 
-export default function Question() {
+function QuestionContent() {
   const searchParams = useSearchParams();
   const questionId = searchParams.get("id") ? parseInt(searchParams.get("id")!) : null;
 
@@ -196,5 +196,13 @@ export default function Question() {
         )}
       </div>
     </>
+  );
+}
+
+export default function Question() {
+  return (
+    <Suspense fallback={<div>로딩 중...</div>}>
+      <QuestionContent />
+    </Suspense>
   );
 }

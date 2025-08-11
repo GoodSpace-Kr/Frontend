@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./body.module.css";
 import LoginIcons from "../../_component/loginicon";
 import Link from "next/link";
 
-export default function Body() {
+function BodyContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showCodeInput, setShowCodeInput] = useState(false);
@@ -343,5 +343,44 @@ export default function Body() {
       {/* ✅ LoginIcons 컴포넌트에 clientId 전달 */}
       <LoginIcons clientId={clientId} />
     </div>
+  );
+}
+
+// Fallback 컴포넌트 (로딩 중일 때 표시)
+function BodyFallback() {
+  return (
+    <div className={styles.body}>
+      <p className={styles.title}>회원가입</p>
+
+      <div className={styles.email}>
+        <input placeholder="이메일" className={styles.email_input} disabled />
+        <div className={styles.email_check} style={{ opacity: 0.5 }}>
+          이메일 인증
+        </div>
+      </div>
+
+      <input placeholder="비밀번호" className={styles.pw_input} type="password" disabled />
+      <p className={styles.message}>8~16자의 영문 대소문자, 숫자, 특수문자만 가능합니다.</p>
+      <input placeholder="비밀번호 확인" className={styles.check_input} type="password" disabled />
+
+      <div className={styles.signup_button} style={{ opacity: 0.5, cursor: "not-allowed" }}>
+        가입하기
+      </div>
+
+      <Link href="/login" className={styles.back_button}>
+        돌아가기
+      </Link>
+
+      {/* clientId 없이 기본 LoginIcons */}
+      <LoginIcons clientId={null} />
+    </div>
+  );
+}
+
+export default function Body() {
+  return (
+    <Suspense fallback={<BodyFallback />}>
+      <BodyContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import styles from "@/app/(afterLogin)/_component/detail.module.css";
 import ItemImg from "../product/_component/image";
@@ -22,7 +22,7 @@ interface ItemDetailData {
   };
 }
 
-export default function Detail() {
+function DetailContent() {
   const searchParams = useSearchParams();
   const clientId = searchParams.get("clientId");
   const itemId = searchParams.get("itemId");
@@ -101,5 +101,13 @@ export default function Detail() {
         <ItemIntroduce item={itemData.item} client={itemData.client} />
       </div>
     </>
+  );
+}
+
+export default function Detail() {
+  return (
+    <Suspense fallback={<div className={styles.loading}>페이지 로딩 중...</div>}>
+      <DetailContent />
+    </Suspense>
   );
 }

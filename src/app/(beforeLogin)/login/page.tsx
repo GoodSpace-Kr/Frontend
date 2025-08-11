@@ -1,12 +1,13 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import styles from "@/app/(beforeLogin)/login/login.module.css";
 import Header from "@/app/(beforeLogin)/_component/header";
 import Footer from "@/app/(beforeLogin)/_component/footer";
 import Body from "./_component/body";
 
-export default function Login() {
+function LoginContent() {
   const searchParams = useSearchParams();
   const clientId = searchParams.get("clientId");
 
@@ -24,5 +25,25 @@ export default function Login() {
         <Footer />
       </div>
     </>
+  );
+}
+
+// Fallback 컴포넌트 (로딩 중일 때 표시)
+function LoginFallback() {
+  return (
+    <div className={styles.container}>
+      <Header />
+      {/* clientId 없이 기본 Body 컴포넌트 렌더링 */}
+      <Body clientId={null} />
+      <Footer />
+    </div>
+  );
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={<LoginFallback />}>
+      <LoginContent />
+    </Suspense>
   );
 }

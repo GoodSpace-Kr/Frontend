@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { storeAuthData, clearAuthData } from "../../utils/auth";
 import type { SocialProvider } from "../../types/auth";
@@ -23,7 +23,7 @@ function setCookie(name: string, value: string, days: number = 7) {
   }`;
 }
 
-export default function SocialCallbackPage() {
+function SocialCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -324,5 +324,93 @@ export default function SocialCallbackPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+// Fallback 컴포넌트 (로딩 중일 때 표시)
+function SocialCallbackFallback() {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        padding: "20px",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        backgroundColor: "#f8f9fa",
+      }}
+    >
+      <div
+        style={{
+          textAlign: "center",
+          padding: "40px",
+          borderRadius: "16px",
+          backgroundColor: "#ffffff",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+          maxWidth: "500px",
+          width: "100%",
+          border: "1px solid #e9ecef",
+        }}
+      >
+        <h2
+          style={{
+            color: "#212529",
+            marginBottom: "24px",
+            fontSize: "24px",
+            fontWeight: "600",
+            margin: "0 0 24px 0",
+          }}
+        >
+          소셜 로그인
+        </h2>
+
+        <div style={{ marginBottom: "24px" }}>
+          <div
+            style={{
+              width: "40px",
+              height: "40px",
+              border: "3px solid #f1f3f4",
+              borderTop: "3px solid #6c757d",
+              borderRadius: "50%",
+              animation: "spin 1s linear infinite",
+              margin: "0 auto 20px",
+            }}
+          ></div>
+        </div>
+
+        <p
+          style={{
+            color: "#6c757d",
+            fontSize: "16px",
+            marginBottom: "16px",
+            lineHeight: "1.5",
+            margin: "0 0 16px 0",
+          }}
+        >
+          페이지를 로딩하고 있습니다...
+        </p>
+      </div>
+
+      <style jsx>{`
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+export default function SocialCallbackPage() {
+  return (
+    <Suspense fallback={<SocialCallbackFallback />}>
+      <SocialCallbackContent />
+    </Suspense>
   );
 }

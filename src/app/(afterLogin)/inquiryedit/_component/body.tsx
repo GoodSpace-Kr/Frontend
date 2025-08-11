@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, ChangeEvent, DragEvent, JSX } from "react";
+import { useState, useRef, useEffect, ChangeEvent, DragEvent, JSX, Suspense } from "react";
 import styles from "./body.module.css";
 import { IoArrowBackSharp } from "react-icons/io5";
 import { FiFilePlus } from "react-icons/fi";
@@ -42,7 +42,7 @@ interface InquiryResponse {
   questionFileDtos: ServerFileDto[];
 }
 
-export default function Body(): JSX.Element {
+function BodyContent(): JSX.Element {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
 
@@ -498,5 +498,13 @@ export default function Body(): JSX.Element {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Body(): JSX.Element {
+  return (
+    <Suspense fallback={<div>로딩 중...</div>}>
+      <BodyContent />
+    </Suspense>
   );
 }
