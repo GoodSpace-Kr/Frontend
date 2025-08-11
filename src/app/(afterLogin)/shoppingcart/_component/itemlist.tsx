@@ -6,9 +6,10 @@ import Item from "./item";
 import { TokenManager } from "@/utils/tokenManager";
 
 interface CartItem {
-  id: number;
+  cartItemId: number; // API 스펙에 맞게 수정
   quantity: number;
   item: {
+    itemId: number; // 실제 상품 ID 추가
     name: string;
     price: number;
     titleImageUrl: string;
@@ -68,11 +69,13 @@ export default function ItemList({ onCartUpdate, selectedItems, onSelectionChang
         }
 
         const retryData = await retryResponse.json();
+        console.log("장바구니 API 응답:", retryData); // 디버깅용
         setCartItems(retryData);
       } else if (!response.ok) {
         throw new Error("장바구니 조회 실패");
       } else {
         const data = await response.json();
+        console.log("장바구니 API 응답:", data); // 디버깅용
         setCartItems(data);
       }
 
@@ -88,7 +91,7 @@ export default function ItemList({ onCartUpdate, selectedItems, onSelectionChang
   // 장바구니 아이템 업데이트 (수량 변경)
   const updateCartItem = (cartItemId: number, newQuantity: number) => {
     setCartItems((prev) =>
-      prev.map((cartItem) => (cartItem.id === cartItemId ? { ...cartItem, quantity: newQuantity } : cartItem))
+      prev.map((cartItem) => (cartItem.cartItemId === cartItemId ? { ...cartItem, quantity: newQuantity } : cartItem))
     );
     if (onCartUpdate) {
       onCartUpdate();
@@ -97,7 +100,7 @@ export default function ItemList({ onCartUpdate, selectedItems, onSelectionChang
 
   // 장바구니 아이템 삭제
   const removeCartItem = (cartItemId: number) => {
-    setCartItems((prev) => prev.filter((cartItem) => cartItem.id !== cartItemId));
+    setCartItems((prev) => prev.filter((cartItem) => cartItem.cartItemId !== cartItemId));
     // 삭제된 아이템이 선택되어 있었다면 선택 목록에서도 제거
     const updatedSelection = selectedItems.filter((id) => id !== cartItemId);
     onSelectionChange(updatedSelection);
@@ -122,7 +125,7 @@ export default function ItemList({ onCartUpdate, selectedItems, onSelectionChang
       onSelectionChange([]);
     } else {
       // 전체 선택
-      onSelectionChange(cartItems.map((item) => item.id));
+      onSelectionChange(cartItems.map((item) => item.cartItemId));
     }
   };
 
@@ -133,7 +136,7 @@ export default function ItemList({ onCartUpdate, selectedItems, onSelectionChang
   // 새로운 아이템이 로드되면 기본적으로 모든 아이템 선택
   useEffect(() => {
     if (cartItems.length > 0 && selectedItems.length === 0) {
-      onSelectionChange(cartItems.map((item) => item.id));
+      onSelectionChange(cartItems.map((item) => item.cartItemId));
     }
   }, [cartItems]);
 
@@ -174,9 +177,9 @@ export default function ItemList({ onCartUpdate, selectedItems, onSelectionChang
 
       {cartItems.map((cartItem) => (
         <Item
-          key={cartItem.id}
+          key={cartItem.cartItemId}
           cartItem={cartItem}
-          isSelected={selectedItems.includes(cartItem.id)}
+          isSelected={selectedItems.includes(cartItem.cartItemId)}
           onUpdate={updateCartItem}
           onRemove={removeCartItem}
           onToggleSelect={toggleItemSelection}

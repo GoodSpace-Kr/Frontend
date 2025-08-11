@@ -4,7 +4,6 @@ import { RiKakaoTalkFill } from "react-icons/ri";
 import { AiFillApple } from "react-icons/ai";
 import { FaGoogle } from "react-icons/fa";
 import { SiNaver } from "react-icons/si";
-import { FaFacebookF } from "react-icons/fa";
 
 import styles from "./loginicon.module.css";
 import type { LoginIconsProps } from "@/types/auth";
@@ -61,17 +60,6 @@ export default function LoginIcons({ clientId }: LoginIconsProps) {
     }
   };
 
-  const handleFacebookLogin = () => {
-    try {
-      const url = buildRedirectUrl("facebook");
-      console.log("🔵 페이스북 로그인 리다이렉트:", url);
-      window.location.href = url;
-    } catch (error) {
-      console.error("페이스북 로그인 오류:", error);
-      alert("페이스북 로그인 중 오류가 발생했습니다.");
-    }
-  };
-
   const handleAppleLogin = () => {
     try {
       const url = buildRedirectUrl("apple");
@@ -96,9 +84,6 @@ export default function LoginIcons({ clientId }: LoginIconsProps) {
       </div>
       <div className={styles.naver} onClick={handleNaverLogin}>
         <SiNaver className={styles.icon} />
-      </div>
-      <div className={styles.facebook} onClick={handleFacebookLogin}>
-        <FaFacebookF className={styles.icon} />
       </div>
     </div>
   );

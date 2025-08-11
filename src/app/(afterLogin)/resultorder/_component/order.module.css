@@ -1,36 +1,79 @@
+/* ordersummary.module.css */
 .ordersummary {
-  width: 400px;
-  height: 500px;
-  border-radius: 8px;
-  border: 2px solid #f0f0f0;
+  width: 420px;
+  min-height: 400px;
+  max-height: 80vh;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  padding-left: 36px;
-  padding-right: 36px;
+  padding: 24px;
+  gap: 16px;
+  overflow-y: auto;
+  margin-bottom: 60px;
 }
 
 .summation {
-  font-size: 20px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0;
+  border-bottom: 2px solid #3b82f6;
+  padding-bottom: 8px;
+}
+
+/* 주문 정보 섹션 */
+.order_info_section {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 8px;
+}
+
+.info_item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.info_item:last-child {
+  border-bottom: none;
+}
+
+.info_item span:first-child {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.info_item span:last-child {
+  font-size: 13px;
+  color: #1e293b;
   font-weight: 600;
-  margin-bottom: 18px;
+  text-align: right;
+  max-width: 180px;
+  word-break: break-word;
 }
 
 .items {
   width: 100%;
-  min-height: 72px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+  background: #fafafa;
+  border-radius: 12px;
+  padding: 12px;
 }
 
 .line {
   width: 100%;
   height: 1px;
-  background-color: #f3f3f3;
-  margin-top: 12px;
-  margin-bottom: 12px;
+  background: linear-gradient(90deg, transparent, #d1d5db, transparent);
+  margin: 12px 0;
 }
 
 .items_result {
@@ -38,17 +81,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 4px 0;
 }
 
 .items_result_a {
-  font-size: 12px;
-  color: #828282;
-  margin-bottom: 8px;
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
 }
 
 .items_result_b {
-  font-size: 12px;
-  margin-bottom: 8px;
+  font-size: 13px;
+  color: #111827;
+  font-weight: 600;
 }
 
 .total_price {
@@ -56,47 +101,82 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  padding: 16px;
+  border-radius: 12px;
+  margin: 8px 0;
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
 }
 
 .total_price_a {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .back_button {
   width: 100%;
-  height: 40px;
-  background-color: #e0e0e0;
-  border-radius: 4px;
-  font-size: 12px;
+  height: 52px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 8px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  margin-bottom: 20px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.back_button:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 15px rgba(16, 185, 129, 0.3);
 }
 
 .memo {
   width: 100%;
-  height: 92px;
-  background-color: #f3f3f3;
-  display: flex;
-  flex-direction: column;
-  border-radius: 4px;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 24px;
-  padding-right: 24px;
+  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+  border-radius: 12px;
+  padding: 16px;
+  border-left: 4px solid #3b82f6;
+  margin-bottom: 40px;
 }
 
 .memo_title {
-  font-size: 12px;
-  color: gray;
-  margin-bottom: 4px;
+  font-size: 13px;
+  color: #475569;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.memo_title::before {
+  content: "📦";
+  margin-right: 6px;
+  font-size: 14px;
 }
 
 .memo_sub {
-  font-size: 10px;
+  font-size: 11px;
+  color: #64748b;
   margin-bottom: 4px;
+  padding-left: 10px;
+  position: relative;
+  line-height: 1.4;
+}
+
+.memo_sub::before {
+  content: "•";
+  color: #3b82f6;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
 }

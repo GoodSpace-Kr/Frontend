@@ -8,9 +8,10 @@ import SummaryItem from "./summaryItem";
 import { TokenManager } from "@/utils/tokenManager";
 
 interface CartItem {
-  id: number;
+  cartItemId: number; // API 스펙에 맞게 수정
   quantity: number;
   item: {
+    itemId: number;
     name: string;
     price: number;
     titleImageUrl: string;
@@ -71,11 +72,13 @@ export default function OrderSummary({ refreshTrigger, selectedItems }: OrderSum
         }
 
         const retryData = await retryResponse.json();
+        console.log("장바구니 데이터:", retryData); // 디버깅용
         setCartItems(retryData);
       } else if (!response.ok) {
         throw new Error("장바구니 조회 실패");
       } else {
         const data = await response.json();
+        console.log("장바구니 데이터:", data); // 디버깅용
         setCartItems(data);
       }
     } catch (error) {
@@ -90,7 +93,7 @@ export default function OrderSummary({ refreshTrigger, selectedItems }: OrderSum
   }, [refreshTrigger]);
 
   // 선택된 아이템들만 필터링
-  const selectedCartItems = cartItems.filter((cartItem) => selectedItems.includes(cartItem.id));
+  const selectedCartItems = cartItems.filter((cartItem) => selectedItems.includes(cartItem.cartItemId));
 
   // 선택된 상품들의 총 금액 계산
   const totalItemsPrice = selectedCartItems.reduce((total, cartItem) => {
@@ -113,26 +116,43 @@ export default function OrderSummary({ refreshTrigger, selectedItems }: OrderSum
       return;
     }
 
+    console.log("=== 주문 데이터 생성 ===");
+    console.log("선택된 장바구니 아이템들:", selectedCartItems);
+
     // 선택된 장바구니 주문 데이터 생성
     const orderData = {
-      type: "cart", // 장바구니 주문 타입
-      items: selectedCartItems.map((cartItem) => ({
-        id: cartItem.id,
-        name: cartItem.item.name,
-        price: cartItem.item.price,
-        quantity: cartItem.quantity,
-        titleImageUrl: cartItem.item.titleImageUrl,
-        totalPrice: cartItem.item.price * cartItem.quantity,
-      })),
+      type: "cart" as const, // 장바구니 주문 타입
+      items: selectedCartItems.map((cartItem) => {
+        const orderItem = {
+          id: cartItem.cartItemId, // cartItemId (장바구니 아이템 ID)
+          itemId: cartItem.item.itemId, // 실제 상품 ID
+          name: cartItem.item.name,
+          price: cartItem.item.price,
+          quantity: cartItem.quantity,
+          titleImageUrl: cartItem.item.titleImageUrl,
+          totalPrice: cartItem.item.price * cartItem.quantity,
+        };
+        console.log("주문 아이템:", {
+          cartItemId: cartItem.cartItemId,
+          itemId: cartItem.item.itemId,
+          name: cartItem.item.name,
+          price: cartItem.item.price,
+          quantity: cartItem.quantity,
+        });
+        return orderItem;
+      }),
       orderCount: selectedCartItems.reduce((total, cartItem) => total + cartItem.quantity, 0),
       productAmount: totalItemsPrice,
       shippingFee: shippingFee,
       totalAmount: finalPrice,
     };
 
+    console.log("최종 주문 데이터:", orderData);
+
     // sessionStorage에 저장
     if (typeof window !== "undefined") {
       sessionStorage.setItem("orderData", JSON.stringify(orderData));
+      console.log("sessionStorage에 저장 완료");
     }
 
     // 주문 페이지로 이동
@@ -158,7 +178,7 @@ export default function OrderSummary({ refreshTrigger, selectedItems }: OrderSum
         <>
           {selectedCartItems.map((cartItem) => (
             <SummaryItem
-              key={cartItem.id}
+              key={cartItem.cartItemId}
               name={cartItem.item.name}
               quantity={cartItem.quantity}
               price={cartItem.item.price * cartItem.quantity}

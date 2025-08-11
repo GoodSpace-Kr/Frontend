@@ -18,7 +18,11 @@
 
 .result_body {
   width: 100%;
-  height: 100px;
+  height: 100px; /* 기존 CSS와 동일하게 고정 높이 */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 스크롤 방지 */
+  padding: 0; /* 패딩 제거하여 공간 최대 활용 */
 }
 
 .result_footer {
@@ -29,4 +33,151 @@
   align-items: center;
   flex-direction: row;
   gap: 48px;
+}
+
+.result_item {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
+  align-items: center;
+  height: 20px; /* 고정 높이로 5개 아이템이 100px에 딱 맞게 */
+  padding: 0 8px; /* 좌우 패딩만 */
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 12px; /* 폰트 사이즈 축소 */
+}
+
+.result_item:last-child {
+  border-bottom: none;
+}
+
+.date_order {
+  display: flex;
+  flex-direction: column;
+  gap: 2px; /* 간격 축소 */
+}
+
+.date {
+  font-size: 11px; /* 폰트 사이즈 축소 */
+  font-weight: 500;
+  margin: 0;
+  line-height: 1;
+}
+
+.order_id {
+  font-size: 10px; /* 폰트 사이즈 축소 */
+  color: #666;
+  margin: 0;
+  line-height: 1;
+}
+
+.item_info {
+  font-size: 11px; /* 폰트 사이즈 축소 */
+  margin: 0;
+  padding: 0 10px;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quantity {
+  font-size: 11px; /* 폰트 사이즈 축소 */
+  text-align: center;
+  margin: 0;
+  line-height: 1;
+}
+
+.amount {
+  font-size: 11px; /* 폰트 사이즈 축소 */
+  font-weight: 500;
+  text-align: center;
+  margin: 0;
+  line-height: 1;
+}
+
+.status {
+  font-size: 11px; /* 폰트 사이즈 축소 */
+  text-align: center;
+  font-weight: 500;
+  color: #007bff;
+  margin: 0;
+  line-height: 1;
+}
+
+.empty_message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px; /* result_body 높이에 맞춤 */
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+}
+
+.loading_message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px; /* result_body 높이에 맞춤 */
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+}
+
+.result_footer {
+  width: 100%;
+  height: 40px; /* 기존 CSS와 동일 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 48px; /* 기존 CSS와 동일 */
+}
+
+.icon {
+  font-size: 20px;
+  cursor: pointer;
+  color: #007bff;
+  transition: color 0.2s ease;
+}
+
+.icon:hover {
+  color: #0056b3;
+}
+
+.icon.disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.icon.disabled:hover {
+  color: #ccc;
+}
+
+.result_footer p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .result_item {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+
+  .date_order {
+    align-items: center;
+  }
+
+  .item_info {
+    padding: 0;
+  }
 }

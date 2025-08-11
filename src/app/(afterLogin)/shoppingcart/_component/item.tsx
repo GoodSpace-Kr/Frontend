@@ -6,9 +6,10 @@ import styles from "../_component/item.module.css";
 import { TokenManager } from "@/utils/tokenManager";
 
 interface CartItem {
-  id: number;
+  cartItemId: number; // API 스펙에 맞게 수정
   quantity: number;
   item: {
+    itemId: number; // 실제 상품 ID 추가
     name: string;
     price: number;
     titleImageUrl: string;
@@ -65,7 +66,7 @@ export default function Item({ cartItem, isSelected, onUpdate, onRemove, onToggl
       }
 
       const requestBody = {
-        cartItemId: cartItem.id,
+        cartItemId: cartItem.cartItemId,
         quantity: pendingQuantity,
       };
 
@@ -106,7 +107,7 @@ export default function Item({ cartItem, isSelected, onUpdate, onRemove, onToggl
       }
 
       // 부모 컴포넌트에 업데이트 알림
-      onUpdate(cartItem.id, pendingQuantity);
+      onUpdate(cartItem.cartItemId, pendingQuantity);
 
       // 성공 시 원래 수량을 새 수량으로 업데이트
       cartItem.quantity = pendingQuantity;
@@ -144,14 +145,17 @@ export default function Item({ cartItem, isSelected, onUpdate, onRemove, onToggl
       }
 
       console.log("삭제 요청 URL:", `${process.env.NEXT_PUBLIC_BASE_URL}/cart`);
-      console.log("삭제할 cartItem ID:", cartItem.id);
+      console.log("삭제할 cartItem ID:", cartItem.cartItemId);
 
-      const response: Response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/cart?cartItemId=${cartItem.id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response: Response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/cart?cartItemId=${cartItem.cartItemId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
       console.log("삭제 응답 상태:", response.status);
 
@@ -167,7 +171,7 @@ export default function Item({ cartItem, isSelected, onUpdate, onRemove, onToggl
 
         // 재발급된 토큰으로 다시 요청
         const retryResponse: Response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/cart?cartItemId=${cartItem.id}`,
+          `${process.env.NEXT_PUBLIC_BASE_URL}/cart?cartItemId=${cartItem.cartItemId}`,
           {
             method: "DELETE",
             headers: {
@@ -191,7 +195,7 @@ export default function Item({ cartItem, isSelected, onUpdate, onRemove, onToggl
 
       console.log("삭제 성공");
       // 부모 컴포넌트에 삭제 알림
-      onRemove(cartItem.id);
+      onRemove(cartItem.cartItemId);
       alert("상품이 성공적으로 삭제되었습니다.");
     } catch (error: unknown) {
       console.error("상품 삭제 에러:", error);
@@ -211,7 +215,7 @@ export default function Item({ cartItem, isSelected, onUpdate, onRemove, onToggl
         <input
           type="checkbox"
           checked={isSelected}
-          onChange={() => onToggleSelect(cartItem.id)}
+          onChange={() => onToggleSelect(cartItem.cartItemId)}
           className={styles.checkbox}
         />
       </div>

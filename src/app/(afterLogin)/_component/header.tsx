@@ -28,11 +28,6 @@ export default function Header({ clientData: propClientData }: HeaderProps) {
   // Context의 데이터를 우선 사용하고, 없으면 props 사용
   const clientData = selectedClient || propClientData;
 
-  console.log("=== Header 디버깅 ===");
-  console.log("selectedClient (Context):", selectedClient);
-  console.log("propClientData (Props):", propClientData);
-  console.log("최종 사용할 clientData:", clientData);
-
   // 클라이언트 이미지 클릭 핸들러
   const handleClientClick = () => {
     if (clientData?.id) {
@@ -45,7 +40,6 @@ export default function Header({ clientData: propClientData }: HeaderProps) {
 
   const renderClientImage = () => {
     if (!clientData) {
-      console.log("👉 clientData가 없음 - 물음표 표시");
       return (
         <div className={styles.client_img_placeholder}>
           <span>?</span>
@@ -54,7 +48,6 @@ export default function Header({ clientData: propClientData }: HeaderProps) {
     }
 
     if (!clientData.profileImageUrl || clientData.profileImageUrl.trim() === "") {
-      console.log("👉 profileImageUrl이 없음 - 이름 첫글자 표시");
       return (
         <div className={styles.client_img_placeholder}>
           <span>{clientData.name?.charAt(0) || "?"}</span>
@@ -62,7 +55,6 @@ export default function Header({ clientData: propClientData }: HeaderProps) {
       );
     }
 
-    console.log("👉 이미지 표시 시도:", clientData.profileImageUrl);
     return (
       <Image
         src={clientData.profileImageUrl}
@@ -71,11 +63,7 @@ export default function Header({ clientData: propClientData }: HeaderProps) {
         className={styles.client_profile_image}
         sizes="40px"
         style={{ objectFit: "cover" }}
-        onLoad={() => {
-          console.log("✅ 이미지 로드 성공:", clientData.profileImageUrl);
-        }}
         onError={(e) => {
-          console.error("❌ 이미지 로드 실패:", clientData.profileImageUrl);
           const target = e.target as HTMLImageElement;
           target.style.display = "none";
 

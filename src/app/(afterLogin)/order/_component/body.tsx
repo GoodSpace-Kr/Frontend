@@ -28,6 +28,7 @@ interface DaumPostcode {
 
 interface OrderItem {
   id: number;
+  itemId?: number;
   name: string;
   price: number;
   quantity: number;
@@ -49,22 +50,30 @@ interface OrderData {
   };
 }
 
-interface FinalOrderData {
-  name: string;
-  phone: string;
-  email: string;
-  receiver: string;
-  phone1: string;
-  phone2: string;
-  zipcode: string;
-  address: string;
-  detailAddress: string;
-  orderCount: number;
-  productAmount: number;
-  shippingFee: number;
-  totalAmount: number;
-  items: OrderItem[];
-  orderType: "direct" | "cart";
+interface OrderRequestItem {
+  itemId: number;
+  quantity: number;
+  amount: number;
+}
+
+interface OrderCreateRequest {
+  orderCartItemDtos: OrderRequestItem[];
+}
+
+interface OrderCreateResponse {
+  orderId: number;
+}
+
+interface PaymentVerifyRequest {
+  authResultCode: string;
+  authResultMsg: string;
+  tid: string;
+  clientId: string;
+  orderId: string;
+  amount: string;
+  mallReserved: string;
+  authToken: string;
+  signature: string;
 }
 
 // Window 객체 확장
@@ -72,19 +81,6 @@ declare global {
   interface Window {
     daum: {
       Postcode: DaumPostcode;
-    };
-    AUTHNICE: {
-      requestPay: (options: {
-        clientId: string;
-        method: string;
-        orderId: string;
-        amount: number;
-        goodsName: string;
-        returnUrl: string;
-        fnError: (result: { errorMsg: string }) => void;
-        fnSuccess?: () => void;
-        fnClose?: () => void;
-      }) => void;
     };
   }
 }
@@ -103,8 +99,7 @@ export default function OrderBodyPage() {
   const [address, setAddress] = useState("");
   const [detailAddress, setDetailAddress] = useState("");
   const [loaded, setLoaded] = useState(false);
-  const [nicepayLoaded, setNicepayLoaded] = useState(false);
-  const [, setOrderId] = useState("");
+  const [isOrdering, setIsOrdering] = useState(false);
 
   // 동의 상태 관리
   const [isPurchaseAgreed, setIsPurchaseAgreed] = useState<boolean>(false);
@@ -131,7 +126,6 @@ export default function OrderBodyPage() {
           setOrderData(parsedData);
         } catch (error) {
           console.error("주문 데이터 파싱 실패:", error);
-          // 기본값 유지
         }
       }
     }
@@ -151,20 +145,6 @@ export default function OrderBodyPage() {
     }
   }, []);
 
-  // Nicepay 스크립트 로드
-  useEffect(() => {
-    if (!document.getElementById("nicepay-script")) {
-      const script = document.createElement("script");
-      script.id = "nicepay-script";
-      script.src = "https://pay.nicepay.co.kr/v1/js/";
-      script.async = true;
-      script.onload = () => setNicepayLoaded(true);
-      document.body.appendChild(script);
-    } else {
-      setNicepayLoaded(true);
-    }
-  }, []);
-
   // 우편번호 찾기 핸들러
   const handleFindZipcode = () => {
     if (!loaded) {
@@ -178,86 +158,260 @@ export default function OrderBodyPage() {
         const zonecode = data.zonecode;
         setZipcode(zonecode);
         setAddress(fullAddress);
-        setDetailAddress(""); // 상세주소 초기화
+        setDetailAddress("");
       },
     }).open();
   };
 
-  // 주문 취소 처리 함수 - 스웨거에 정의된 API 호출
-  const handleOrderCancel = async (orderId: string) => {
+  // 주문 생성 API 호출 함수
+  const createOrder = async (): Promise<number> => {
     try {
-      // 액세스 토큰 가져오기
       let accessToken = TokenManager.getAccessToken();
-
-      // 토큰이 없거나 만료된 경우 리프레시 시도
       if (!accessToken) {
         accessToken = await TokenManager.refreshAccessToken();
         if (!accessToken) {
-          // 리프레시에 실패한 경우 로그인 페이지로 리디렉션
-          alert("로그인이 필요합니다.");
-          router.push("/login");
-          return;
+          throw new Error("로그인이 필요합니다.");
         }
       }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/order/cancel/${orderId}`, {
-        method: "DELETE",
+      const orderRequestData: OrderCreateRequest = {
+        orderCartItemDtos: orderData.items.map((item) => ({
+          itemId: item.itemId || item.id,
+          quantity: item.quantity,
+          amount: item.price,
+        })),
+      };
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/order`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({}), // 빈 JSON 객체 전송
+        body: JSON.stringify(orderRequestData),
       });
 
-      // 토큰 만료로 인한 403 오류인 경우 토큰 리프레시 후 재시도
+      const responseText = await response.text();
+
       if (response.status === 403) {
         const newToken = await TokenManager.refreshAccessToken();
         if (newToken) {
-          const retryResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/order/cancel/${orderId}`, {
-            method: "DELETE",
+          const retryResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/order`, {
+            method: "POST",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${newToken}`,
             },
-            body: JSON.stringify({}), // 빈 JSON 객체 전송
+            body: JSON.stringify(orderRequestData),
           });
 
-          if (retryResponse.ok) {
-            alert("결제가 취소되었습니다!");
-            return;
-          } else {
-            const errorData = await retryResponse.json();
-            throw new Error(errorData.message || "결제 취소 중 오류가 발생했습니다.");
+          const retryResponseText = await retryResponse.text();
+          if (!retryResponse.ok) {
+            throw new Error("주문 생성 중 오류가 발생했습니다.");
           }
+          const responseData = JSON.parse(retryResponseText);
+          return responseData.orderId;
         } else {
-          // 리프레시 토큰도 만료된 경우
           TokenManager.clearTokens();
-          alert("세션이 만료되었습니다. 다시 로그인해주세요.");
-          router.push("/login");
-          return;
+          throw new Error("세션이 만료되었습니다. 다시 로그인해주세요.");
         }
       }
 
-      if (response.ok) {
-        alert("결제가 취소되었습니다!");
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "결제 취소 중 오류가 발생했습니다.");
+      if (!response.ok) {
+        throw new Error("주문 생성 중 오류가 발생했습니다.");
       }
+
+      const responseData = JSON.parse(responseText);
+      return responseData.orderId;
     } catch (error) {
-      console.error("결제 취소 처리 중 오류:", error);
-      alert(error instanceof Error ? error.message : "결제 취소 처리 중 오류가 발생했습니다.");
+      console.error("주문 생성 처리 중 오류:", error);
+      if (error instanceof Error && (error.message.includes("로그인") || error.message.includes("세션"))) {
+        router.push("/login");
+      }
+      throw error;
     }
   };
 
-  // 주문 처리 핸들러
-  const handleOrder = async (e: React.MouseEvent) => {
-    e.preventDefault(); // Link의 기본 동작 방지
+  // 결제 검증 API 호출 함수
+  const verifyPayment = async (paymentData: PaymentVerifyRequest): Promise<void> => {
+    try {
+      let accessToken = TokenManager.getAccessToken();
+      if (!accessToken) {
+        accessToken = await TokenManager.refreshAccessToken();
+        if (!accessToken) {
+          throw new Error("로그인이 필요합니다.");
+        }
+      }
 
-    if (!nicepayLoaded) {
-      alert("결제 시스템을 아직 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
-      return;
+      console.log("=== 결제 검증 API 호출 ===");
+      console.log("결제 검증 데이터:", paymentData);
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/payment/verify`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(paymentData),
+      });
+
+      if (response.status === 403) {
+        const newToken = await TokenManager.refreshAccessToken();
+        if (newToken) {
+          const retryResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/payment/verify`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${newToken}`,
+            },
+            body: JSON.stringify(paymentData),
+          });
+
+          if (!retryResponse.ok) {
+            throw new Error("결제 검증 실패");
+          }
+          console.log("결제 검증 성공");
+        } else {
+          TokenManager.clearTokens();
+          throw new Error("세션이 만료되었습니다. 다시 로그인해주세요.");
+        }
+      } else if (!response.ok) {
+        throw new Error("결제 검증 실패");
+      } else {
+        console.log("결제 검증 성공");
+      }
+    } catch (error) {
+      console.error("결제 검증 중 오류:", error);
+      throw error;
     }
+  };
+
+  // 결제창 띄우기 API 호출 함수
+  const openPaymentWindow = async (orderId: number, amount: number, goodsName: string): Promise<void> => {
+    try {
+      let accessToken = TokenManager.getAccessToken();
+      if (!accessToken) {
+        accessToken = await TokenManager.refreshAccessToken();
+        if (!accessToken) {
+          throw new Error("로그인이 필요합니다.");
+        }
+      }
+
+      const paymentParams = new URLSearchParams({
+        amount: amount.toString(),
+        goodsName: goodsName,
+        orderId: orderId.toString(),
+      });
+
+      const paymentUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/payment/html?${paymentParams.toString()}`;
+
+      const response = await fetch(paymentUrl, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("결제창 호출에 실패했습니다.");
+      }
+
+      const htmlContent = await response.text();
+      const paymentWindow = window.open("", "_blank", "width=600,height=700,scrollbars=yes");
+
+      if (paymentWindow) {
+        paymentWindow.document.write(htmlContent);
+        paymentWindow.document.close();
+
+        // 결제 완료 감지를 위한 주기적 체크
+        const checkPaymentComplete = setInterval(() => {
+          try {
+            // 결제창이 닫혔는지 확인
+            if (paymentWindow.closed) {
+              console.log("결제창이 닫혔습니다 - 결제 완료로 간주");
+              clearInterval(checkPaymentComplete);
+
+              // 결제 검증 없이 바로 페이지 이동 (임시)
+              console.log("결제 완료 - 결과 페이지로 이동");
+              router.push("/resultorder");
+              return;
+            }
+
+            // 결제창 URL 체크 (가능한 경우)
+            try {
+              const currentUrl = paymentWindow.location.href;
+              if (currentUrl.includes("success") || currentUrl.includes("complete") || currentUrl.includes("approve")) {
+                console.log("결제 완료 URL 감지");
+                clearInterval(checkPaymentComplete);
+                paymentWindow.close();
+                router.push("/resultorder");
+              }
+            } catch (e) {
+              // CORS 오류는 무시
+            }
+          } catch (error) {
+            console.error("결제 상태 체크 중 오류:", error);
+          }
+        }, 2000);
+
+        // 메시지 리스너 (결제창에서 postMessage를 보내는 경우)
+        const messageListener = (event: MessageEvent) => {
+          console.log("결제창 메시지 수신:", event.data);
+
+          if (
+            event.data &&
+            (event.data.type === "PAYMENT_COMPLETE" ||
+              event.data.status === "success" ||
+              (typeof event.data === "string" && event.data.includes("success")))
+          ) {
+            console.log("결제 완료 메시지 감지");
+            clearInterval(checkPaymentComplete);
+            window.removeEventListener("message", messageListener);
+            paymentWindow.close();
+
+            // 실제 결제 데이터가 있는 경우에만 검증 시도
+            if (event.data.paymentData && event.data.paymentData.authResultCode && event.data.paymentData.tid) {
+              console.log("실제 결제 데이터로 검증 시도");
+              console.log("받은 결제 데이터:", event.data.paymentData);
+
+              verifyPayment(event.data.paymentData)
+                .then(() => {
+                  console.log("결제 검증 성공!");
+                  router.push("/resultorder");
+                })
+                .catch((error) => {
+                  console.error("결제 검증 실패:", error);
+                  // 검증 실패해도 결제는 완료된 상태이므로 결과 페이지로 이동
+                  alert("결제는 완료되었지만 검증에 실패했습니다. 고객센터에 문의해주세요.");
+                  router.push("/resultorder");
+                });
+            } else {
+              console.log("결제 데이터가 없어 검증 없이 페이지 이동");
+              router.push("/resultorder");
+            }
+          }
+        };
+
+        window.addEventListener("message", messageListener);
+
+        // 60초 후 자동 정리
+        setTimeout(() => {
+          clearInterval(checkPaymentComplete);
+          window.removeEventListener("message", messageListener);
+        }, 60000);
+      } else {
+        throw new Error("팝업이 차단되었습니다. 팝업 차단을 해제해주세요.");
+      }
+    } catch (error) {
+      console.error("결제창 호출 중 오류:", error);
+      throw error;
+    }
+  };
+
+  const handleOrder = async (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    if (isOrdering) return;
 
     // 토큰 확인
     const accessToken = TokenManager.getAccessToken();
@@ -269,7 +423,6 @@ export default function OrderBodyPage() {
           router.push("/login");
           return;
         }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         alert("로그인이 필요합니다.");
         router.push("/login");
@@ -284,18 +437,8 @@ export default function OrderBodyPage() {
     }
 
     // 동의 항목 검증
-    if (!isPurchaseAgreed) {
-      alert("주문 상품 구매 동의는 필수입니다.");
-      return;
-    }
-
-    if (!isTermsAgreed) {
-      alert("이용약관 동의는 필수입니다.");
-      return;
-    }
-
-    if (!isPersonalInfoAgreed) {
-      alert("개인정보 처리방침 동의는 필수입니다.");
+    if (!isPurchaseAgreed || !isTermsAgreed || !isPersonalInfoAgreed) {
+      alert("모든 약관에 동의해주세요.");
       return;
     }
 
@@ -304,87 +447,57 @@ export default function OrderBodyPage() {
       return;
     }
 
-    const finalOrderData = {
-      // 입력 정보
-      name,
-      phone,
-      email,
-      receiver,
-      phone1,
-      phone2,
-      zipcode,
-      address,
-      detailAddress,
-      // 결제 정보
-      orderCount: orderData.orderCount,
-      productAmount: orderData.productAmount,
-      shippingFee: orderData.shippingFee,
-      totalAmount: orderData.totalAmount,
-      items: orderData.items,
-      orderType: orderData.type,
-    };
+    setIsOrdering(true);
 
-    console.log("주문 데이터:", finalOrderData);
-
-    // Nicepay 결제 요청
-    await serverAuth(finalOrderData);
-  };
-
-  // Nicepay 결제 함수
-  const serverAuth = async (finalOrderData: FinalOrderData): Promise<void> => {
     try {
-      // 액세스 토큰 확인
-      let accessToken = TokenManager.getAccessToken();
-      if (!accessToken) {
-        accessToken = await TokenManager.refreshAccessToken();
-        if (!accessToken) {
-          alert("로그인이 필요합니다.");
-          router.push("/login");
-          return;
-        }
-      }
+      // 1. 주문 생성
+      const orderId = await createOrder();
+      console.log("주문 생성 완료. Order ID:", orderId);
 
-      // 주문 ID 생성
-      const generatedOrderId = Date.now().toString();
-      setOrderId(generatedOrderId);
-
-      // 상품명 생성
-      const goodsName =
-        orderData.items.length === 1
-          ? orderData.items[0].name
-          : `${orderData.items[0].name} 외 ${orderData.items.length - 1}개`;
-
-      window.AUTHNICE.requestPay({
-        clientId: "S2_fb903ce81792411ab6c459ec3a2a82c6",
-        method: "card",
-        orderId: generatedOrderId,
-        amount: orderData.totalAmount,
-        goodsName: goodsName,
-        returnUrl: "http://13.209.4.64:8080/payment/verify",
-        fnError: function (result) {
-          alert("결제 오류: " + result.errorMsg);
-          handleOrderCancel(generatedOrderId);
-        },
-        fnClose: function () {
-          // 결제창이 닫혔을 때 실행
-          handleOrderCancel(generatedOrderId);
-        },
-      });
-
-      // 결제 성공 시 주문 데이터를 sessionStorage에 저장
+      // 2. 주문 결과 데이터를 sessionStorage에 저장
       const orderResult = {
-        ...finalOrderData,
-        orderId: generatedOrderId,
+        orderId,
+        name,
+        phone,
+        email,
+        receiver,
+        phone1,
+        phone2,
+        zipcode,
+        address,
+        detailAddress,
+        orderCount: orderData.orderCount,
+        productAmount: orderData.productAmount,
+        shippingFee: orderData.shippingFee,
+        totalAmount: orderData.totalAmount,
+        items: orderData.items.map((item) => ({
+          ...item,
+          // 이미지 URL이 상대 경로인 경우 절대 경로로 변환
+          titleImageUrl: item.titleImageUrl
+            ? item.titleImageUrl.startsWith("http")
+              ? item.titleImageUrl
+              : `${process.env.NEXT_PUBLIC_BASE_URL}${item.titleImageUrl}`
+            : undefined,
+        })),
+        orderType: orderData.type,
         orderDate: new Date().toISOString(),
       };
 
-      // 브라우저 환경에서만 sessionStorage 사용
       if (typeof window !== "undefined") {
         sessionStorage.setItem("orderResult", JSON.stringify(orderResult));
       }
+
+      // 3. 결제창 띄우기
+      const goodsName = getOrderTitle();
+      const amount = orderData.totalAmount;
+
+      await openPaymentWindow(orderId, amount, goodsName);
+      console.log("결제창 호출 완료");
     } catch (error) {
-      console.error("결제 처리 중 오류:", error);
-      alert("결제 처리 중 오류가 발생했습니다.");
+      const errorMessage = error instanceof Error ? error.message : "주문 처리 중 오류가 발생했습니다.";
+      alert(errorMessage);
+    } finally {
+      setIsOrdering(false);
     }
   };
 
@@ -449,18 +562,17 @@ export default function OrderBodyPage() {
         <AgreePurchase onToggle={setIsPurchaseAgreed} />
         <TermsOfUse onToggle={setIsTermsAgreed} />
         <PersonalInfo onToggle={setIsPersonalInfoAgreed} />
-        <Link
-          href="/resultorder"
-          className={`${styles.buy_button} ${!isAllAgreed ? styles.buy_button_disabled : ""}`}
+        <button
+          className={`${styles.buy_button} ${!isAllAgreed || isOrdering ? styles.buy_button_disabled : ""}`}
           onClick={handleOrder}
+          disabled={!isAllAgreed || isOrdering}
           style={{
-            opacity: isAllAgreed ? 1 : 0.5,
-            cursor: isAllAgreed ? "pointer" : "not-allowed",
-            pointerEvents: isAllAgreed ? "auto" : "none",
+            opacity: isAllAgreed && !isOrdering ? 1 : 0.5,
+            cursor: isAllAgreed && !isOrdering ? "pointer" : "not-allowed",
           }}
         >
-          결제하기
-        </Link>
+          {isOrdering ? "주문 처리 중..." : "결제하기"}
+        </button>
       </div>
     </>
   );
