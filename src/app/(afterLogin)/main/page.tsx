@@ -171,7 +171,16 @@ export default function Main() {
   return (
     <div className={styles.container}>
       {/* ✅ 헤더에 클라이언트 데이터 전달 */}
-      <Header clientData={clientData} />
+      <Header
+        clientData={
+          clientData
+            ? {
+                ...clientData,
+                id: clientId || "", // clientId를 id로 매핑
+              }
+            : null
+        }
+      />
 
       {loading ? (
         <div className={styles.loading_container}>
