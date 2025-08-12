@@ -1,123 +1,162 @@
 .result {
   width: 700px;
-  height: 180px;
+  height: 380px; /* 고정 높이 설정 */
   display: flex;
   flex-direction: column;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: white;
+  margin-bottom: 20px;
 }
 
 .result_title {
   width: 100%;
-  height: 40px;
-  border-top: 1px solid #e6e6e6;
-  border-bottom: 1px solid #e6e6e6;
+  height: 50px;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #e6e6e6;
   display: flex;
   justify-content: space-between;
-  padding: 8px;
-  font-size: 12px;
+  align-items: center;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  flex-shrink: 0; /* 크기 고정 */
+}
+
+.result_title p {
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+
+.result_title p:first-child {
+  text-align: left;
+}
+
+.result_title p:nth-child(2) {
+  text-align: left;
+  flex: 2;
 }
 
 .result_body {
   width: 100%;
-  height: 100px; /* 기존 CSS와 동일하게 고정 높이 */
+  height: 270px; /* 고정 높이: 5개 아이템 × 54px = 270px */
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* 스크롤 방지 */
-  padding: 0; /* 패딩 제거하여 공간 최대 활용 */
-}
-
-.result_footer {
-  width: 100%;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-  gap: 48px;
+  padding: 0;
+  overflow: hidden; /* 넘치는 내용 숨김 */
+  flex-shrink: 0; /* 크기 고정 */
 }
 
 .result_item {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
   align-items: center;
-  height: 20px; /* 고정 높이로 5개 아이템이 100px에 딱 맞게 */
-  padding: 0 8px; /* 좌우 패딩만 */
-  border-bottom: 1px solid #e0e0e0;
-  font-size: 12px; /* 폰트 사이즈 축소 */
+  height: 54px; /* 고정 높이: 270px ÷ 5 = 54px */
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 12px;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0; /* 크기 고정 */
+}
+
+.result_item:hover {
+  background-color: #f8f9fa;
 }
 
 .result_item:last-child {
   border-bottom: none;
 }
 
+/* 5개 미만일 때 빈 공간을 채우기 위한 스타일 */
+.result_body:has(.result_item:nth-child(-n + 4)) {
+  justify-content: flex-start;
+}
+
 .date_order {
   display: flex;
   flex-direction: column;
-  gap: 2px; /* 간격 축소 */
+  gap: 4px;
+  align-items: flex-start;
 }
 
 .date {
-  font-size: 11px; /* 폰트 사이즈 축소 */
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   margin: 0;
-  line-height: 1;
+  line-height: 1.2;
+  color: #333;
 }
 
 .order_id {
-  font-size: 10px; /* 폰트 사이즈 축소 */
+  font-size: 11px;
   color: #666;
   margin: 0;
-  line-height: 1;
+  line-height: 1.2;
 }
 
 .item_info {
-  font-size: 11px; /* 폰트 사이즈 축소 */
+  font-size: 12px;
   margin: 0;
-  padding: 0 10px;
-  line-height: 1;
+  padding: 0 8px;
+  line-height: 1.3;
+  color: #333;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: left;
 }
 
 .quantity {
-  font-size: 11px; /* 폰트 사이즈 축소 */
+  font-size: 12px;
   text-align: center;
   margin: 0;
-  line-height: 1;
+  line-height: 1.2;
+  color: #333;
+  font-weight: 500;
 }
 
 .amount {
-  font-size: 11px; /* 폰트 사이즈 축소 */
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   text-align: center;
   margin: 0;
-  line-height: 1;
+  line-height: 1.2;
+  color: #333;
 }
 
 .status {
-  font-size: 11px; /* 폰트 사이즈 축소 */
+  font-size: 11px;
   text-align: center;
-  font-weight: 500;
+  font-weight: 600;
   color: #007bff;
   margin: 0;
-  line-height: 1;
+  line-height: 1.2;
+  padding: 4px 8px;
+  background-color: #e7f3ff;
+  border-radius: 12px;
+  border: 1px solid #007bff;
+  white-space: nowrap;
 }
 
 .empty_message {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100px; /* result_body 높이에 맞춤 */
+  height: 100%;
   font-size: 14px;
   color: #666;
   text-align: center;
+  font-style: italic;
 }
 
 .loading_message {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100px; /* result_body 높이에 맞춤 */
+  height: 100%;
   font-size: 14px;
   color: #666;
   text-align: center;
@@ -125,59 +164,136 @@
 
 .result_footer {
   width: 100%;
-  height: 40px; /* 기존 CSS와 동일 */
+  height: 60px; /* 고정 높이 */
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  gap: 48px; /* 기존 CSS와 동일 */
+  gap: 48px;
+  background-color: #fafafa;
+  border-top: 1px solid #e6e6e6;
+  flex-shrink: 0; /* 크기 고정 */
 }
 
 .icon {
-  font-size: 20px;
+  font-size: 24px;
   cursor: pointer;
   color: #007bff;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
+  padding: 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none; /* 텍스트 선택 방지 */
 }
 
-.icon:hover {
+.icon:hover:not(.disabled) {
   color: #0056b3;
+  background-color: #e7f3ff;
+  transform: scale(1.1);
 }
 
 .icon.disabled {
   color: #ccc;
   cursor: not-allowed;
+  transform: none;
 }
 
 .icon.disabled:hover {
-  color: #ccc;
+  background-color: transparent;
+  transform: none;
 }
 
 .result_footer p {
   margin: 0;
   font-size: 16px;
-  font-weight: 500;
-  min-width: 20px;
+  font-weight: 600;
+  min-width: 30px;
   text-align: center;
+  color: #333;
+  padding: 8px 12px;
+  background-color: white;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  user-select: none; /* 텍스트 선택 방지 */
 }
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
+  .result {
+    width: 100%;
+    margin: 0 10px 20px 10px;
+    height: auto; /* 모바일에서는 자동 높이 */
+    min-height: 300px;
+  }
+
+  .result_body {
+    height: auto;
+    min-height: 200px;
+  }
+
   .result_item {
     grid-template-columns: 1fr;
-    gap: 10px;
-    text-align: center;
-    padding: 20px;
+    gap: 12px;
+    text-align: left;
+    padding: 16px;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    height: auto;
+  }
+
+  .result_item:hover {
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .date_order {
-    align-items: center;
+    align-items: flex-start;
+    flex-direction: row;
+    justify-content: space-between;
   }
 
   .item_info {
     padding: 0;
+    text-align: left;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+  }
+
+  .quantity,
+  .amount {
+    text-align: left;
+  }
+
+  .status {
+    text-align: left;
+    display: inline-block;
+    width: fit-content;
+  }
+
+  .result_title {
+    display: none;
+  }
+
+  .quantity::before {
+    content: "수량: ";
+    font-weight: 600;
+    color: #666;
+  }
+
+  .amount::before {
+    content: "금액: ";
+    font-weight: 600;
+    color: #666;
+  }
+
+  .status::before {
+    content: "상태: ";
+    font-weight: 600;
+    color: #666;
+    margin-right: 8px;
   }
 }
