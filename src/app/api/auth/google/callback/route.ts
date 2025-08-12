@@ -35,21 +35,21 @@ export async function POST(request: NextRequest) {
         method: "GET",
         headers: {
           Accept: "application/json",
-          "User-Agent": "NextJS-Frontend/1.0",
+          "User-Agent": "NextJS-Frontend/1.0-google",
           "Cache-Control": "no-cache",
         },
         // 타임아웃 설정
         signal: AbortSignal.timeout(15000), // 15초
       });
     } catch (fetchError) {
-      console.error("백엔드 요청 실패:", fetchError);
+      console.error("구글 백엔드 요청 실패:", fetchError);
       if (fetchError instanceof Error && fetchError.name === "TimeoutError") {
         return NextResponse.json({ message: "서버 응답 시간이 초과되었습니다." }, { status: 408 });
       }
       return NextResponse.json({ message: "백엔드 서버에 연결할 수 없습니다." }, { status: 502 });
     }
 
-    console.log("백엔드 응답 상태:", backendResponse.status);
+    console.log("구글 백엔드 응답 상태:", backendResponse.status);
     console.log("백엔드 응답 헤더:", Object.fromEntries(backendResponse.headers.entries()));
     console.log("응답 Content-Type:", backendResponse.headers.get("content-type"));
 
@@ -64,9 +64,32 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "서버 응답을 읽을 수 없습니다." }, { status: 502 });
     }
 
+    // 404 에러 특별 처리 (엔드포인트 없음)
+    if (backendResponse.status === 404) {
+      console.error("404 Not Found 에러 - 구글 엔드포인트가 존재하지 않음:", {
+        url: backendUrl,
+        status: backendResponse.status,
+        statusText: backendResponse.statusText,
+        responseBody: responseText,
+      });
+
+      return NextResponse.json(
+        {
+          message: "구글 로그인 엔드포인트가 백엔드 서버에 구현되지 않았습니다.",
+          details: {
+            provider: "google",
+            status: 404,
+            url: backendUrl,
+            suggestion: "백엔드에서 /authorization/google/web GET 엔드포인트를 구현해주세요.",
+          },
+        },
+        { status: 404 }
+      );
+    }
+
     // 403 에러 특별 처리
     if (backendResponse.status === 403) {
-      console.error("403 Forbidden 에러 - 상세 정보:", {
+      console.error("403 Forbidden 에러 - 구글:", {
         url: backendUrl,
         status: backendResponse.status,
         statusText: backendResponse.statusText,
@@ -76,8 +99,9 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json(
         {
-          message: "서버에서 접근을 거부했습니다. 백엔드 서버 설정을 확인해주세요.",
+          message: "구글 로그인 - 서버에서 접근을 거부했습니다. 백엔드 서버 설정을 확인해주세요.",
           details: {
+            provider: "google",
             status: 403,
             url: backendUrl,
             responsePreview: responseText.substring(0, 200),
@@ -88,20 +112,21 @@ export async function POST(request: NextRequest) {
     }
 
     if (!backendResponse.ok) {
-      console.error(`백엔드 오류 응답 (${backendResponse.status}):`, responseText);
+      console.error(`구글 백엔드 오류 응답 (${backendResponse.status}):`, responseText);
 
       let errorData;
       try {
         errorData = JSON.parse(responseText);
       } catch {
         errorData = {
-          message: `서버 오류 (${backendResponse.status}): ${responseText.substring(0, 100)}`,
+          message: `구글 서버 오류 (${backendResponse.status}): ${responseText.substring(0, 100)}`,
         };
       }
 
       return NextResponse.json(
         {
           message: errorData.message || "구글 인증 처리 중 오류가 발생했습니다.",
+          provider: "google",
           status: backendResponse.status,
           details: errorData,
         },
@@ -111,7 +136,7 @@ export async function POST(request: NextRequest) {
 
     // 성공 응답이지만 내용이 비어있는 경우
     if (!responseText || responseText.trim() === "") {
-      console.error("백엔드에서 빈 응답 반환");
+      console.error("구글 백엔드에서 빈 응답 반환");
       return NextResponse.json({ message: "서버에서 빈 응답을 반환했습니다." }, { status: 502 });
     }
 
@@ -119,13 +144,14 @@ export async function POST(request: NextRequest) {
     let data;
     try {
       data = JSON.parse(responseText);
-      console.log("파싱된 데이터 구조:", Object.keys(data));
+      console.log("구글 파싱된 데이터 구조:", Object.keys(data));
     } catch (parseError) {
-      console.error("JSON 파싱 오류:", parseError);
+      console.error("구글 JSON 파싱 오류:", parseError);
       console.error("파싱 실패한 응답:", responseText);
       return NextResponse.json(
         {
           message: "서버 응답 형식이 올바르지 않습니다.",
+          provider: "google",
           responsePreview: responseText.substring(0, 200),
         },
         { status: 502 }
@@ -134,26 +160,29 @@ export async function POST(request: NextRequest) {
 
     // 응답 데이터 검증
     if (!data.accessToken) {
-      console.error("응답에 accessToken이 없음:", data);
+      console.error("구글 응답에 accessToken이 없음:", data);
       return NextResponse.json(
         {
           message: "서버에서 토큰을 반환하지 않았습니다.",
+          provider: "google",
           receivedData: Object.keys(data),
         },
         { status: 502 }
       );
     }
 
-    console.log("백엔드에서 받은 성공 응답:", {
+    console.log("구글 백엔드에서 받은 성공 응답:", {
+      provider: "google",
       hasAccessToken: !!data.accessToken,
       hasRefreshToken: !!data.refreshToken,
       userInfo: data.user ? { id: data.user.id, name: data.user.name } : "사용자 정보 없음",
       allKeys: Object.keys(data),
     });
 
-    // JWT 토큰과 함께 성공 응답
+    // ✅ 수정: JWT 토큰과 함께 성공 응답 (provider 정보 추가)
     return NextResponse.json({
       message: "구글 로그인 성공",
+      provider: "google", // 이 부분이 추가됨
       accessToken: data.accessToken,
       refreshToken: data.refreshToken,
       user: data.user,
@@ -164,6 +193,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         message: error instanceof Error ? error.message : "서버 오류가 발생했습니다.",
+        provider: "google",
         error:
           process.env.NODE_ENV === "development"
             ? {
