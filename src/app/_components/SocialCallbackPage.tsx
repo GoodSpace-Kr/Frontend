@@ -33,7 +33,7 @@ function SocialCallbackContent() {
   const [debugInfo, setDebugInfo] = useState<any>({});
 
   // URL에서 제공자 추출 (예: /authorization/kakao/callback)
-  const provider = pathname.split("/")[3] as keyof typeof PROVIDERS;
+  const provider = pathname.split("/")[2] as keyof typeof PROVIDERS;
   const providerInfo = PROVIDERS[provider] || PROVIDERS.kakao;
 
   useEffect(() => {
