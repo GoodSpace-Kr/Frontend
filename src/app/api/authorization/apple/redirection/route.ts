@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       redirect_uri: redirectUri,
       response_type: "code",
       scope: "name email",
-      response_mode: "query",
+      response_mode: "form_post", // 애플 요구사항: name/email scope 사용시 필수
       state: state,
     });
 
