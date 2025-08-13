@@ -44,6 +44,12 @@ export async function GET(request: NextRequest, context: any) {
 
     console.log(`=== ${provider.toUpperCase()} 로그인 리다이렉션 API 호출 ===`);
 
+    // 환경변수 디버깅
+    console.log("=== 환경변수 확인 ===");
+    console.log("NODE_ENV:", process.env.NODE_ENV);
+    console.log("NEXT_PUBLIC_FRONTEND_URL:", process.env.NEXT_PUBLIC_FRONTEND_URL);
+    console.log("request.nextUrl.origin:", request.nextUrl.origin);
+
     // 지원되는 provider 확인
     if (!OAUTH_CONFIG[provider as keyof typeof OAUTH_CONFIG]) {
       console.error("지원되지 않는 provider:", provider);
@@ -53,9 +59,17 @@ export async function GET(request: NextRequest, context: any) {
     const config = OAUTH_CONFIG[provider as keyof typeof OAUTH_CONFIG];
     const clientId = process.env[config.clientIdEnv];
 
-    // 환경변수에서 프론트엔드 URL 가져오기 (fallback으로 request.nextUrl.origin 사용)
+    // 환경변수에서 프론트엔드 URL 가져오기
     const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || request.nextUrl.origin;
+
+    // ⚠️ 모든 소셜 로그인을 페이지로 통일 (API 엔드포인트가 아닌 페이지로)
     const redirectUri = `${frontendUrl}/authorization/${provider}/callback`;
+
+    console.log("=== URL 생성 과정 ===");
+    console.log("환경변수 NEXT_PUBLIC_FRONTEND_URL:", process.env.NEXT_PUBLIC_FRONTEND_URL);
+    console.log("최종 선택된 frontendUrl:", frontendUrl);
+    console.log("생성된 redirectUri:", redirectUri);
+
     const state = Math.random().toString(36).substring(2, 15); // 랜덤 state 생성
 
     if (!clientId) {
@@ -75,6 +89,13 @@ export async function GET(request: NextRequest, context: any) {
       authUrl.searchParams.append("scope", config.scope);
     }
 
+    // Apple의 경우 추가 파라미터
+    if (provider === "apple") {
+      authUrl.searchParams.append("scope", "name email");
+      authUrl.searchParams.append("response_mode", "form_post");
+    }
+
+    console.log("=== 최종 결과 ===");
     console.log(`${provider} 로그인 URL:`, authUrl.toString());
     console.log("Client ID:", clientId);
     console.log("Redirect URI:", redirectUri);
