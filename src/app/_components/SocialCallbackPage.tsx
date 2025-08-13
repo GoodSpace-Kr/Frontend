@@ -30,16 +30,44 @@ function SocialCallbackContent() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [debugInfo, setDebugInfo] = useState<any>({});
 
-  const provider = pathname.split("/")[3] as keyof typeof PROVIDERS;
+  // 🔧 유연한 provider 추출 함수
+  const extractProvider = (pathname: string): string => {
+    const parts = pathname.split("/").filter((part) => part !== "");
+    console.log("Path parts:", parts);
+
+    // authorization 다음에 오는 부분을 찾기
+    const authIndex = parts.indexOf("authorization");
+    if (authIndex !== -1 && authIndex + 1 < parts.length) {
+      const provider = parts[authIndex + 1];
+      console.log("Found provider:", provider);
+      return provider;
+    }
+
+    // fallback: PROVIDERS에 있는 키 중에서 찾기
+    const knownProviders = Object.keys(PROVIDERS);
+    for (const part of parts) {
+      if (knownProviders.includes(part)) {
+        console.log("Found provider via fallback:", part);
+        return part;
+      }
+    }
+
+    console.log("No provider found, defaulting to kakao");
+    return "kakao";
+  };
+
+  const provider = extractProvider(pathname) as keyof typeof PROVIDERS;
   const providerInfo = PROVIDERS[provider] || PROVIDERS.kakao;
+
+  console.log("=== Provider 추출 결과 ===");
+  console.log("pathname:", pathname);
+  console.log("extracted provider:", provider);
+  console.log("providerInfo:", providerInfo);
 
   useEffect(() => {
     const handleCallback = async () => {
       try {
         console.log(`=== ${providerInfo.name} 콜백 처리 시작 ===`);
-        console.log("현재 pathname:", pathname);
-        console.log("추출된 provider:", provider);
-        console.log("Provider:", provider);
 
         const code = searchParams.get("code");
         const error = searchParams.get("error");
@@ -48,7 +76,9 @@ function SocialCallbackContent() {
 
         const debugData = {
           url: window.location.href,
+          pathname,
           provider,
+          providerName: providerInfo.name,
           code: code?.substring(0, 20) + "..." || null,
           error,
           errorDescription,
@@ -137,8 +167,9 @@ function SocialCallbackContent() {
     };
 
     handleCallback();
-  }, [router, searchParams, provider, providerInfo.name]);
+  }, [router, searchParams, provider, providerInfo.name, pathname]);
 
+  // 나머지 JSX는 기존과 동일...
   return (
     <div
       style={{
