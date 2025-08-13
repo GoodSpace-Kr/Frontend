@@ -30,7 +30,7 @@ function SocialCallbackContent() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [debugInfo, setDebugInfo] = useState<any>({});
 
-  const provider = pathname.split("/")[2] as keyof typeof PROVIDERS;
+  const provider = pathname.split("/")[3] as keyof typeof PROVIDERS;
   const providerInfo = PROVIDERS[provider] || PROVIDERS.kakao;
 
   useEffect(() => {
