@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 애플 콜백은 프론트엔드 도메인으로 설정
-    const redirectUri = `${frontendUrl}/authorization/apple/callback`;
+    const redirectUri = `${frontendUrl}/api/authorization/apple/callback`;
     const state = Math.random().toString(36).substring(2, 15);
 
     console.log("프론트엔드 도메인:", frontendUrl);
