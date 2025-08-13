@@ -30,13 +30,16 @@ function SocialCallbackContent() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [debugInfo, setDebugInfo] = useState<any>({});
 
-  const provider = pathname.split("/")[3] as keyof typeof PROVIDERS;
+  const provider = pathname.split("/")[2] as keyof typeof PROVIDERS;
   const providerInfo = PROVIDERS[provider] || PROVIDERS.kakao;
 
   useEffect(() => {
     const handleCallback = async () => {
       try {
         console.log(`=== ${providerInfo.name} 콜백 처리 시작 ===`);
+        console.log("현재 pathname:", pathname);
+        console.log("추출된 provider:", provider);
+        console.log("Provider:", provider);
 
         const code = searchParams.get("code");
         const error = searchParams.get("error");
