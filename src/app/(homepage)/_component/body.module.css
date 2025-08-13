@@ -1,20 +1,17 @@
 .body {
   display: flex;
   align-items: center;
-  padding-top: 200px;
   flex-direction: column;
   width: 100%;
-  min-height: 200vh; /* 초기에는 전체 화면 높이 */
+  min-height: 200vh;
   text-align: center;
   margin-top: 80px;
   padding-bottom: 200px;
   gap: 16px;
   color: white;
 
-  /* 그라데이션 배경 */
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  background-size: 300% 300%;
-  animation: gradientShift 8s ease infinite;
+  /* 앱과 동일한 우주 배경 */
+  background: linear-gradient(135deg, #2b1e47 0%, #191326 100%);
 
   /* 오버레이로 투명도 조절 */
   position: relative;
@@ -26,7 +23,7 @@
 }
 
 .body.expanded {
-  min-height: 200vh; /* 스크롤 시 2배 높이로 확장 */
+  min-height: 200vh;
 }
 
 .body::before {
@@ -36,7 +33,68 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.2);
+  /* 앱의 RadialGradient 효과 */
+  background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.06) 0%, transparent 60%);
+  z-index: 1;
+}
+
+/* 별점 효과 추가 */
+.body::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(1px 1px at 20px 30px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 40px 70px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 90px 40px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 160px 30px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 190px 90px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 220px 10px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 290px 50px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 320px 120px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 380px 40px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 420px 80px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 480px 60px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 520px 100px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 580px 20px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 620px 110px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 680px 70px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 720px 30px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 780px 90px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 820px 50px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 880px 120px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 920px 80px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 980px 40px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 60px 150px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 120px 180px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 200px 160px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 280px 200px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 360px 170px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 440px 190px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 520px 180px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 600px 160px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 680px 200px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 760px 170px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 840px 190px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 920px 160px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 80px 250px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 160px 270px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 240px 260px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 320px 280px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 400px 250px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 480px 270px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 560px 260px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 640px 280px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 720px 250px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 800px 270px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 880px 260px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 960px 280px, rgba(255, 255, 255, 0.18), transparent);
+  background-repeat: repeat;
+  background-size: 1000px 300px;
+  mix-blend-mode: screen;
   z-index: 1;
 }
 
@@ -132,101 +190,59 @@
   transform: translateY(0);
 }
 
-.hello {
-  font-size: 92px;
-  font-weight: bold;
+/* 환영 이미지 컨테이너 */
+.welcome_image_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 16px; /* 마진을 줄여서 텍스트와 더 가깝게 */
 
-  /* 그라데이션 텍스트 효과 */
-  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 30%, #ffffff 60%, #e0e0e0 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  background-size: 300% 300%;
-  animation: textGradientFlow 4s ease-in-out infinite;
-
-  /* 텍스트 섀도우 효과 */
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-
-  /* 애니메이션 초기 상태 */
-  opacity: 0;
-  transform: translateY(80px) scale(0.9);
-  transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s;
-  will-change: opacity, transform;
-}
-
-.body.animate .hello {
+  /* 애니메이션 제거 - 바로 보이게 */
   opacity: 1;
   transform: translateY(0) scale(1);
 }
 
-.body.exit .hello {
-  opacity: 0;
-  transform: translateY(-50px) scale(0.95);
-  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+.welcome_image {
+  width: 5200px;
+  height: 400px; /* height를 고정해서 이미지 크기 제한 */
+  max-width: 90vw;
+  object-fit: contain;
+
+  /* 이미지에 미묘한 글로우 효과 */
+  filter: drop-shadow(0 8px 32px rgba(147, 51, 234, 0.3));
+
+  /* 호버 효과 */
+  transition: all 0.3s ease;
+}
+
+.welcome_image:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 12px 48px rgba(147, 51, 234, 0.4));
 }
 
 .int {
-  font-size: 24px;
-  font-weight: 500;
+  font-size: 32px;
+  font-weight: bold;
   letter-spacing: 0.5px;
   line-height: 1.6;
 
-  /* 그라데이션 텍스트 효과 */
-  background: linear-gradient(45deg, #ffffff 0%, #e8e8e8 50%, #ffffff 100%);
+  /* GoodSpace 로고와 동일한 그라데이션 텍스트 효과 */
+  background: linear-gradient(180deg, #e8edf4 0%, #b8c5d6 50%, #8fa0b8 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
 
-  /* 애니메이션 초기 상태 */
-  opacity: 0;
-  transform: translateY(40px);
-  transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: opacity, transform;
-}
-
-.int:nth-child(2) {
-  transition-delay: 0.6s;
-}
-
-.int:nth-child(3) {
-  transition-delay: 0.9s;
-}
-
-.body.animate .int {
+  /* 애니메이션 제거 - 바로 보이게 */
   opacity: 1;
   transform: translateY(0);
 }
 
-.body.exit .int {
-  opacity: 0;
-  transform: translateY(-30px);
-  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
+/* 배경 관련 애니메이션 제거 (정적 배경으로 변경) */
+/* @keyframes gradientShift 제거됨 */
 
-.body.exit .int:nth-child(2) {
-  transition-delay: 0.1s;
-}
-
-.body.exit .int:nth-child(3) {
-  transition-delay: 0.2s;
-}
-
-/* 배경 그라데이션 애니메이션 */
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* 텍스트 그라데이션 흐름 효과 */
+/* 텍스트 그라데이션을 우주 테마에 맞게 조정 */
 @keyframes textGradientFlow {
   0% {
     background-position: 0% 50%;
@@ -316,10 +332,10 @@
   transition-delay: 0.5s;
 }
 
-/* 옵션 3: 네온 글로우 효과 */
+/* 옵션 3: 네온 글로우 효과 - 우주 테마에 맞게 조정 */
 .hello.neon {
   color: white;
-  text-shadow: 0 0 10px #667eea, 0 0 20px #667eea, 0 0 30px #667eea, 0 0 40px #667eea;
+  text-shadow: 0 0 10px #9333ea, 0 0 20px #9333ea, 0 0 30px #9333ea, 0 0 40px #9333ea;
   background: none;
   -webkit-text-fill-color: white;
   animation: neonPulse 2s ease-in-out infinite alternate;
@@ -327,11 +343,11 @@
 
 @keyframes neonPulse {
   0% {
-    text-shadow: 0 0 10px #667eea, 0 0 20px #667eea, 0 0 30px #667eea, 0 0 40px #667eea;
+    text-shadow: 0 0 10px #9333ea, 0 0 20px #9333ea, 0 0 30px #9333ea, 0 0 40px #9333ea;
   }
   100% {
-    text-shadow: 0 0 5px #667eea, 0 0 10px #667eea, 0 0 15px #667eea, 0 0 20px #667eea, 0 0 35px #764ba2,
-      0 0 40px #764ba2;
+    text-shadow: 0 0 5px #9333ea, 0 0 10px #9333ea, 0 0 15px #9333ea, 0 0 20px #9333ea, 0 0 35px #a855f7,
+      0 0 40px #a855f7;
   }
 }
 
@@ -352,25 +368,30 @@
   width: 50%;
   height: 64px;
   padding-left: 20px;
-  background-color: white;
+  /* #6C6776보다 살짝 밝은 배경색으로 변경 */
+  background: #7a7586;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
   display: flex;
   align-items: center;
   flex-direction: row;
   gap: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 }
 
 .client_box_search:focus-within {
   box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
+  border-color: rrgba(0, 0, 0, 0.3);
 }
 
 .search_icon {
   width: 24px;
   height: 24px;
-  color: #667eea;
+  color: rgba(255, 255, 255, 0.7); /* 아이콘도 밝은 색으로 변경 */
+  transition: color 0.3s ease;
 }
 
 .search_input {
@@ -379,14 +400,19 @@
   font-size: 20px;
   border: none;
   background: transparent;
-}
-
-.search_input:focus {
+  /* 텍스트 색상을 흰색으로 변경 */
+  color: white;
   outline: none;
 }
 
 .search_input::placeholder {
-  color: #999;
+  /* placeholder 색상도 밝게 변경 */
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.3s ease;
+}
+
+.client_box_search:focus-within .search_input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .client_list {
@@ -396,9 +422,179 @@
   flex-direction: column;
   justify-content: start;
   align-items: start;
+  gap: 48px;
+}
+
+/* 새로운 클라이언트 타입 섹션 스타일 */
+.client_type_section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
   gap: 24px;
 }
 
+.client_type_header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.client_type_icon {
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.client_type_title {
+  font-size: 28px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 50%, #ffffff 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.client_cards_container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+/* 새로운 클라이언트 카드 스타일 */
+.client_card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  min-height: 200px;
+}
+
+.client_card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+}
+
+.client_card_image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+}
+
+.client_card:hover .client_card_image {
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: scale(1.1);
+}
+
+.client_card_image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.client_avatar_fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, #9333ea, #a855f7); /* 우주 테마 퍼플 */
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.client_card_info {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.client_name {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* 로딩, 에러, 빈 상태 메시지 스타일 */
+.loading_spinner {
+  font-size: 20px;
+  animation: spin 1s linear infinite;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.loading_text {
+  width: 80%;
+  height: 16px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.1) 75%
+  );
+  background-size: 200% 100%;
+  animation: imageLoading 1.5s infinite;
+  border-radius: 8px;
+}
+
+.client_card.loading {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+  background-size: 200% 100%;
+  animation: imageLoading 1.5s infinite;
+}
+
+.error_message,
+.no_result_message,
+.no_data_message {
+  width: 100%;
+  padding: 40px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+@keyframes imageLoading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* 기존 스타일들 (호환성을 위해 유지) */
 .client_item {
   width: 100%;
   min-height: 300px;
@@ -442,7 +638,7 @@
 }
 
 .client_img {
-  width: calc(33.333% - 14px); /* 3개씩 나열되도록 계산 (gap 20px 고려) */
+  width: calc(33.333% - 14px);
   height: 180px;
   border-radius: 15px;
   object-fit: cover;
@@ -489,7 +685,7 @@
 .client_avatar {
   font-size: 24px;
   margin-bottom: 8px;
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(45deg, #9333ea, #a855f7); /* 우주 테마 퍼플 */
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -498,21 +694,9 @@
   justify-content: center;
 }
 
-.client_name {
-  font-size: 12px;
-  font-weight: 600;
-}
-
 .client_type_text {
   font-size: 10px;
   opacity: 0.8;
-}
-
-/* 로딩 스피너 */
-.loading_spinner {
-  font-size: 20px;
-  animation: spin 1s linear infinite;
-  color: rgba(255, 255, 255, 0.7);
 }
 
 /* 텍스트 스타일들 */
@@ -531,35 +715,15 @@
   font-size: 14px;
 }
 
-/* 로딩 상태 스켈레톤 효과 */
-.client_img.loading {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.1) 25%,
-    rgba(255, 255, 255, 0.3) 50%,
-    rgba(255, 255, 255, 0.1) 75%
-  );
-  background-size: 200% 100%;
-  animation: imageLoading 1.5s infinite;
-}
-
-@keyframes imageLoading {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
 /* 태블릿 세로 및 모바일 (768px 이하) */
 @media (max-width: 768px) {
-  .hello {
-    font-size: 64px;
+  .welcome_image {
+    width: 300px;
+    height: 225px; /* 비율에 맞춰 height 조정 */
   }
 
   .int {
-    font-size: 16px;
+    font-size: 20px;
     padding: 0 20px;
   }
 
@@ -579,17 +743,39 @@
     width: 80%;
   }
 
+  .client_cards_container {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+  }
+
+  .client_card {
+    min-height: 180px;
+    padding: 20px;
+  }
+
+  .client_card_image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .client_avatar_fallback {
+    font-size: 24px;
+  }
+
+  .client_name {
+    font-size: 16px;
+  }
+
+  .client_type_title {
+    font-size: 24px;
+  }
+
+  .client_type_icon {
+    font-size: 24px;
+  }
+
   .client_img {
-    width: calc(50% - 10px); /* 태블릿에서는 2개씩 */
-  }
-
-  /* 모바일에서는 애니메이션 단순화 */
-  .hello {
-    transition-duration: 1s;
-  }
-
-  .int {
-    transition-duration: 0.8s;
+    width: calc(50% - 10px);
   }
 }
 
@@ -617,7 +803,7 @@
   }
 
   .body.expanded {
-    min-height: 180vh; /* 모바일에서는 조금 더 작게 */
+    min-height: 180vh;
   }
 
   .client_box_search {
@@ -632,10 +818,43 @@
 
   .client_list {
     width: 90%;
+    gap: 32px;
+  }
+
+  .client_cards_container {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+  }
+
+  .client_card {
+    min-height: 140px;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .client_card_image {
+    width: 50px;
+    height: 50px;
+  }
+
+  .client_avatar_fallback {
+    font-size: 18px;
+  }
+
+  .client_name {
+    font-size: 12px;
+  }
+
+  .client_type_title {
+    font-size: 20px;
+  }
+
+  .client_type_icon {
+    font-size: 20px;
   }
 
   .client_img {
-    width: 100%; /* 모바일에서는 1개씩 */
+    width: 100%;
     height: 160px;
   }
 
@@ -645,20 +864,6 @@
 
   .client_type {
     font-size: 24px;
-  }
-
-  .client_avatar {
-    width: 30px;
-    height: 30px;
-    font-size: 18px;
-  }
-
-  .client_name {
-    font-size: 11px;
-  }
-
-  .client_type_text {
-    font-size: 9px;
   }
 
   /* 모바일에서는 복잡한 효과 비활성화 */

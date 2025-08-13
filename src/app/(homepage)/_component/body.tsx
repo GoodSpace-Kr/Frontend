@@ -70,12 +70,22 @@ const replaceLocalUrl = (url: string): string => {
   return url;
 };
 
-export default function Body({
-  welcomeText = "환영합니다",
-  description1 = "여기는 클라이언트별로 준비된 특별한 굿즈의 공간입니다",
-  description2 = "지금, 당신의 선택으로 여정을 시작해 보세요",
-  animationType = "gradient",
-}: BodyProps): JSX.Element {
+// 클라이언트 타입별 이모지 매핑
+const getClientTypeIcon = (type: string): string => {
+  const typeMap: Record<string, string> = {
+    크리에이터: "✨",
+    인플루언서: "⭐",
+    아티스트: "🎨",
+    브랜드: "🏢",
+    기업: "🏪",
+    개인: "👤",
+    기타: "📁",
+  };
+
+  return typeMap[type] || "📁";
+};
+
+export default function Body({}: BodyProps): JSX.Element {
   const router = useRouter();
   const { setSelectedClient } = useClient();
 
@@ -202,21 +212,6 @@ export default function Body({
     };
   }, [isVisible]);
 
-  // 유틸리티 함수들
-  const splitTextToSpans = useCallback(
-    (text: string): JSX.Element[] =>
-      text.split("").map((char: string, index: number) => <span key={index}>{char === " " ? "\u00A0" : char}</span>),
-    []
-  );
-
-  const getHelloClassName = useCallback((): string => {
-    let className: string = styles.hello;
-    if (animationType === "typing") className += ` ${styles.typing}`;
-    else if (animationType === "stagger") className += ` ${styles.stagger}`;
-    else if (animationType === "neon") className += ` ${styles.neon}`;
-    return className;
-  }, [animationType]);
-
   const getBodyClassName = useCallback((): string => {
     let className: string = styles.body;
     if (isExiting) className += ` ${styles.exit}`;
@@ -224,13 +219,51 @@ export default function Body({
     return className;
   }, [isExiting, isVisible]);
 
-  const renderWelcomeText = useCallback((): JSX.Element => {
-    return animationType === "stagger" ? (
-      <p className={getHelloClassName()}>{splitTextToSpans(welcomeText)}</p>
-    ) : (
-      <p className={getHelloClassName()}>{welcomeText}</p>
+  const [imageError, setImageError] = useState<boolean>(false);
+
+  const renderWelcomeImage = useCallback((): JSX.Element => {
+    if (imageError) {
+      // 이미지 로드 실패 시 대체 텍스트
+      return (
+        <div className={styles.welcome_image_container}>
+          <h1
+            style={{
+              color: "white",
+              fontSize: "4rem",
+              fontWeight: "bold",
+              textAlign: "center",
+              background: "linear-gradient(135deg, #ffffff 0%, #f0f0f0 50%, #ffffff 100%)",
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            GoodSpace
+          </h1>
+        </div>
+      );
+    }
+
+    return (
+      <div className={styles.welcome_image_container}>
+        {/* 먼저 일반 img 태그로 시도 */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/newgoodspace.png"
+          alt="GoodSpace"
+          className={styles.welcome_image}
+          onError={(e) => {
+            console.error("이미지 로드 실패:", e);
+            setImageError(true);
+          }}
+          onLoad={() => {
+            console.log("이미지 로드 성공");
+          }}
+        />
+        <p className={styles.int}>세상에 없던 굿즈</p>
+      </div>
     );
-  }, [animationType, getHelloClassName, splitTextToSpans, welcomeText]);
+  }, [imageError]);
 
   // 이벤트 핸들러들
   const handleImageLoad = useCallback((clientId: string): void => {
@@ -304,12 +337,20 @@ export default function Body({
 
   // 렌더링 헬퍼 함수들
   const renderLoadingState = (): JSX.Element => (
-    <div className={styles.client_item}>
-      <p className={styles.client_type}># 로딩 중...</p>
-      <div className={styles.client_img_box}>
+    <div className={styles.client_type_section}>
+      <div className={styles.client_type_header}>
+        <span className={styles.client_type_icon}>⏳</span>
+        <span className={styles.client_type_title}>로딩 중...</span>
+      </div>
+      <div className={styles.client_cards_container}>
         {Array.from({ length: 3 }, (_, index: number) => (
-          <div key={index} className={`${styles.client_img} ${styles.loading}`}>
-            <div className={styles.loading_spinner}>⟳</div>
+          <div key={index} className={`${styles.client_card} ${styles.loading}`}>
+            <div className={styles.client_card_image}>
+              <div className={styles.loading_spinner}>⟳</div>
+            </div>
+            <div className={styles.client_card_info}>
+              <div className={styles.loading_text}></div>
+            </div>
           </div>
         ))}
       </div>
@@ -317,59 +358,79 @@ export default function Body({
   );
 
   const renderErrorState = (): JSX.Element => (
-    <div className={styles.client_item}>
-      <p className={styles.client_type}># 오류 발생</p>
-      <div className={styles.client_img_box}>
-        <div className={styles.client_img}>
-          <span className={styles.error_text}>{error}</span>
+    <div className={styles.client_type_section}>
+      <div className={styles.client_type_header}>
+        <span className={styles.client_type_icon}>❌</span>
+        <span className={styles.client_type_title}>오류 발생</span>
+      </div>
+      <div className={styles.client_cards_container}>
+        <div className={styles.error_message}>
+          <span>{error}</span>
         </div>
       </div>
     </div>
   );
 
   const renderNoSearchResults = (): JSX.Element => (
-    <div className={styles.client_item}>
-      <p className={styles.client_type}># 검색 결과 없음</p>
-      <div className={styles.client_img_box}>
-        <div className={styles.client_img}>
-          <span className={styles.no_result_text}>&quot;{searchTerm}&quot;에 대한 결과가 없습니다</span>
+    <div className={styles.client_type_section}>
+      <div className={styles.client_type_header}>
+        <span className={styles.client_type_icon}>🔍</span>
+        <span className={styles.client_type_title}>검색 결과 없음</span>
+      </div>
+      <div className={styles.client_cards_container}>
+        <div className={styles.no_result_message}>
+          <span>&quot;{searchTerm}&quot;에 대한 결과가 없습니다</span>
         </div>
       </div>
     </div>
   );
 
   const renderNoData = (): JSX.Element => (
-    <div className={styles.client_item}>
-      <p className={styles.client_type}># 데이터 없음</p>
-      <div className={styles.client_img_box}>
-        <div className={styles.client_img}>
-          <span className={styles.no_data_text}>등록된 클라이언트가 없습니다</span>
+    <div className={styles.client_type_section}>
+      <div className={styles.client_type_header}>
+        <span className={styles.client_type_icon}>📂</span>
+        <span className={styles.client_type_title}>데이터 없음</span>
+      </div>
+      <div className={styles.client_cards_container}>
+        <div className={styles.no_data_message}>
+          <span>등록된 클라이언트가 없습니다</span>
         </div>
       </div>
     </div>
   );
 
-  const renderClientImage = (client: ClientData): JSX.Element => {
+  const renderClientCard = (client: ClientData): JSX.Element => {
     const hasImage = client.profileImageUrl && imageLoadStates[client.id] !== false;
 
-    if (hasImage) {
-      return (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={client.profileImageUrl}
-          alt={client.name}
-          onLoad={() => handleImageLoad(client.id)}
-          onError={() => handleImageError(client.id)}
-          className={styles.client_image}
-        />
-      );
-    }
-
     return (
-      <div className={styles.client_fallback}>
-        <div className={styles.client_avatar}>{client.name.charAt(0).toUpperCase()}</div>
-        <div className={styles.client_name}>{client.name}</div>
-        <div className={styles.client_type_text}>{client.clientType}</div>
+      <div
+        key={client.id}
+        className={styles.client_card}
+        onClick={() => handleClientClick(client)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e: React.KeyboardEvent) => {
+          if (e.key === "Enter" || e.key === " ") {
+            handleClientClick(client);
+          }
+        }}
+      >
+        <div className={styles.client_card_image}>
+          {hasImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={client.profileImageUrl}
+              alt={client.name}
+              onLoad={() => handleImageLoad(client.id)}
+              onError={() => handleImageError(client.id)}
+            />
+          ) : (
+            <div className={styles.client_avatar_fallback}>{client.name.charAt(0).toUpperCase()}</div>
+          )}
+        </div>
+        <div className={styles.client_card_info}>
+          <span className={styles.client_name}>{client.name}</span>
+        </div>
       </div>
     );
   };
@@ -384,25 +445,13 @@ export default function Body({
     return (
       <>
         {filteredClientTypes.map((clientType: ClientType, typeIndex: number) => (
-          <div key={typeIndex} className={styles.client_item}>
-            <p className={styles.client_type}># {clientType.type}</p>
-            <div className={styles.client_img_box}>
-              {clientType.clients.map((client: ClientData) => (
-                <div
-                  key={client.id}
-                  className={styles.client_img}
-                  onClick={() => handleClientClick(client)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e: React.KeyboardEvent) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      handleClientClick(client);
-                    }
-                  }}
-                >
-                  {renderClientImage(client)}
-                </div>
-              ))}
+          <div key={typeIndex} className={styles.client_type_section}>
+            <div className={styles.client_type_header}>
+              <span className={styles.client_type_icon}>{getClientTypeIcon(clientType.type)}</span>
+              <span className={styles.client_type_title}>{clientType.type}</span>
+            </div>
+            <div className={styles.client_cards_container}>
+              {clientType.clients.map((client: ClientData) => renderClientCard(client))}
             </div>
           </div>
         ))}
@@ -412,16 +461,14 @@ export default function Body({
 
   return (
     <div ref={bodyRef} className={getBodyClassName()}>
-      {renderWelcomeText()}
-      <p className={styles.int}>{description1}</p>
-      <p className={styles.int}>{description2}</p>
+      {renderWelcomeImage()}
 
       <div className={styles.client_box}>
         <div className={styles.client_box_search}>
           <BsSearch className={styles.search_icon} />
           <input
             className={styles.search_input}
-            placeholder="클라이언트 검색"
+            placeholder="누가 입점해있을까요?"
             value={searchTerm}
             onChange={handleSearchChange}
             type="text"
