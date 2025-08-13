@@ -22,7 +22,7 @@ export default function LoginIcons({ clientId }: LoginIconsProps) {
       console.log("clientId가 없어서 저장하지 않음");
     }
 
-    const redirectUrl = `/authorization/${provider}/redirection`;
+    const redirectUrl = `/api/authorization/${provider}/redirection`;
     console.log("생성된 리다이렉트 URL:", redirectUrl);
     return redirectUrl;
   };
