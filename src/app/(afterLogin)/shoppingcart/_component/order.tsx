@@ -223,8 +223,8 @@ export default function OrderSummary({ refreshTrigger, selectedItems }: OrderSum
         주문 하기 ({selectedCartItems.length}개 상품)
       </button>
 
-      <Link href="/main" className={styles.back_button}>
-        쇼핑 계속하기
+      <Link href="/" className={styles.back_button}>
+        돌아가기
       </Link>
 
       <div className={styles.memo}>
