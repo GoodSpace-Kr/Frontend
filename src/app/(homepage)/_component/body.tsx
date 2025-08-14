@@ -82,7 +82,7 @@ const getClientTypeIcon = (type: string): string => {
     기타: "📁",
   };
 
-  return typeMap[type] || "📁";
+  return typeMap[type] || "⭐";
 };
 
 export default function Body({}: BodyProps): JSX.Element {

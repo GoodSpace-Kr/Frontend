@@ -71,11 +71,13 @@ export default function Body({ clientId }: BodyProps) {
       // 잠시 후 페이지 이동 (쿠키 설정이 완료되도록)
       setTimeout(() => {
         // clientId가 있으면 해당 clientId를 가지고 main 페이지로 이동
+        // clientId가 없으면 홈페이지("/")로 이동
         if (clientId) {
           console.log(`로그인 성공 후 이동: /main?clientId=${clientId}`);
           router.push(`/main?clientId=${clientId}`);
         } else {
-          router.push("/main");
+          console.log("로그인 성공 후 이동: /");
+          router.push("/");
         }
       }, 100);
     } catch (err) {

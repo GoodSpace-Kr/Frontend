@@ -6,6 +6,7 @@
   min-height: 200vh;
   text-align: center;
   margin-top: 80px;
+  padding-top: 40px;
   padding-bottom: 200px;
   gap: 16px;
   color: white;
@@ -353,10 +354,10 @@
 
 /* 클라이언트 박스 영역 */
 .client_box {
-  width: 100%;
+  width: 90%;
   min-height: 100vh;
   margin-top: 200px;
-  padding-top: 80px;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -365,7 +366,7 @@
 }
 
 .client_box_search {
-  width: 50%;
+  width: 40%;
   height: 64px;
   padding-left: 20px;
   /* #6C6776보다 살짝 밝은 배경색으로 변경 */
