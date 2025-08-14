@@ -78,7 +78,8 @@ export default function EditpageBody(): JSX.Element {
 
       console.log("=== 사용자 정보 조회 API 요청 ===");
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/getInfo`, {
+      // 🔥 수정: NEXT_PUBLIC_BASE_URL 사용하고 올바른 경로로 변경
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/getInfo`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -182,7 +183,8 @@ export default function EditpageBody(): JSX.Element {
         postalCode,
       };
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/update`, {
+      // 🔥 수정: NEXT_PUBLIC_BASE_URL 사용하고 올바른 경로로 변경
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/update`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
