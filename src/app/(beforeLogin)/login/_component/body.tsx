@@ -102,59 +102,61 @@ export default function Body({ clientId }: BodyProps) {
   };
 
   return (
-    <div className={styles.body}>
-      <p className={styles.title}>로그인</p>
+    <div className={styles.container}>
+      <div className={styles.body}>
+        <p className={styles.title}>로그인</p>
 
-      <input
-        placeholder="이메일"
-        className={styles.input}
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        disabled={isLoading}
-      />
-      <input
-        placeholder="비밀번호"
-        className={styles.input}
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        disabled={isLoading}
-      />
+        <input
+          placeholder="이메일"
+          className={styles.input}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={isLoading}
+        />
+        <input
+          placeholder="비밀번호"
+          className={styles.input}
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          disabled={isLoading}
+        />
 
-      {message && (
-        <p
+        {message && (
+          <p
+            style={{
+              color: message.includes("성공") ? "green" : "red",
+              fontSize: "12px",
+            }}
+          >
+            {message}
+          </p>
+        )}
+
+        <div className={styles.find}>
+          <Link href={getFindPwLink()} className={styles.find_button}>
+            비밀번호 찾기
+          </Link>
+        </div>
+
+        <div
+          className={styles.login_button}
+          onClick={handleLogin}
           style={{
-            color: message.includes("성공") ? "green" : "red",
-            fontSize: "12px",
+            opacity: isLoading ? 0.5 : 1,
+            cursor: isLoading ? "not-allowed" : "pointer",
           }}
         >
-          {message}
-        </p>
-      )}
+          {isLoading ? "로그인 중..." : "로그인"}
+        </div>
 
-      <div className={styles.find}>
-        <Link href={getFindPwLink()} className={styles.find_button}>
-          비밀번호 찾기
-        </Link>
+        <div className={styles.signup_button} onClick={handleSignup}>
+          회원가입
+        </div>
+
+        {/* clientId를 LoginIcons 컴포넌트에 전달 */}
+        <LoginIcons clientId={clientId} />
       </div>
-
-      <div
-        className={styles.login_button}
-        onClick={handleLogin}
-        style={{
-          opacity: isLoading ? 0.5 : 1,
-          cursor: isLoading ? "not-allowed" : "pointer",
-        }}
-      >
-        {isLoading ? "로그인 중..." : "로그인"}
-      </div>
-
-      <div className={styles.signup_button} onClick={handleSignup}>
-        회원가입
-      </div>
-
-      {/* clientId를 LoginIcons 컴포넌트에 전달 */}
-      <LoginIcons clientId={clientId} />
     </div>
   );
 }

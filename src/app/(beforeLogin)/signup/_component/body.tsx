@@ -249,99 +249,101 @@ function BodyContent() {
   };
 
   return (
-    <div className={styles.body}>
-      <p className={styles.title}>회원가입</p>
+    <div className={styles.container}>
+      <div className={styles.body}>
+        <p className={styles.title}>회원가입</p>
 
-      <div className={styles.email}>
-        <input
-          placeholder="이메일"
-          className={styles.email_input}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          disabled={isLoading}
-        />
-        <div
-          className={styles.email_check}
-          onClick={sendVerificationCode}
-          style={{
-            opacity: isLoading ? 0.5 : 1,
-            cursor: isLoading ? "not-allowed" : "pointer",
-          }}
-        >
-          {isLoading ? "발송중..." : "이메일 인증"}
-        </div>
-      </div>
-
-      {showCodeInput && (
         <div className={styles.email}>
           <input
-            placeholder="이메일 인증 번호"
+            placeholder="이메일"
             className={styles.email_input}
-            value={verificationCode}
-            onChange={(e) => setVerificationCode(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             disabled={isLoading}
           />
           <div
             className={styles.email_check}
-            onClick={verifyCode}
+            onClick={sendVerificationCode}
             style={{
               opacity: isLoading ? 0.5 : 1,
               cursor: isLoading ? "not-allowed" : "pointer",
             }}
           >
-            {isLoading ? "확인중..." : "인증 확인"}
+            {isLoading ? "발송중..." : "이메일 인증"}
           </div>
         </div>
-      )}
 
-      {message && (
-        <p
-          className={styles.message}
+        {showCodeInput && (
+          <div className={styles.email}>
+            <input
+              placeholder="이메일 인증 번호"
+              className={styles.email_input}
+              value={verificationCode}
+              onChange={(e) => setVerificationCode(e.target.value)}
+              disabled={isLoading}
+            />
+            <div
+              className={styles.email_check}
+              onClick={verifyCode}
+              style={{
+                opacity: isLoading ? 0.5 : 1,
+                cursor: isLoading ? "not-allowed" : "pointer",
+              }}
+            >
+              {isLoading ? "확인중..." : "인증 확인"}
+            </div>
+          </div>
+        )}
+
+        {message && (
+          <p
+            className={styles.message}
+            style={{
+              color: message.includes("완료") || message.includes("발송") ? "green" : "red",
+              fontSize: "12px",
+            }}
+          >
+            {message}
+          </p>
+        )}
+
+        <input
+          placeholder="비밀번호"
+          className={styles.pw_input}
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          disabled={isLoading}
+        />
+        <p className={styles.message}>8~16자의 영문 대소문자, 숫자, 특수문자만 가능합니다.</p>
+        <input
+          placeholder="비밀번호 확인"
+          className={styles.check_input}
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          disabled={isLoading}
+        />
+
+        <div
+          className={styles.signup_button}
+          onClick={handleSignUp}
           style={{
-            color: message.includes("완료") || message.includes("발송") ? "green" : "red",
-            fontSize: "12px",
+            opacity: isLoading || !isEmailVerified ? 0.5 : 1,
+            cursor: isLoading || !isEmailVerified ? "not-allowed" : "pointer",
           }}
         >
-          {message}
-        </p>
-      )}
+          {isLoading ? "처리중..." : "가입하기"}
+        </div>
 
-      <input
-        placeholder="비밀번호"
-        className={styles.pw_input}
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        disabled={isLoading}
-      />
-      <p className={styles.message}>8~16자의 영문 대소문자, 숫자, 특수문자만 가능합니다.</p>
-      <input
-        placeholder="비밀번호 확인"
-        className={styles.check_input}
-        type="password"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-        disabled={isLoading}
-      />
+        {/* ✅ 돌아가기 링크에 clientId 유지 */}
+        <Link href={getBackLink()} className={styles.back_button}>
+          돌아가기
+        </Link>
 
-      <div
-        className={styles.signup_button}
-        onClick={handleSignUp}
-        style={{
-          opacity: isLoading || !isEmailVerified ? 0.5 : 1,
-          cursor: isLoading || !isEmailVerified ? "not-allowed" : "pointer",
-        }}
-      >
-        {isLoading ? "처리중..." : "가입하기"}
+        {/* ✅ LoginIcons 컴포넌트에 clientId 전달 */}
+        <LoginIcons clientId={clientId} />
       </div>
-
-      {/* ✅ 돌아가기 링크에 clientId 유지 */}
-      <Link href={getBackLink()} className={styles.back_button}>
-        돌아가기
-      </Link>
-
-      {/* ✅ LoginIcons 컴포넌트에 clientId 전달 */}
-      <LoginIcons clientId={clientId} />
     </div>
   );
 }
@@ -349,30 +351,32 @@ function BodyContent() {
 // Fallback 컴포넌트 (로딩 중일 때 표시)
 function BodyFallback() {
   return (
-    <div className={styles.body}>
-      <p className={styles.title}>회원가입</p>
+    <div className={styles.container}>
+      <div className={styles.body}>
+        <p className={styles.title}>회원가입</p>
 
-      <div className={styles.email}>
-        <input placeholder="이메일" className={styles.email_input} disabled />
-        <div className={styles.email_check} style={{ opacity: 0.5 }}>
-          이메일 인증
+        <div className={styles.email}>
+          <input placeholder="이메일" className={styles.email_input} disabled />
+          <div className={styles.email_check} style={{ opacity: 0.5 }}>
+            이메일 인증
+          </div>
         </div>
+
+        <input placeholder="비밀번호" className={styles.pw_input} type="password" disabled />
+        <p className={styles.message}>8~16자의 영문 대소문자, 숫자, 특수문자만 가능합니다.</p>
+        <input placeholder="비밀번호 확인" className={styles.check_input} type="password" disabled />
+
+        <div className={styles.signup_button} style={{ opacity: 0.5, cursor: "not-allowed" }}>
+          가입하기
+        </div>
+
+        <Link href="/login" className={styles.back_button}>
+          돌아가기
+        </Link>
+
+        {/* clientId 없이 기본 LoginIcons */}
+        <LoginIcons clientId={null} />
       </div>
-
-      <input placeholder="비밀번호" className={styles.pw_input} type="password" disabled />
-      <p className={styles.message}>8~16자의 영문 대소문자, 숫자, 특수문자만 가능합니다.</p>
-      <input placeholder="비밀번호 확인" className={styles.check_input} type="password" disabled />
-
-      <div className={styles.signup_button} style={{ opacity: 0.5, cursor: "not-allowed" }}>
-        가입하기
-      </div>
-
-      <Link href="/login" className={styles.back_button}>
-        돌아가기
-      </Link>
-
-      {/* clientId 없이 기본 LoginIcons */}
-      <LoginIcons clientId={null} />
     </div>
   );
 }

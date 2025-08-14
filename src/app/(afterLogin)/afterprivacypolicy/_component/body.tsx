@@ -2,7 +2,7 @@ import styles from "./body.module.css";
 
 export default function Body() {
   return (
-    <>
+    <div className={styles.container}>
       <div className={styles.privacypolicy}>
         <p className={styles.title}>굿스페이스 개인정보처리방침</p>
 
@@ -190,6 +190,6 @@ export default function Body() {
           </p>
         </div>
       </div>
-    </>
+    </div>
   );
 }

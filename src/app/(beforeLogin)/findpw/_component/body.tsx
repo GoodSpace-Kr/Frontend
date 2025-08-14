@@ -246,103 +246,105 @@ export default function FindEmail() {
   };
 
   return (
-    <div className={styles.findemail}>
-      <p className={styles.title}>비밀번호 찾기</p>
+    <div className={styles.container}>
+      <div className={styles.findemail}>
+        <p className={styles.title}>비밀번호 찾기</p>
 
-      {/* 이메일 입력 및 인증 코드 전송 */}
-      <div className={styles.email}>
-        <input
-          placeholder="이메일"
-          className={styles.input_email}
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          disabled={isEmailVerified || loading}
-        />
-        <p
-          className={`${styles.email_button} ${isEmailVerified || loading ? styles.disabled : ""}`}
-          onClick={!isEmailVerified && !loading ? handleSendVerificationCode : undefined}
-          style={{
-            opacity: isEmailVerified || loading ? 0.5 : 1,
-            cursor: isEmailVerified || loading ? "not-allowed" : "pointer",
-          }}
-        >
-          {loading ? "전송 중..." : isEmailVerified ? "인증 완료" : "이메일 인증"}
-        </p>
-      </div>
-
-      {/* 인증 코드 입력 */}
-      {showCodeInput && !isEmailVerified && (
+        {/* 이메일 입력 및 인증 코드 전송 */}
         <div className={styles.email}>
           <input
-            placeholder="이메일 인증 번호"
-            className={styles.email_input}
-            value={verificationCode}
-            onChange={(e) => setVerificationCode(e.target.value)}
-            disabled={loading}
+            placeholder="이메일"
+            className={styles.input_email}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isEmailVerified || loading}
           />
-          <div
-            className={`${styles.email_check} ${loading ? styles.disabled : ""}`}
-            onClick={!loading ? handleVerifyCode : undefined}
+          <p
+            className={`${styles.email_button} ${isEmailVerified || loading ? styles.disabled : ""}`}
+            onClick={!isEmailVerified && !loading ? handleSendVerificationCode : undefined}
             style={{
-              opacity: loading ? 0.5 : 1,
-              cursor: loading ? "not-allowed" : "pointer",
+              opacity: isEmailVerified || loading ? 0.5 : 1,
+              cursor: isEmailVerified || loading ? "not-allowed" : "pointer",
             }}
           >
-            {loading ? "확인 중..." : "인증 확인"}
-          </div>
+            {loading ? "전송 중..." : isEmailVerified ? "인증 완료" : "이메일 인증"}
+          </p>
         </div>
-      )}
 
-      {/* 새 비밀번호 입력 */}
-      {showPasswordInput && isEmailVerified && (
-        <>
-          <input
-            placeholder="비밀번호 재설정 (영어, 숫자, 특수문자 포함 8자 이상)"
-            className={styles.input}
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            disabled={loading}
-          />
-          <input
-            placeholder="비밀번호 확인"
-            className={styles.input}
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            disabled={loading}
-          />
-
-          {/* 비밀번호 조건 안내 */}
-          <div className={styles.password_guide}>
-            <p className={styles.a}>비밀번호 조건:</p>
-            <p className={styles.a}>영어, 숫자, 특수문자 포함 8자 이상</p>
-            <p className={styles.a}>연속된 문자 3자 이상 사용 불가 (abc, 123, aaa 등)</p>
-            <p className={styles.a}>이메일 아이디 포함 불가</p>
+        {/* 인증 코드 입력 */}
+        {showCodeInput && !isEmailVerified && (
+          <div className={styles.email}>
+            <input
+              placeholder="이메일 인증 번호"
+              className={styles.email_input}
+              value={verificationCode}
+              onChange={(e) => setVerificationCode(e.target.value)}
+              disabled={loading}
+            />
+            <div
+              className={`${styles.email_check} ${loading ? styles.disabled : ""}`}
+              onClick={!loading ? handleVerifyCode : undefined}
+              style={{
+                opacity: loading ? 0.5 : 1,
+                cursor: loading ? "not-allowed" : "pointer",
+              }}
+            >
+              {loading ? "확인 중..." : "인증 확인"}
+            </div>
           </div>
+        )}
 
-          <div
-            className={`${styles.button} ${loading ? styles.disabled : ""}`}
-            onClick={!loading ? handleChangePassword : undefined}
-            style={{
-              opacity: loading ? 0.5 : 1,
-              cursor: loading ? "not-allowed" : "pointer",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              textDecoration: "none",
-            }}
-          >
-            {loading ? "변경 중..." : "비밀번호 변경"}
-          </div>
-        </>
-      )}
+        {/* 새 비밀번호 입력 */}
+        {showPasswordInput && isEmailVerified && (
+          <>
+            <input
+              placeholder="비밀번호 재설정 (영어, 숫자, 특수문자 포함 8자 이상)"
+              className={styles.input}
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              disabled={loading}
+            />
+            <input
+              placeholder="비밀번호 확인"
+              className={styles.input}
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              disabled={loading}
+            />
 
-      {/* 로그인 페이지로 돌아가기 */}
-      <Link href="/login" className={styles.button} style={{ marginTop: "10px" }}>
-        로그인 페이지로 돌아가기
-      </Link>
+            {/* 비밀번호 조건 안내 */}
+            <div className={styles.password_guide}>
+              <p className={styles.a}>비밀번호 조건:</p>
+              <p className={styles.a}>영어, 숫자, 특수문자 포함 8자 이상</p>
+              <p className={styles.a}>연속된 문자 3자 이상 사용 불가 (abc, 123, aaa 등)</p>
+              <p className={styles.a}>이메일 아이디 포함 불가</p>
+            </div>
+
+            <div
+              className={`${styles.button} ${loading ? styles.disabled : ""}`}
+              onClick={!loading ? handleChangePassword : undefined}
+              style={{
+                opacity: loading ? 0.5 : 1,
+                cursor: loading ? "not-allowed" : "pointer",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                textDecoration: "none",
+              }}
+            >
+              {loading ? "변경 중..." : "비밀번호 변경"}
+            </div>
+          </>
+        )}
+
+        {/* 로그인 페이지로 돌아가기 */}
+        <Link href="/login" className={styles.button} style={{ marginTop: "10px" }}>
+          로그인 페이지로 돌아가기
+        </Link>
+      </div>
     </div>
   );
 }

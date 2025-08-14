@@ -2,15 +2,15 @@ import styles from "./body.module.css";
 
 export default function Body() {
   return (
-    <>
+    <div className={styles.container}>
       <div className={styles.termsofuse}>
         <p className={styles.title}>굿스페이스 이용약관</p>
         <div className={styles.termsofuse_box}>
           <p className={styles.termsofuse_box_title}>1. 목적</p>
           <p className={styles.termsofuse_box_sentence}>
-            본 약관은 주식회사 GoodSpace(이하 “회사”)가 제공하는 웹 사이트 또는 모바일 애플리케이션(이하 “앱”)을 통해
-            제공하는 서비스(이하 “서비스”)의 이용과 관련하여 회사와 이용자 간의 권리, 의무 및 책임사항을 규정함을
-            목적으로 합니다.
+            본 약관은 주식회사 GoodSpace(이하 &quot;회사&quot;)가 제공하는 웹 사이트 또는 모바일 애플리케이션(이하
+            &quot;앱&quot;)을 통해 제공하는 서비스(이하 &quot;서비스&quot;)의 이용과 관련하여 회사와 이용자 간의 권리,
+            의무 및 책임사항을 규정함을 목적으로 합니다.
           </p>
         </div>
 
@@ -98,6 +98,6 @@ export default function Body() {
           </p>
         </div>
       </div>
-    </>
+    </div>
   );
 }
