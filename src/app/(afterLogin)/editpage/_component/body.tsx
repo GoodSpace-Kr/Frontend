@@ -184,7 +184,7 @@ export default function EditpageBody(): JSX.Element {
       };
 
       // 🔥 수정: NEXT_PUBLIC_BASE_URL 사용하고 올바른 경로로 변경
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/update`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/updateMyPage`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

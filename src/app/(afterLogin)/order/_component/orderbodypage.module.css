@@ -126,3 +126,17 @@
   gap: 12px;
   margin-bottom: 32px;
 }
+
+.order_info_save {
+  width: 100px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  color: white;
+  font-size: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 64px;
+}

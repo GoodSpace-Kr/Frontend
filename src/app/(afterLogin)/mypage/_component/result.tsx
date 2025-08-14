@@ -4,32 +4,35 @@ import { MdKeyboardArrowRight } from "react-icons/md";
 import { useState, useEffect } from "react";
 
 type PurchaseItem = {
-  date: string;
-  id: number;
-  itemInfo: string;
-  totalQuantity: number;
-  amount: number;
-  status: string;
+  date: string | null;
+  id: number | null;
+  itemInfo: string | null;
+  totalQuantity: number | null;
+  amount: number | null;
+  status: string | null;
 };
 
 type ResultProps = {
-  purchaseHistory: PurchaseItem[];
+  purchaseHistory: PurchaseItem[] | null;
   loading: boolean;
-  statusMapping: { [key: string]: string };
+  statusMapping: { [key: string]: string } | null;
 };
 
 export default function Result({ purchaseHistory, loading, statusMapping }: ResultProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // 페이지당 표시할 아이템 수
 
+  // null 방어: purchaseHistory가 null이면 빈 배열로 처리
+  const safeHistory = purchaseHistory || [];
+
   // 전체 페이지 수 계산
-  const totalPages = Math.ceil(purchaseHistory.length / itemsPerPage);
+  const totalPages = Math.ceil(safeHistory.length / itemsPerPage);
 
   // 현재 페이지에 표시할 아이템들
   const getCurrentPageItems = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return purchaseHistory.slice(startIndex, endIndex);
+    return safeHistory.slice(startIndex, endIndex);
   };
 
   // 페이지 변경 시 currentPage 리셋
@@ -49,18 +52,64 @@ export default function Result({ purchaseHistory, loading, statusMapping }: Resu
     }
   };
 
-  // 날짜 포맷팅 함수
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(
-      2,
-      "0"
-    )}`;
+  // 날짜 포맷팅 함수 - null 방어 추가
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) {
+      return "정보 없음";
+    }
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return "정보 없음";
+      }
+      return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(
+        2,
+        "0"
+      )}`;
+    } catch (error) {
+      return "정보 없음";
+    }
   };
 
-  // 금액 포맷팅 함수
-  const formatAmount = (amount: number) => {
+  // 금액 포맷팅 함수 - null 방어 추가
+  const formatAmount = (amount: number | null) => {
+    if (amount === null || amount === undefined || isNaN(amount)) {
+      return "정보 없음";
+    }
     return amount.toLocaleString() + "원";
+  };
+
+  // 주문번호 포맷팅 함수
+  const formatOrderId = (id: number | null) => {
+    if (id === null || id === undefined) {
+      return "#정보없음";
+    }
+    return `#${id}`;
+  };
+
+  // 수량 포맷팅 함수
+  const formatQuantity = (quantity: number | null) => {
+    if (quantity === null || quantity === undefined || isNaN(quantity)) {
+      return "정보 없음";
+    }
+    return `${quantity}개`;
+  };
+
+  // 상품정보 포맷팅 함수
+  const formatItemInfo = (itemInfo: string | null) => {
+    if (!itemInfo || itemInfo.trim() === "") {
+      return "정보 없음";
+    }
+    return itemInfo;
+  };
+
+  // 상태 포맷팅 함수
+  const formatStatus = (status: string | null) => {
+    if (!status) {
+      return "정보 없음";
+    }
+    const safeStatusMapping = statusMapping || {};
+    return safeStatusMapping[status] || status;
   };
 
   if (loading) {
@@ -97,19 +146,19 @@ export default function Result({ purchaseHistory, loading, statusMapping }: Resu
         </div>
 
         <div className={styles.result_body}>
-          {purchaseHistory.length === 0 ? (
+          {safeHistory.length === 0 ? (
             <div className={styles.empty_message}>구매내역이 없습니다.</div>
           ) : (
-            getCurrentPageItems().map((item) => (
-              <div key={`${item.id}-${item.date}`} className={styles.result_item}>
+            getCurrentPageItems().map((item, index) => (
+              <div key={`${item?.id || "unknown"}-${item?.date || "unknown"}-${index}`} className={styles.result_item}>
                 <div className={styles.date_order}>
-                  <p className={styles.date}>{formatDate(item.date)}</p>
-                  <p className={styles.order_id}>#{item.id}</p>
+                  <p className={styles.date}>{formatDate(item?.date)}</p>
+                  <p className={styles.order_id}>{formatOrderId(item?.id)}</p>
                 </div>
-                <p className={styles.item_info}>{item.itemInfo}</p>
-                <p className={styles.quantity}>{item.totalQuantity}개</p>
-                <p className={styles.amount}>{formatAmount(item.amount)}</p>
-                <p className={styles.status}>{statusMapping[item.status] || item.status}</p>
+                <p className={styles.item_info}>{formatItemInfo(item?.itemInfo)}</p>
+                <p className={styles.quantity}>{formatQuantity(item?.totalQuantity)}</p>
+                <p className={styles.amount}>{formatAmount(item?.amount)}</p>
+                <p className={styles.status}>{formatStatus(item?.status)}</p>
               </div>
             ))
           )}

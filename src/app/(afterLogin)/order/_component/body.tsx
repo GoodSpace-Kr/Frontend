@@ -55,8 +55,35 @@ interface OrderRequestItem {
   amount: number;
 }
 
+interface OrderInfo {
+  email: string;
+  name: string;
+  phoneNumber: string;
+  recipient: string;
+  contactNumber1: string;
+  contactNumber2: string;
+  postalCode: string;
+  address: string;
+  detailedAddress: string;
+}
+
+interface UserInfo {
+  name?: string;
+  email?: string;
+  phoneNumber?: string;
+  recipient?: string;
+  contactNumber1?: string;
+  contactNumber2?: string;
+  postalCode?: string;
+  address?: string;
+  detailedAddress?: string;
+}
+
 interface OrderCreateRequest {
   orderCartItemDtos: OrderRequestItem[];
+  orderInfo: OrderInfo;
+  requireUpdateUserInfo?: boolean;
+  requireCartItemRemove?: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -106,6 +133,9 @@ export default function OrderBodyPage() {
   const [isTermsAgreed, setIsTermsAgreed] = useState<boolean>(false);
   const [isPersonalInfoAgreed, setIsPersonalInfoAgreed] = useState<boolean>(false);
 
+  // 결제 정보 저장 여부 상태 추가
+  const [isSavePaymentInfo, setIsSavePaymentInfo] = useState<boolean>(false);
+
   // 주문 데이터 상태
   const [orderData, setOrderData] = useState<OrderData>({
     type: "direct",
@@ -116,8 +146,82 @@ export default function OrderBodyPage() {
     totalAmount: 3000,
   });
 
-  // sessionStorage에서 주문 데이터 로드
+  // 사용자 정보 가져오기 API
+  const fetchUserInfo = async () => {
+    try {
+      let accessToken = TokenManager.getAccessToken();
+      if (!accessToken) {
+        accessToken = await TokenManager.refreshAccessToken();
+        if (!accessToken) {
+          console.log("로그인되지 않은 사용자 - 사용자 정보 불러오기 생략");
+          return;
+        }
+      }
+
+      console.log("=== 사용자 정보 불러오기 ===");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/getInfo`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (response.status === 403) {
+        console.warn("사용자 정보 불러오기 - 403 발생 → 토큰 갱신 시도");
+        const newToken = await TokenManager.refreshAccessToken();
+        if (newToken) {
+          const retryResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/getInfo`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${newToken}`,
+            },
+          });
+
+          if (retryResponse.ok) {
+            const userInfo = await retryResponse.json();
+            console.log("사용자 정보 불러오기 성공:", userInfo);
+
+            // 사용자 정보를 폼에 자동 입력
+            if (userInfo.name) setName(userInfo.name);
+            if (userInfo.email) setEmail(userInfo.email);
+            if (userInfo.phoneNumber) setPhone(userInfo.phoneNumber);
+            if (userInfo.recipient) setReceiver(userInfo.recipient);
+            if (userInfo.contactNumber1) setPhone1(userInfo.contactNumber1);
+            if (userInfo.contactNumber2) setPhone2(userInfo.contactNumber2);
+            if (userInfo.postalCode) setZipcode(userInfo.postalCode);
+            if (userInfo.address) setAddress(userInfo.address);
+            if (userInfo.detailedAddress) setDetailAddress(userInfo.detailedAddress);
+          } else {
+            console.warn("사용자 정보 불러오기 재시도 실패:", retryResponse.status);
+          }
+        } else {
+          console.warn("토큰 갱신 실패 - 사용자 정보 불러오기 생략");
+        }
+      } else if (response.ok) {
+        const userInfo = await response.json();
+        console.log("사용자 정보 불러오기 성공:", userInfo);
+
+        // 사용자 정보를 폼에 자동 입력
+        if (userInfo.name) setName(userInfo.name);
+        if (userInfo.email) setEmail(userInfo.email);
+        if (userInfo.phoneNumber) setPhone(userInfo.phoneNumber);
+        if (userInfo.recipient) setReceiver(userInfo.recipient);
+        if (userInfo.contactNumber1) setPhone1(userInfo.contactNumber1);
+        if (userInfo.contactNumber2) setPhone2(userInfo.contactNumber2);
+        if (userInfo.postalCode) setZipcode(userInfo.postalCode);
+        if (userInfo.address) setAddress(userInfo.address);
+        if (userInfo.detailedAddress) setDetailAddress(userInfo.detailedAddress);
+      } else {
+        console.warn("사용자 정보 불러오기 실패:", response.status);
+      }
+    } catch (error) {
+      console.error("사용자 정보 불러오기 중 오류:", error);
+    }
+  };
+
+  // sessionStorage에서 주문 데이터 로드 및 사용자 정보 불러오기
   useEffect(() => {
+    // 주문 데이터 로드
     if (typeof window !== "undefined") {
       const savedOrderData = sessionStorage.getItem("orderData");
       if (savedOrderData) {
@@ -129,6 +233,9 @@ export default function OrderBodyPage() {
         }
       }
     }
+
+    // 사용자 정보 불러오기
+    fetchUserInfo();
   }, []);
 
   // Daum Postcode API 스크립트 로드
@@ -227,7 +334,31 @@ export default function OrderBodyPage() {
           quantity: item.quantity,
           amount: item.price,
         })),
+        orderInfo: {
+          email: email,
+          name: name,
+          phoneNumber: phone,
+          recipient: receiver,
+          contactNumber1: phone1,
+          contactNumber2: phone2,
+          postalCode: zipcode,
+          address: address,
+          detailedAddress: detailAddress,
+        },
+        requireUpdateUserInfo: isSavePaymentInfo, // 결제 정보 저장 여부에 따라 결정
+        // 장바구니를 통해 주문 페이지로 넘어온 경우에만 true로 설정
+        ...(orderData.type === "cart" && { requireCartItemRemove: true }),
       };
+
+      // 서버로 전송되는 데이터 로그 출력
+      console.log("=== 주문 생성 API 요청 데이터 ===");
+      console.log("주문 타입:", orderData.type);
+      console.log("장바구니 주문 여부:", orderData.type === "cart");
+      console.log("결제 정보 저장 여부:", isSavePaymentInfo);
+      console.log("requireUpdateUserInfo:", isSavePaymentInfo);
+      console.log("requireCartItemRemove 포함 여부:", "requireCartItemRemove" in orderRequestData);
+      console.log("전송될 전체 데이터:", JSON.stringify(orderRequestData, null, 2));
+      console.log("==============================");
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/order`, {
         method: "POST",
@@ -238,21 +369,35 @@ export default function OrderBodyPage() {
         body: JSON.stringify(orderRequestData),
       });
 
+      console.log("=== 서버 응답 정보 ===");
+      console.log("응답 상태:", response.status);
+      console.log("응답 헤더:", Object.fromEntries(response.headers.entries()));
+
       const responseText = await response.text();
+      console.log("응답 본문:", responseText);
+      console.log("===================");
 
       if (response.status === 403) {
         const newToken = await TokenManager.refreshAccessToken();
         if (newToken) {
+          console.log("=== 토큰 갱신 후 재시도 ===");
+          const retryRequestData = orderRequestData; // 동일한 데이터 사용
+          console.log("재시도 요청 데이터:", JSON.stringify(retryRequestData, null, 2));
+
           const retryResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/order`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${newToken}`,
             },
-            body: JSON.stringify(orderRequestData),
+            body: JSON.stringify(retryRequestData),
           });
 
           const retryResponseText = await retryResponse.text();
+          console.log("재시도 응답 상태:", retryResponse.status);
+          console.log("재시도 응답 본문:", retryResponseText);
+          console.log("========================");
+
           if (!retryResponse.ok) {
             throw new Error("주문 생성 중 오류가 발생했습니다.");
           }
@@ -664,8 +809,15 @@ export default function OrderBodyPage() {
         {/* 주소 입력 필드 */}
         <InputB title="주소" value={address} onChange={(e) => setAddress(e.target.value)} />
         <InputB title="상세주소" value={detailAddress} onChange={(e) => setDetailAddress(e.target.value)} />
-
         <MemoBox />
+
+        <p
+          className={`${styles.order_info_save} ${isSavePaymentInfo ? styles.order_info_save_active : ""}`}
+          onClick={() => setIsSavePaymentInfo(!isSavePaymentInfo)}
+          style={{ cursor: "pointer" }}
+        >
+          {isSavePaymentInfo ? "✓ 결제 정보 저장됨" : "결제 정보 저장하기"}
+        </p>
         <p className={styles.order_info}>총 결제 정보</p>
         <TotalPayment title="주문 개수" value={`${orderData.orderCount}개`} />
         <TotalPayment title="총 상품 금액" value={`${orderData.productAmount.toLocaleString()}원`} />
