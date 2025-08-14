@@ -6,7 +6,7 @@ import Result from "./result";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { TokenManager } from "@/utils/tokenManager"; // TokenManager import 추가
+import { TokenManager } from "@/utils/tokenManager";
 
 type Status = {
   count: number;
@@ -51,6 +51,22 @@ export default function MypageBody() {
 
   const [statuses, setStatuses] = useState<Status[]>(getInitialStatuses());
 
+  // API 호출 함수
+  const makeApiCall = async (token: string) => {
+    // NEXT_PUBLIC_BASE_URL에 이미 /api가 포함되어 있으므로 바로 엔드포인트만 추가
+    const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/user/purchase-history`;
+
+    console.log("API 호출 URL:", apiUrl); // 디버깅용
+
+    return await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
   // 결제 내역 가져오기
   useEffect(() => {
     const fetchPurchaseHistory = async () => {
@@ -64,14 +80,8 @@ export default function MypageBody() {
           return;
         }
 
-        // API 엔드포인트 수정 (NEXT_PUBLIC_BASE_URL에 이미 /api가 포함되어 있음)
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/purchase-history`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        // 첫 번째 API 호출
+        let response = await makeApiCall(token);
 
         // 401 에러 시 토큰 재발급 시도
         if (response.status === 401) {
@@ -80,20 +90,17 @@ export default function MypageBody() {
 
           if (token) {
             // 재발급된 토큰으로 다시 요청
-            const retryResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/purchase-history`, {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            });
+            response = await makeApiCall(token);
 
-            if (retryResponse.ok) {
-              const data = await retryResponse.json();
+            if (response.ok) {
+              const data = await response.json();
               setPurchaseHistory(data);
               updateStatusCounts(data);
             } else {
-              console.error("재시도 후에도 결제 내역 조회 실패:", retryResponse.status);
+              console.error("재시도 후에도 결제 내역 조회 실패:", response.status);
+              // 더 자세한 에러 정보
+              const errorText = await response.text();
+              console.error("에러 상세:", errorText);
             }
           } else {
             console.error("토큰 재발급 실패");
@@ -101,11 +108,12 @@ export default function MypageBody() {
         } else if (response.ok) {
           const data = await response.json();
           setPurchaseHistory(data);
-
-          // 상태별 카운트 업데이트
           updateStatusCounts(data);
         } else {
           console.error("결제 내역 조회 실패:", response.status, response.statusText);
+          // 더 자세한 에러 정보
+          const errorText = await response.text();
+          console.error("에러 상세:", errorText);
         }
       } catch (error) {
         console.error("API 호출 오류:", error);
