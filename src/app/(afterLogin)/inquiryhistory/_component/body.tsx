@@ -106,27 +106,29 @@ export default function Body(): JSX.Element {
   }, []);
 
   return (
-    <div className={styles.body}>
-      <div className={styles.main}>
-        <div className={styles.back_button}>
-          <IoArrowBackSharp className={styles.button_icon} />
-          <Link href="/servicecenter" className={styles.button_text}>
-            돌아가기
-          </Link>
-        </div>
+    <div className={styles.container}>
+      <div className={styles.body}>
+        <div className={styles.main}>
+          <div className={styles.back_button}>
+            <IoArrowBackSharp className={styles.button_icon} />
+            <Link href="/servicecenter" className={styles.button_text}>
+              돌아가기
+            </Link>
+          </div>
 
-        <p className={styles.title}>문의 내역</p>
+          <p className={styles.title}>문의 내역</p>
 
-        <div className={styles.historys}>
-          {isLoading ? (
-            <p>로딩 중...</p>
-          ) : filteredInquiries.length > 0 ? (
-            filteredInquiries.map((inquiry) => (
-              <History key={inquiry.questionId} inquiry={inquiry} onDelete={handleDelete} />
-            ))
-          ) : (
-            <p>문의 내역이 없습니다.</p>
-          )}
+          <div className={styles.historys}>
+            {isLoading ? (
+              <p>로딩 중...</p>
+            ) : filteredInquiries.length > 0 ? (
+              filteredInquiries.map((inquiry) => (
+                <History key={inquiry.questionId} inquiry={inquiry} onDelete={handleDelete} />
+              ))
+            ) : (
+              <p>문의 내역이 없습니다.</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

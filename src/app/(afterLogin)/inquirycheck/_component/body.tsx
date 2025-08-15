@@ -5,7 +5,7 @@ import Question from "./question";
 
 export default function Body() {
   return (
-    <>
+    <div className={styles.container}>
       <div className={styles.body}>
         <div className={styles.main}>
           <div className={styles.back_button}>
@@ -17,6 +17,6 @@ export default function Body() {
           <Question />
         </div>
       </div>
-    </>
+    </div>
   );
 }

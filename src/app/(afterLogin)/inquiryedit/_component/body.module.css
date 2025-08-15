@@ -1,18 +1,125 @@
+.container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 80px;
+  column-gap: 32px;
+  gap: 16px;
+  color: white;
+
+  /* 앱과 동일한 우주 배경 */
+  background: linear-gradient(135deg, #2b1e47 0%, #191326 100%);
+
+  /* 오버레이로 투명도 조절 */
+  position: relative;
+  overflow: hidden;
+
+  /* 스크롤 시 높이 확장을 위한 transition */
+  transition: min-height 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: min-height;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* 앱의 RadialGradient 효과 */
+  background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.06) 0%, transparent 60%);
+  z-index: 1;
+}
+
+/* 별점 효과 추가 */
+.container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(1px 1px at 20px 30px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 40px 70px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 90px 40px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 160px 30px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 190px 90px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 220px 10px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 290px 50px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 320px 120px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 380px 40px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 420px 80px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 480px 60px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 520px 100px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 580px 20px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 620px 110px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 680px 70px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 720px 30px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 780px 90px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 820px 50px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 880px 120px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 920px 80px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 980px 40px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 60px 150px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 120px 180px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 200px 160px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 280px 200px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 360px 170px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 440px 190px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 520px 180px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 600px 160px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 680px 200px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 760px 170px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 840px 190px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 920px 160px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 80px 250px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 160px 270px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 240px 260px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 320px 280px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 400px 250px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 480px 270px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 560px 260px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 640px 280px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 720px 250px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 800px 270px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 880px 260px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 960px 280px, rgba(255, 255, 255, 0.18), transparent);
+  background-repeat: repeat;
+  background-size: 1000px 300px;
+  mix-blend-mode: screen;
+  z-index: 1;
+}
+
+.container > * {
+  position: relative;
+  z-index: 2;
+}
+
 .body {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  padding: 20px;
 }
 
 .main {
-  margin-top: 120px;
-  width: 800px;
+  width: 100%;
+  max-width: 800px;
   min-height: 600px;
   display: flex;
   justify-content: center;
   flex-direction: column;
-  padding-bottom: 20px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 40px;
+  margin: 20px 0;
 }
 
 .back_button {
@@ -22,6 +129,11 @@
   gap: 8px;
   margin-bottom: 20px;
   cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.back_button:hover {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .button_icon {
@@ -31,80 +143,97 @@
 
 .button_text {
   font-size: 16px;
+  color: inherit;
+  text-decoration: none;
 }
 
 .title {
   font-size: 24px;
   font-weight: bold;
-  border-bottom: 2px solid #e3e3e3;
-  margin-bottom: 12px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+  margin-bottom: 24px;
+  padding-bottom: 12px;
 }
 
 .inquiry_title {
   display: flex;
-
   flex-direction: row;
-  margin-bottom: 12px;
+  margin-bottom: 24px;
+  align-items: flex-start;
+  gap: 20px;
 }
 
 .inquiry_title_title {
-  width: 92px;
+  width: 120px;
   font-size: 16px;
+  margin-top: 8px;
+  flex-shrink: 0;
 }
 
 .inquiry_title_input {
   height: 36px;
-  padding: 8px;
-  border: none;
-  width: 60%;
-  background-color: #f5f5f5;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  flex: 1;
+  color: white;
+  font-size: 14px;
+}
+
+.inquiry_title_input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .inquiry_title_input:focus {
   outline: none;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .inquiry_type {
   height: 36px;
-  padding: 8px;
-  border: none;
-  width: 24%;
-  background-color: #f5f5f5;
-  color: #828282;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  flex: 1;
+  color: white;
+  font-size: 14px;
+}
+
+.inquiry_type option {
+  background: #2b1e47;
+  color: white;
+}
+
+.inquiry_type:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .inquiry_textarea {
-  width: 90%;
+  flex: 1;
   height: 200px;
-  border: 1px solid #e3e3e3;
-  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  color: white;
+  font-size: 14px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.inquiry_textarea::placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .inquiry_textarea:focus {
   outline: none;
-}
-
-.inquiry_file {
-  width: 90%;
-  height: 120px;
-  border: 1px solid #e3e3e3;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.file_icon {
-  width: 24px;
-  height: 24px;
-  color: #828282;
-  cursor: pointer;
-}
-
-.file_message {
-  color: #828282;
-  font-size: 12px;
-  padding: 4px;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .inquiry_button_box {
@@ -112,66 +241,74 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 12px;
+  margin-top: 24px;
 }
 
 .inquiry_button {
   width: 240px;
   height: 40px;
-  background-color: black;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: 14px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.inquiry_button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
 }
 
 /* 파일 업로드 영역 */
 .file_upload_area {
-  width: 50%;
+  flex: 1;
   cursor: pointer;
-  border: 2px dashed #e0e0e0;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
   border-radius: 12px;
   padding: 40px 20px;
   text-align: center;
-  background-color: #fafafa;
+  background: rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
   margin-bottom: 20px;
 }
 
 .file_upload_area:hover {
-  border-color: #828282;
-  background-color: #f8f9ff;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .file_upload_icon {
   font-size: 48px;
-  color: #828282;
+  color: rgba(255, 255, 255, 0.7);
   margin-bottom: 12px;
 }
 
 .file_upload_title {
-  font-size: 12px;
-  color: #333;
+  font-size: 14px;
+  color: white;
   margin: 0 0 8px 0;
   font-weight: 500;
 }
 
 .file_upload_subtitle {
   font-size: 12px;
-  color: #888;
+  color: rgba(255, 255, 255, 0.7);
   margin: 0;
 }
 
 /* 파일 목록 컨테이너 */
 .file_list_container {
-  width: 40%;
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   padding: 16px;
+  margin-top: 16px;
 }
 
 .file_list_header {
@@ -179,13 +316,13 @@
   align-items: center;
   margin-bottom: 12px;
   padding-bottom: 8px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .file_count_text {
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: white;
 }
 
 /* 기존 파일 스타일 */
@@ -193,21 +330,21 @@
   display: flex;
   align-items: center;
   padding: 12px 16px;
-  background-color: #f8f9fa;
+  background: rgba(66, 133, 244, 0.2);
   border-radius: 8px;
   margin-bottom: 8px;
-  border: 1px solid #e9ecef;
+  border: 1px solid rgba(66, 133, 244, 0.4);
   transition: all 0.2s ease;
 }
 
 .file_item_existing:hover {
-  background-color: #e9ecef;
+  background: rgba(66, 133, 244, 0.3);
 }
 
 .file_icon_existing {
   width: 40px;
   height: 40px;
-  background-color: #4285f4;
+  background-color: rgba(66, 133, 244, 0.8);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -221,21 +358,21 @@
   display: flex;
   align-items: center;
   padding: 12px 16px;
-  background-color: #e8f5e8;
+  background: rgba(40, 167, 69, 0.2);
   border-radius: 8px;
   margin-bottom: 8px;
-  border: 1px solid #c3e6c3;
+  border: 1px solid rgba(40, 167, 69, 0.4);
   transition: all 0.2s ease;
 }
 
 .file_item_new:hover {
-  background-color: #d4edd4;
+  background: rgba(40, 167, 69, 0.3);
 }
 
 .file_icon_new {
   width: 40px;
   height: 40px;
-  background-color: #28a745;
+  background-color: rgba(40, 167, 69, 0.8);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -247,7 +384,7 @@
 /* 파일 확장자 텍스트 */
 .file_extension_text {
   color: white;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: bold;
 }
 
@@ -261,7 +398,7 @@
   margin: 0 0 2px 0;
   font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: white;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -270,13 +407,13 @@
 .file_status_existing {
   margin: 0;
   font-size: 12px;
-  color: #6c757d;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .file_status_new {
   margin: 0;
   font-size: 12px;
-  color: #155724;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 /* 파일 삭제 버튼 */
@@ -285,7 +422,7 @@
   height: 28px;
   border-radius: 50%;
   border: none;
-  background-color: #dc3545;
+  background-color: rgba(220, 53, 69, 0.8);
   color: white;
   cursor: pointer;
   display: flex;
@@ -298,6 +435,57 @@
 }
 
 .file_remove_button:hover {
-  background-color: #c82333;
+  background-color: rgba(220, 53, 69, 1);
   transform: scale(1.1);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .main {
+    padding: 30px 20px;
+    margin: 10px;
+  }
+
+  .inquiry_title {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .inquiry_title_title {
+    width: auto;
+    margin-top: 0;
+  }
+
+  .inquiry_title_input,
+  .inquiry_type {
+    width: 100%;
+  }
+
+  .inquiry_textarea {
+    width: 100%;
+  }
+
+  .file_upload_area {
+    padding: 30px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 20px 15px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .inquiry_title_title {
+    font-size: 14px;
+  }
+
+  .inquiry_button {
+    width: 200px;
+    height: 36px;
+    font-size: 12px;
+  }
 }

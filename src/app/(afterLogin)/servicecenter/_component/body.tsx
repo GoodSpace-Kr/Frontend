@@ -118,7 +118,7 @@ export default function Body() {
   };
 
   return (
-    <>
+    <div className={styles.container}>
       <div className={styles.body}>
         <p className={styles.title}>안녕하세요, 무엇을 도와드릴까요?</p>
         <div className={styles.search}>
@@ -160,6 +160,6 @@ export default function Body() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

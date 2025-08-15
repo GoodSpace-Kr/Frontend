@@ -342,159 +342,164 @@ function BodyContent(): JSX.Element {
 
   if (isLoading) {
     return (
-      <div className={styles.body}>
-        <div className={styles.main}>
-          <p>로딩 중...</p>
+      <div className={styles.container}>
+        <div className={styles.body}>
+          <div className={styles.main}>
+            <p>로딩 중...</p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.body}>
-      <div className={styles.main}>
-        <div className={styles.back_button}>
-          <IoArrowBackSharp className={styles.button_icon} />
-          <Link href="/servicecenter" className={styles.button_text}>
-            돌아가기
-          </Link>
-        </div>
-
-        <p className={styles.title}>문의 수정하기</p>
-
-        {/* 제목 */}
-        <div className={styles.inquiry_title}>
-          <p className={styles.inquiry_title_title}>제목</p>
-          <input
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-            placeholder="100자 이내로 입력해주세요"
-            className={styles.inquiry_title_input}
-            maxLength={100}
-          />
-        </div>
-
-        {/* 유형 */}
-        <div className={styles.inquiry_title}>
-          <p className={styles.inquiry_title_title}>문의 유형</p>
-          <select name="type" value={formData.type} onChange={handleInputChange} className={styles.inquiry_type}>
-            <option value="1">문의 유형을 선택해주세요.</option>
-            <option value="2">배송 문의</option>
-            <option value="3">주문 문의</option>
-            <option value="4">상품 문의</option>
-          </select>
-        </div>
-
-        {/* 내용 */}
-        <div className={styles.inquiry_title}>
-          <p className={styles.inquiry_title_title}>내용</p>
-          <textarea
-            name="content"
-            value={formData.content}
-            onChange={handleInputChange}
-            className={styles.inquiry_textarea}
-            placeholder="문의 내용을 상세히 입력해주세요."
-          />
-        </div>
-
-        {/* 파일 */}
-        <div className={styles.inquiry_title}>
-          <p className={styles.inquiry_title_title}>파일 첨부</p>
-
-          {/* 파일 업로드 영역 */}
-          <div
-            className={styles.file_upload_area}
-            onClick={handleFileClick}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-          >
-            <FiFilePlus className={styles.file_upload_icon} />
-            <p className={styles.file_upload_title}>파일을 여기로 드래그하거나 클릭하여 업로드</p>
-            <p className={styles.file_upload_subtitle}>JPG, PNG, PDF, DOC, HWP, ZIP 등 지원</p>
+    <div className={styles.container}>
+      <div className={styles.body}>
+        <div className={styles.main}>
+          <div className={styles.back_button}>
+            <IoArrowBackSharp className={styles.button_icon} />
+            <Link href="/servicecenter" className={styles.button_text}>
+              돌아가기
+            </Link>
           </div>
 
-          {/* 파일 목록 */}
-          {(existingFiles.length > 0 || formData.files.length > 0) && (
-            <div className={styles.file_list_container}>
-              <div className={styles.file_list_header}>
-                <span className={styles.file_count_text}>
-                  첨부된 파일 ({existingFiles.length + formData.files.length})
-                </span>
+          <p className={styles.title}>문의 수정하기</p>
+
+          {/* 제목 */}
+          <div className={styles.inquiry_title}>
+            <p className={styles.inquiry_title_title}>제목</p>
+            <input
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+              placeholder="100자 이내로 입력해주세요"
+              className={styles.inquiry_title_input}
+              maxLength={100}
+            />
+          </div>
+
+          {/* 유형 */}
+          <div className={styles.inquiry_title}>
+            <p className={styles.inquiry_title_title}>문의 유형</p>
+            <select name="type" value={formData.type} onChange={handleInputChange} className={styles.inquiry_type}>
+              <option value="1">문의 유형을 선택해주세요.</option>
+              <option value="2">배송 문의</option>
+              <option value="3">주문 문의</option>
+              <option value="4">상품 문의</option>
+            </select>
+          </div>
+
+          {/* 내용 */}
+          <div className={styles.inquiry_title}>
+            <p className={styles.inquiry_title_title}>내용</p>
+            <textarea
+              name="content"
+              value={formData.content}
+              onChange={handleInputChange}
+              className={styles.inquiry_textarea}
+              placeholder="문의 내용을 상세히 입력해주세요."
+            />
+          </div>
+
+          {/* 파일 */}
+          <div className={styles.inquiry_title}>
+            <p className={styles.inquiry_title_title}>파일 첨부</p>
+            <div style={{ flex: 1 }}>
+              {/* 파일 업로드 영역 */}
+              <div
+                className={styles.file_upload_area}
+                onClick={handleFileClick}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+              >
+                <FiFilePlus className={styles.file_upload_icon} />
+                <p className={styles.file_upload_title}>파일을 여기로 드래그하거나 클릭하여 업로드</p>
+                <p className={styles.file_upload_subtitle}>JPG, PNG, PDF, DOC, HWP, ZIP 등 지원</p>
               </div>
 
-              {/* 기존 파일 */}
-              {existingFiles.map((file) => (
-                <div key={file.id} className={styles.file_item_existing}>
-                  <div className={styles.file_icon_existing}>
-                    <span className={styles.file_extension_text}>
-                      {file.name.split(".").pop()?.toUpperCase() || "FILE"}
+              {/* 파일 목록 */}
+              {(existingFiles.length > 0 || formData.files.length > 0) && (
+                <div className={styles.file_list_container}>
+                  <div className={styles.file_list_header}>
+                    <span className={styles.file_count_text}>
+                      첨부된 파일 ({existingFiles.length + formData.files.length})
                     </span>
                   </div>
-                  <div className={styles.file_info}>
-                    <p className={styles.file_name}>{file.name}</p>
-                    <p className={styles.file_status_existing}>기존 파일</p>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeExistingFile(file.id);
-                    }}
-                    className={styles.file_remove_button}
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
 
-              {/* 새 파일 */}
-              {formData.files.map((file, index) => (
-                <div key={index} className={styles.file_item_new}>
-                  <div className={styles.file_icon_new}>
-                    <span className={styles.file_extension_text}>
-                      {file.name.split(".").pop()?.toUpperCase() || "FILE"}
-                    </span>
-                  </div>
-                  <div className={styles.file_info}>
-                    <p className={styles.file_name}>{file.name}</p>
-                    <p className={styles.file_status_new}>새로 추가된 파일 • {(file.size / 1024).toFixed(1)} KB</p>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeNewFile(index);
-                    }}
-                    className={styles.file_remove_button}
-                  >
-                    ×
-                  </button>
+                  {/* 기존 파일 */}
+                  {existingFiles.map((file) => (
+                    <div key={file.id} className={styles.file_item_existing}>
+                      <div className={styles.file_icon_existing}>
+                        <span className={styles.file_extension_text}>
+                          {file.name.split(".").pop()?.toUpperCase() || "FILE"}
+                        </span>
+                      </div>
+                      <div className={styles.file_info}>
+                        <p className={styles.file_name}>{file.name}</p>
+                        <p className={styles.file_status_existing}>기존 파일</p>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeExistingFile(file.id);
+                        }}
+                        className={styles.file_remove_button}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+
+                  {/* 새 파일 */}
+                  {formData.files.map((file, index) => (
+                    <div key={index} className={styles.file_item_new}>
+                      <div className={styles.file_icon_new}>
+                        <span className={styles.file_extension_text}>
+                          {file.name.split(".").pop()?.toUpperCase() || "FILE"}
+                        </span>
+                      </div>
+                      <div className={styles.file_info}>
+                        <p className={styles.file_name}>{file.name}</p>
+                        <p className={styles.file_status_new}>새로 추가된 파일 • {(file.size / 1024).toFixed(1)} KB</p>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeNewFile(index);
+                        }}
+                        className={styles.file_remove_button}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.hwp,.txt,.zip"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
             </div>
-          )}
+          </div>
 
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.hwp,.txt,.zip"
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-          />
-        </div>
-
-        <div className={styles.inquiry_button_box}>
-          <p
-            className={styles.inquiry_button}
-            onClick={handleSubmit}
-            style={{
-              cursor: isSubmitting ? "not-allowed" : "pointer",
-              opacity: isSubmitting ? 0.6 : 1,
-              pointerEvents: isSubmitting ? "none" : "auto",
-            }}
-          >
-            {isSubmitting ? "수정 중..." : "수정하기"}
-          </p>
+          <div className={styles.inquiry_button_box}>
+            <p
+              className={styles.inquiry_button}
+              onClick={handleSubmit}
+              style={{
+                cursor: isSubmitting ? "not-allowed" : "pointer",
+                opacity: isSubmitting ? 0.6 : 1,
+                pointerEvents: isSubmitting ? "none" : "auto",
+              }}
+            >
+              {isSubmitting ? "수정 중..." : "수정하기"}
+            </p>
+          </div>
         </div>
       </div>
     </div>

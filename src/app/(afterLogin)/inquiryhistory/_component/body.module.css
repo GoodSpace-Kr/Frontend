@@ -1,17 +1,125 @@
+.container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 80px;
+  column-gap: 32px;
+  gap: 16px;
+  color: white;
+
+  /* 앱과 동일한 우주 배경 */
+  background: linear-gradient(135deg, #2b1e47 0%, #191326 100%);
+
+  /* 오버레이로 투명도 조절 */
+  position: relative;
+  overflow: hidden;
+
+  /* 스크롤 시 높이 확장을 위한 transition */
+  transition: min-height 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: min-height;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* 앱의 RadialGradient 효과 */
+  background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.06) 0%, transparent 60%);
+  z-index: 1;
+}
+
+/* 별점 효과 추가 */
+.container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(1px 1px at 20px 30px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 40px 70px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 90px 40px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 160px 30px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 190px 90px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 220px 10px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 290px 50px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 320px 120px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 380px 40px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 420px 80px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 480px 60px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 520px 100px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 580px 20px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 620px 110px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 680px 70px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 720px 30px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 780px 90px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 820px 50px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 880px 120px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 920px 80px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 980px 40px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 60px 150px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 120px 180px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 200px 160px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 280px 200px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 360px 170px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 440px 190px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 520px 180px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 600px 160px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 680px 200px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 760px 170px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 840px 190px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 920px 160px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 80px 250px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 160px 270px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 240px 260px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 320px 280px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 400px 250px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 480px 270px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 560px 260px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 640px 280px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 720px 250px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(2px 2px at 800px 270px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 880px 260px, rgba(255, 255, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 960px 280px, rgba(255, 255, 255, 0.18), transparent);
+  background-repeat: repeat;
+  background-size: 1000px 300px;
+  mix-blend-mode: screen;
+  z-index: 1;
+}
+
+.container > * {
+  position: relative;
+  z-index: 2;
+}
+
 .body {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  padding: 20px;
 }
 
 .main {
-  width: 800px;
-  height: 600px;
-  margin-top: 80px;
+  width: 100%;
+  max-width: 800px;
+  min-height: 600px;
   display: flex;
   justify-content: center;
   flex-direction: column;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 40px;
+  margin: 20px 0;
 }
 
 .back_button {
@@ -21,6 +129,11 @@
   gap: 8px;
   margin-bottom: 20px;
   cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.back_button:hover {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .button_icon {
@@ -30,6 +143,8 @@
 
 .button_text {
   font-size: 16px;
+  color: inherit;
+  text-decoration: none;
 }
 
 .title {
@@ -37,17 +152,20 @@
   text-align: center;
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
 }
 
 .inquiry_type {
   height: 36px;
-  padding: 8px;
-  border: none;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
   width: 20%;
-  background-color: #f5f5f5;
-  color: #828282;
-  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 16px;
 }
 
 .historys {
@@ -55,7 +173,37 @@
   min-height: 400px;
   display: flex;
   flex-direction: column;
-  border-top: 1px solid #828282;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
   padding-top: 20px;
   gap: 16px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .main {
+    padding: 30px 20px;
+    margin: 10px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .inquiry_type {
+    width: 40%;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 20px 15px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .inquiry_type {
+    width: 60%;
+  }
 }

@@ -1,26 +1,27 @@
-/* file.module.css */
-
 .modal_overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(4px);
 }
 
 .modal_content {
-  background: white;
-  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.1) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
   width: 90%;
   max-width: 500px;
   max-height: 80vh;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
 }
 
 .modal_header {
@@ -28,21 +29,21 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .modal_title {
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: white;
 }
 
 .close_button {
   background: none;
   border: none;
   font-size: 24px;
-  color: #666;
+  color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
   padding: 0;
   width: 30px;
@@ -51,12 +52,12 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 }
 
 .close_button:hover {
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
 .modal_body {
@@ -65,10 +66,28 @@
   overflow-y: auto;
 }
 
+.modal_body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal_body::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.modal_body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.modal_body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
 .file_count {
   margin: 0 0 15px 0;
   font-weight: 600;
-  color: #333;
+  color: white;
   font-size: 14px;
 }
 
@@ -82,10 +101,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  background-color: #fafafa;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.file_item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
 }
 
 .file_info {
@@ -97,7 +122,7 @@
 
 .file_icon {
   font-size: 20px;
-  color: #666;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .file_details {
@@ -110,35 +135,37 @@
   margin: 0;
   font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: white;
   word-break: break-all;
 }
 
 .file_size {
   margin: 0;
   font-size: 12px;
-  color: #666;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .download_button {
-  background-color: #3742fa;
+  background: rgba(66, 133, 244, 0.8);
   color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
+  border: 1px solid rgba(66, 133, 244, 0.6);
+  padding: 8px 16px;
+  border-radius: 8px;
   font-size: 12px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
+  font-weight: 500;
 }
 
 .download_button:hover {
-  background-color: #2f3542;
+  background: rgba(66, 133, 244, 1);
+  transform: translateY(-1px);
 }
 
 .no_files {
   text-align: center;
   padding: 40px 20px;
-  color: #666;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .no_files p {
@@ -149,7 +176,7 @@
 .loading {
   text-align: center;
   padding: 40px 20px;
-  color: #666;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .loading p {
@@ -159,21 +186,72 @@
 
 .modal_footer {
   padding: 15px 20px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   justify-content: flex-end;
 }
 
 .close_modal_button {
-  background-color: #6c757d;
+  background: rgba(255, 255, 255, 0.2);
   color: white;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 8px 16px;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
+  transition: all 0.3s ease;
 }
 
 .close_modal_button:hover {
-  background-color: #5a6268;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .modal_content {
+    width: 95%;
+    margin: 10px;
+  }
+
+  .modal_header,
+  .modal_body,
+  .modal_footer {
+    padding: 15px;
+  }
+
+  .file_item {
+    padding: 12px;
+  }
+
+  .file_info {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal_content {
+    width: 98%;
+    margin: 5px;
+  }
+
+  .modal_header,
+  .modal_body,
+  .modal_footer {
+    padding: 12px;
+  }
+
+  .modal_title {
+    font-size: 16px;
+  }
+
+  .file_item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .download_button {
+    align-self: flex-end;
+  }
 }
