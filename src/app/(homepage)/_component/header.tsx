@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, usePathname } from "next/navigation";
 import styles from "@/app/(beforeLogin)/_component/header.module.css";
-import Logo from "../../../../public/logo.jpg";
+import Logo from "../../../../public/logo.png";
 import Image from "next/image";
 import Link from "next/link";
 // 기존 로그인 후 헤더 컴포넌트 import

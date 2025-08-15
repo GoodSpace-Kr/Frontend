@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "@/app/(afterLogin)/_component/header.module.css";
-import Logo from "../../../../public/logo.jpg";
+import Logo from "../../../../public/logo.png";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
