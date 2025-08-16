@@ -811,13 +811,20 @@ export default function OrderBodyPage() {
         <InputB title="상세주소" value={detailAddress} onChange={(e) => setDetailAddress(e.target.value)} />
         <MemoBox />
 
-        <p
-          className={`${styles.order_info_save} ${isSavePaymentInfo ? styles.order_info_save_active : ""}`}
-          onClick={() => setIsSavePaymentInfo(!isSavePaymentInfo)}
-          style={{ cursor: "pointer" }}
-        >
-          {isSavePaymentInfo ? "✓ 결제 정보 저장됨" : "결제 정보 저장하기"}
-        </p>
+        {/* 결제 정보 저장 체크박스 섹션 */}
+        <div className={styles.payment_info_save_section}>
+          <div className={styles.payment_info_save_container} onClick={() => setIsSavePaymentInfo(!isSavePaymentInfo)}>
+            <div className={`${styles.checkbox} ${isSavePaymentInfo ? styles.checkbox_checked : ""}`}>
+              {isSavePaymentInfo && <span className={styles.checkmark}>✓</span>}
+            </div>
+            <span className={styles.payment_info_save_text}>결제 정보를 저장해드릴까요?</span>
+          </div>
+          <p className={styles.payment_info_save_description}>
+            {isSavePaymentInfo
+              ? "체크 해제 시 결제 정보에 저장하지 않습니다."
+              : "체크 해제 시 결제 정보에 저장하지 않습니다."}
+          </p>
+        </div>
         <p className={styles.order_info}>총 결제 정보</p>
         <TotalPayment title="주문 개수" value={`${orderData.orderCount}개`} />
         <TotalPayment title="총 상품 금액" value={`${orderData.productAmount.toLocaleString()}원`} />

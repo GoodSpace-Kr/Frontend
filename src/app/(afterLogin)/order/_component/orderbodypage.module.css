@@ -140,3 +140,53 @@
   cursor: pointer;
   margin-bottom: 64px;
 }
+
+/* 결제 정보 저장 섹션 */
+.payment_info_save_section {
+  margin-bottom: 52px;
+}
+
+.payment_info_save_container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  transition: all 0.2s ease;
+}
+
+.checkbox_checked {
+  background-color: #838383;
+  border-color: #838383;
+}
+
+.checkmark {
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.payment_info_save_text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333333;
+}
+
+.payment_info_save_description {
+  font-size: 12px;
+  color: #939393;
+  margin-left: 32px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
