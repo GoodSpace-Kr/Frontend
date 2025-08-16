@@ -37,9 +37,13 @@ function isValidToken({ accesstoken, refreshtoken }: { accesstoken?: string; ref
 
 export async function middleware(request: NextRequest) {
   console.log("🔥 미들웨어 실행됨:", request.nextUrl.pathname);
+  console.log("🔥 전체 URL:", request.url);
 
   const { pathname } = request.nextUrl;
-  const API_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8080";
+
+  // 백엔드 API 서버 주소 설정
+  const API_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://goodspace.duckdns.org/api";
+  console.log("🔧 사용할 API URL:", API_URL);
 
   // afterLogin 그룹의 모든 경로를 보호
   const isAfterLoginRoute =
@@ -63,15 +67,20 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 쿠키에서 토큰 확인 (개선된 방법)
+  // 모든 쿠키 출력
+  console.log("🍪 모든 쿠키:", request.cookies.getAll());
+
+  // 쿠키에서 토큰 확인
   const accessToken = request.cookies.get("accessToken");
   const refreshToken = request.cookies.get("refreshToken");
 
-  console.log("🍪 쿠키 상태:", {
+  console.log("🍪 쿠키 상태 상세:", {
     accessTokenExists: !!accessToken?.value,
     refreshTokenExists: !!refreshToken?.value,
-    accessTokenValue: accessToken?.value?.substring(0, 20) + "...",
-    refreshTokenValue: refreshToken?.value?.substring(0, 20) + "...",
+    accessTokenLength: accessToken?.value?.length,
+    refreshTokenLength: refreshToken?.value?.length,
+    accessTokenStart: accessToken?.value?.substring(0, 50),
+    refreshTokenStart: refreshToken?.value?.substring(0, 50),
   });
 
   // 쿠키에 토큰이 없으면 Authorization 헤더 확인
@@ -80,23 +89,38 @@ export async function middleware(request: NextRequest) {
 
   if (!finalAccessToken || !finalRefreshToken) {
     const authHeader = request.headers.get("authorization");
+    console.log("🔍 Authorization 헤더:", authHeader);
     if (authHeader && authHeader.startsWith("Bearer ")) {
       finalAccessToken = authHeader.substring(7);
       console.log("🔍 Authorization 헤더에서 토큰 발견");
     }
   }
 
+  console.log("🔍 최종 토큰 상태:", {
+    finalAccessTokenExists: !!finalAccessToken,
+    finalRefreshTokenExists: !!finalRefreshToken,
+    finalAccessTokenLength: finalAccessToken?.length,
+    finalRefreshTokenLength: finalRefreshToken?.length,
+  });
+
   if (!finalAccessToken || !finalRefreshToken) {
     console.log("❌ 토큰 없음, 로그인 페이지로 리다이렉트");
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("from", pathname);
+    console.log("❌ 리다이렉트 URL:", loginUrl.toString());
     return NextResponse.redirect(loginUrl);
   }
 
   // 토큰의 유효성을 검사
+  console.log("🔍 토큰 유효성 검사 시작...");
   const { isAccessTokenValid, isRefreshTokenValid } = isValidToken({
     accesstoken: finalAccessToken,
     refreshtoken: finalRefreshToken,
+  });
+
+  console.log("🔍 토큰 유효성 결과:", {
+    isAccessTokenValid,
+    isRefreshTokenValid,
   });
 
   if (!isRefreshTokenValid) {
@@ -113,19 +137,25 @@ export async function middleware(request: NextRequest) {
     console.log("🔄 Access Token 만료, 재발급 시도");
 
     try {
-      const response = await fetch(`${API_URL}/authorization/reissue`, {
+      console.log("🔄 재발급 API 호출:", `${API_URL}/authorization/reissue`);
+      console.log("🔄 사용할 Refresh Token:", finalRefreshToken?.substring(0, 50) + "...");
+
+      const reissueResponse = await fetch(`${API_URL}/authorization/reissue`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Cookie: `refreshToken=${finalRefreshToken}`,
+          "User-Agent": "NextJS-Middleware",
         },
         credentials: "include",
       });
 
-      console.log("🔄 토큰 재발급 응답 상태:", response.status);
+      console.log("🔄 토큰 재발급 응답 상태:", reissueResponse.status);
+      console.log("🔄 토큰 재발급 응답 헤더:", Object.fromEntries(reissueResponse.headers.entries()));
 
-      if (!response.ok) {
-        console.log("❌ 토큰 재발급 실패, 로그인 페이지로 리다이렉트");
+      if (!reissueResponse.ok) {
+        const errorText = await reissueResponse.text();
+        console.log("❌ 토큰 재발급 실패 응답:", errorText);
         const loginResponse = NextResponse.redirect(new URL("/login", request.url));
         loginResponse.cookies.delete("accessToken");
         loginResponse.cookies.delete("refreshToken");
@@ -137,7 +167,12 @@ export async function middleware(request: NextRequest) {
       const res = NextResponse.next();
 
       try {
-        const tokenData = await response.json();
+        const responseText = await reissueResponse.text();
+        console.log("🔄 재발급 응답 본문:", responseText);
+
+        const tokenData = JSON.parse(responseText);
+        console.log("🔄 파싱된 토큰 데이터 키:", Object.keys(tokenData));
+
         if (tokenData.accessToken) {
           res.cookies.set("accessToken", tokenData.accessToken, {
             httpOnly: false, // 프론트엔드에서도 접근 가능하도록 설정
@@ -169,6 +204,14 @@ export async function middleware(request: NextRequest) {
       return res;
     } catch (error) {
       console.error("❌ 액세스 토큰 재발급 중 오류 발생:", error);
+      console.error("❌ 오류 상세:", error instanceof Error ? error.message : String(error));
+
+      // 네트워크 오류일 경우 일단 통과시키기 (임시 방편)
+      if (error instanceof Error && error.message.includes("fetch")) {
+        console.log("⚠️ 네트워크 오류로 인해 임시로 통과시킴");
+        return NextResponse.next();
+      }
+
       const errorResponse = NextResponse.redirect(new URL("/login", request.url));
       errorResponse.cookies.delete("accessToken");
       errorResponse.cookies.delete("refreshToken");
