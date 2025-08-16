@@ -356,3 +356,136 @@
     font-size: 14px;
   }
 }
+
+/* introduce.module.css에 추가할 모달 스타일 */
+
+/* 모달 오버레이 */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+/* 모달 컨텐츠 */
+.modalContent {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
+  overflow: hidden;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+/* 모달 헤더 */
+.modalHeader {
+  padding: 20px 20px 10px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  text-align: center;
+}
+
+/* 모달 바디 */
+.modalBody {
+  padding: 20px;
+}
+
+.modalMessage {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  text-align: center;
+  margin: 0;
+}
+
+/* 모달 버튼 영역 */
+.modalButtons {
+  display: flex;
+  gap: 12px;
+  padding: 20px;
+  padding-top: 10px;
+}
+
+/* 닫기 버튼 */
+.modalCloseButton {
+  flex: 1;
+  height: 44px;
+  background-color: #f8f9fa;
+  color: #666;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modalCloseButton:hover {
+  background-color: #e9ecef;
+  border-color: #ced4da;
+}
+
+/* 장바구니로 이동 버튼 */
+.modalGoButton {
+  flex: 1;
+  height: 44px;
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modalGoButton:hover {
+  background-color: #333;
+}
+
+/* 모달 애니메이션 */
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 모바일 대응 */
+@media (max-width: 480px) {
+  .modalOverlay {
+    padding: 20px 16px;
+  }
+
+  .modalContent {
+    max-width: none;
+    width: 100%;
+  }
+
+  .modalButtons {
+    flex-direction: column;
+  }
+
+  .modalCloseButton,
+  .modalGoButton {
+    width: 100%;
+  }
+}

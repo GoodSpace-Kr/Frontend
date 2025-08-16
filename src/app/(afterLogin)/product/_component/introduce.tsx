@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import styles from "../_component/introduce.module.css";
 import { TokenManager } from "@/utils/tokenManager";
@@ -24,6 +23,7 @@ export default function ItemIntroduce({ item, client }: ItemIntroduceProps) {
   const router = useRouter();
   const [count, setCount] = useState(1); // 기본값을 1로 설정
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [showCartConfirm, setShowCartConfirm] = useState(false); // 컨펌창 표시 상태
 
   const handleIncrease = () => {
     setCount(count + 1);
@@ -116,13 +116,25 @@ export default function ItemIntroduce({ item, client }: ItemIntroduceProps) {
         throw new Error(errorData?.message || "장바구니 추가 실패");
       }
 
-      alert("장바구니에 상품이 추가되었습니다!");
+      // 성공 시 컨펌창 표시
+      setShowCartConfirm(true);
     } catch (error) {
       console.error("장바구니 추가 에러:", error);
       alert(error instanceof Error ? error.message : "장바구니 추가에 실패했습니다. 다시 시도해주세요.");
     } finally {
       setIsAddingToCart(false);
     }
+  };
+
+  // 장바구니로 이동
+  const goToCart = () => {
+    setShowCartConfirm(false);
+    router.push("/shoppingcart");
+  };
+
+  // 컨펌창 닫기
+  const closeConfirm = () => {
+    setShowCartConfirm(false);
   };
 
   // 바로 주문하기 핸들러
@@ -198,6 +210,32 @@ export default function ItemIntroduce({ item, client }: ItemIntroduceProps) {
           </button>
         </div>
       </div>
+
+      {/* 장바구니 추가 컨펌 모달 */}
+      {showCartConfirm && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h3 className={styles.modalTitle}>장바구니 추가 완료</h3>
+            </div>
+            <div className={styles.modalBody}>
+              <p className={styles.modalMessage}>
+                장바구니에 상품이 추가되었습니다.
+                <br />
+                장바구니로 이동하시겠습니까?
+              </p>
+            </div>
+            <div className={styles.modalButtons}>
+              <button className={styles.modalCloseButton} onClick={closeConfirm}>
+                닫기
+              </button>
+              <button className={styles.modalGoButton} onClick={goToCart}>
+                장바구니로 이동
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
