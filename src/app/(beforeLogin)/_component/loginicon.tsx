@@ -9,21 +9,45 @@ import styles from "./loginicon.module.css";
 import type { LoginIconsProps } from "@/types/auth";
 
 export default function LoginIcons({ clientId }: LoginIconsProps) {
-  // clientId를 localStorage에 임시 저장하고 리다이렉트 URL 생성하는 함수
+  // 소셜 로그인 전에 필요한 정보들을 localStorage에 저장하는 함수
   const buildRedirectUrl = (provider: string) => {
-    console.log(`=== ${provider.toUpperCase()} 로그인 시작 ===`);
+    console.log(`=== ${provider.toUpperCase()} 소셜 로그인 시작 ===`);
     console.log("현재 clientId:", clientId);
 
+    // 기존 clientId 저장 (기존 로직 유지)
     if (clientId) {
       localStorage.setItem("pendingClientId", clientId);
       console.log(`${provider} 로그인 전 clientId 저장:`, clientId);
-      console.log("localStorage 저장 확인:", localStorage.getItem("pendingClientId"));
+    }
+
+    // URL 파라미터에서 상품 정보 추출
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectPath = urlParams.get("redirect");
+    const itemId = urlParams.get("itemId");
+    const images = urlParams.get("images");
+
+    console.log("URL 파라미터 확인:", { redirectPath, itemId, images });
+
+    // 상품 정보 저장 (URL 파라미터 기반)
+    if (redirectPath === "/product" && clientId && itemId) {
+      const productInfo = {
+        clientId,
+        itemId,
+        images,
+        redirectPath,
+      };
+      localStorage.setItem("pendingProductInfo", JSON.stringify(productInfo));
+      console.log(`${provider} 소셜 로그인용 상품 정보 저장:`, productInfo);
     } else {
-      console.log("clientId가 없어서 저장하지 않음");
+      // 상품 정보가 이미 저장되어 있는지 확인
+      const existingProductInfo = localStorage.getItem("pendingProductInfo");
+      if (existingProductInfo) {
+        console.log(`${provider} 로그인 전 기존 상품 정보 확인:`, existingProductInfo);
+      }
     }
 
     const redirectUrl = `/api/authorization/${provider}/redirection`;
-    console.log("생성된 리다이렉트 URL:", redirectUrl);
+    console.log("생성된 소셜 로그인 URL:", redirectUrl);
     return redirectUrl;
   };
 

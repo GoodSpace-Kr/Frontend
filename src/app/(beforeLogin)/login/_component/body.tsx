@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
 import styles from "./body.module.css";
 import LoginIcons from "../../_component/loginicon";
 import Link from "next/link";
@@ -11,19 +11,63 @@ interface BodyProps {
   clientId?: string | null;
 }
 
-export default function Body({ clientId }: BodyProps) {
+function LoginBodyContent({ clientId: propClientId }: BodyProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // URL 파라미터에서 정보 추출
+  const urlClientId = searchParams.get("clientId");
+  const redirectPath = searchParams.get("redirect");
+  const itemId = searchParams.get("itemId");
+  const images = searchParams.get("images");
+
+  // props나 URL에서 온 clientId 사용
+  const clientId = propClientId || urlClientId;
 
   // 디버깅을 위한 로그
   useEffect(() => {
     if (clientId) {
       console.log("Body 컴포넌트에서 받은 clientId:", clientId);
     }
-  }, [clientId]);
+    console.log("리다이렉트 정보:", { redirectPath, itemId, images });
+
+    // 상품 정보를 localStorage에 저장 (소셜 로그인용)
+    if (redirectPath === "/product" && clientId && itemId) {
+      const productInfo = {
+        clientId,
+        itemId,
+        images,
+        redirectPath,
+      };
+      localStorage.setItem("pendingProductInfo", JSON.stringify(productInfo));
+      console.log("상품 정보 저장:", productInfo);
+    }
+  }, [clientId, redirectPath, itemId, images]);
+
+  // 로그인 성공 후 리다이렉트 처리 함수
+  const handleRedirectAfterLogin = () => {
+    if (redirectPath === "/product") {
+      // 상품 상세페이지로 리다이렉트
+      const productParams = new URLSearchParams();
+      if (clientId) productParams.append("clientId", clientId);
+      if (itemId) productParams.append("itemId", itemId);
+      if (images) productParams.append("images", images);
+
+      const redirectUrl = `/product?${productParams.toString()}`;
+      console.log("상품 페이지로 리다이렉트:", redirectUrl);
+      router.push(redirectUrl);
+    } else if (clientId) {
+      console.log(`로그인 성공 후 이동: /main?clientId=${clientId}`);
+      router.push(`/main?clientId=${clientId}`);
+    } else {
+      console.log("로그인 성공 후 이동: /");
+      router.push("/");
+    }
+  };
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -70,15 +114,7 @@ export default function Body({ clientId }: BodyProps) {
 
       // 잠시 후 페이지 이동 (쿠키 설정이 완료되도록)
       setTimeout(() => {
-        // clientId가 있으면 해당 clientId를 가지고 main 페이지로 이동
-        // clientId가 없으면 홈페이지("/")로 이동
-        if (clientId) {
-          console.log(`로그인 성공 후 이동: /main?clientId=${clientId}`);
-          router.push(`/main?clientId=${clientId}`);
-        } else {
-          console.log("로그인 성공 후 이동: /");
-          router.push("/");
-        }
+        handleRedirectAfterLogin();
       }, 100);
     } catch (err) {
       console.error(err);
@@ -89,8 +125,15 @@ export default function Body({ clientId }: BodyProps) {
   };
 
   const handleSignup = () => {
-    // 회원가입 페이지로 이동할 때도 clientId 유지
-    if (clientId) {
+    // 회원가입 페이지로 이동할 때 모든 파라미터 유지
+    const currentParams = new URLSearchParams();
+    searchParams.forEach((value, key) => {
+      currentParams.append(key, value);
+    });
+
+    if (currentParams.toString()) {
+      router.push(`/signup?${currentParams.toString()}`);
+    } else if (clientId) {
       router.push(`/signup?clientId=${clientId}`);
     } else {
       router.push("/signup");
@@ -98,6 +141,15 @@ export default function Body({ clientId }: BodyProps) {
   };
 
   const getFindPwLink = () => {
+    // 비밀번호 찾기에도 모든 파라미터 유지
+    const currentParams = new URLSearchParams();
+    searchParams.forEach((value, key) => {
+      currentParams.append(key, value);
+    });
+
+    if (currentParams.toString()) {
+      return `/findpw?${currentParams.toString()}`;
+    }
     return clientId ? `/findpw?clientId=${clientId}` : "/findpw";
   };
 
@@ -158,5 +210,13 @@ export default function Body({ clientId }: BodyProps) {
         <LoginIcons clientId={clientId} />
       </div>
     </div>
+  );
+}
+
+export default function Body({ clientId }: BodyProps) {
+  return (
+    <Suspense fallback={<div>로딩 중...</div>}>
+      <LoginBodyContent clientId={clientId} />
+    </Suspense>
   );
 }

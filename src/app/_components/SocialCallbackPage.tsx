@@ -56,6 +56,62 @@ function SocialCallbackContent() {
     return "kakao";
   };
 
+  // 소셜 로그인 성공 후 리다이렉트 처리 함수
+  const handleRedirectAfterSocialLogin = () => {
+    console.log("=== 소셜 로그인 성공 후 리다이렉트 처리 ===");
+
+    // localStorage에서 저장된 정보들을 가져옴
+    const pendingClientId = localStorage.getItem("pendingClientId");
+    const pendingProductInfoStr = localStorage.getItem("pendingProductInfo");
+
+    console.log("저장된 clientId:", pendingClientId);
+    console.log("저장된 상품 정보:", pendingProductInfoStr);
+
+    let pendingProductInfo = null;
+    try {
+      if (pendingProductInfoStr) {
+        pendingProductInfo = JSON.parse(pendingProductInfoStr);
+      }
+    } catch (error) {
+      console.error("상품 정보 파싱 오류:", error);
+    }
+
+    // localStorage 정리
+    localStorage.removeItem("pendingClientId");
+    localStorage.removeItem("pendingProductInfo");
+
+    // 리다이렉트 처리
+    if (pendingProductInfo && pendingProductInfo.redirectPath === "/product") {
+      // 상품 상세페이지로 리다이렉트
+      const productParams = new URLSearchParams();
+      if (pendingProductInfo.clientId) {
+        productParams.append("clientId", pendingProductInfo.clientId);
+      }
+      if (pendingProductInfo.itemId) {
+        productParams.append("itemId", pendingProductInfo.itemId);
+      }
+      if (pendingProductInfo.images) {
+        productParams.append("images", pendingProductInfo.images);
+      }
+
+      const redirectUrl = `/product?${productParams.toString()}`;
+      console.log("상품 페이지로 리다이렉트:", redirectUrl);
+
+      setTimeout(() => router.push(redirectUrl), 2000);
+    } else if (pendingClientId) {
+      // 클라이언트 메인 페이지로 리다이렉트
+      const redirectUrl = `/main?clientId=${pendingClientId}`;
+      console.log("클라이언트 메인 페이지로 리다이렉트:", redirectUrl);
+
+      setTimeout(() => router.push(redirectUrl), 2000);
+    } else {
+      // 기본 메인 페이지로 리다이렉트
+      console.log("메인 페이지로 리다이렉트");
+
+      setTimeout(() => router.push("/main"), 2000);
+    }
+  };
+
   const provider = extractProvider(pathname) as keyof typeof PROVIDERS;
   const providerInfo = PROVIDERS[provider] || PROVIDERS.kakao;
 
@@ -106,8 +162,6 @@ function SocialCallbackContent() {
 
         setStatus("서버에서 토큰 발급 중...");
 
-        const clientId = localStorage.getItem("pendingClientId");
-
         // 애플과 다른 소셜 로그인 구분
         let apiUrl;
         if (provider === "apple") {
@@ -150,12 +204,10 @@ function SocialCallbackContent() {
           setCookie("refreshToken", data.refreshToken, 7);
         }
 
-        localStorage.removeItem("pendingClientId");
+        setStatus("로그인 성공! 페이지로 이동합니다...");
 
-        setStatus("로그인 성공! 메인 페이지로 이동합니다...");
-
-        const redirectUrl = clientId ? `/main?clientId=${clientId}` : "/main";
-        setTimeout(() => router.push(redirectUrl), 2000);
+        // 상품 정보를 고려한 리다이렉트 처리
+        handleRedirectAfterSocialLogin();
       } catch (error) {
         console.error(`${providerInfo.name} 로그인 오류:`, error);
         const errorMessage = error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다.";

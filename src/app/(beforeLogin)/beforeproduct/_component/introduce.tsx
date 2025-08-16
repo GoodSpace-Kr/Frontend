@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import styles from "../_component/introduce.module.css";
 
@@ -19,7 +20,8 @@ interface ItemIntroduceProps {
 }
 
 export default function ItemIntroduce({ item, client }: ItemIntroduceProps) {
-  const [count, setCount] = useState(1); // 기본값을 1로 설정
+  const [count, setCount] = useState(1);
+  const searchParams = useSearchParams();
 
   const handleIncrease = () => {
     setCount(count + 1);
@@ -27,7 +29,6 @@ export default function ItemIntroduce({ item, client }: ItemIntroduceProps) {
 
   const handleDecrease = () => {
     if (count > 1) {
-      // 최소 수량은 1개
       setCount(count - 1);
     }
   };
@@ -39,6 +40,23 @@ export default function ItemIntroduce({ item, client }: ItemIntroduceProps) {
 
   // 총 상품 금액 계산
   const totalPrice = item.price * count;
+
+  // 현재 페이지의 모든 정보를 포함한 로그인 URL 생성
+  const createLoginUrl = () => {
+    const currentParams = new URLSearchParams();
+
+    // 현재 페이지의 모든 파라미터를 가져와서 추가
+    searchParams.forEach((value, key) => {
+      currentParams.append(key, value);
+    });
+
+    // redirect URL을 /product로 설정
+    currentParams.append("redirect", "/product");
+
+    return `/login?${currentParams.toString()}`;
+  };
+
+  const loginUrl = createLoginUrl();
 
   return (
     <>
@@ -74,10 +92,10 @@ export default function ItemIntroduce({ item, client }: ItemIntroduceProps) {
           <p className={styles.item_sentence_b}>{formatPrice(totalPrice)}</p>
         </div>
         <div className={styles.item_buy_button}>
-          <Link href={`/login?clientId=${client.id}`} className={styles.item_shoppingcart}>
+          <Link href={loginUrl} className={styles.item_shoppingcart}>
             장바구니에 담기
           </Link>
-          <Link href={`/login?clientId=${client.id}`} className={styles.item_buy}>
+          <Link href={loginUrl} className={styles.item_buy}>
             구매하기
           </Link>
         </div>

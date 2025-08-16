@@ -8,13 +8,36 @@ import Image from "next/image";
 import Link from "next/link";
 
 function HeaderContent() {
-  // URL에서 clientId 가져오기
   const searchParams = useSearchParams();
-  const clientId = searchParams.get("clientId");
 
-  // clientId가 있으면 URL에 추가, 없으면 기본 URL 사용
-  const loginUrl = clientId ? `/login?clientId=${clientId}` : "/login";
-  const signupUrl = clientId ? `/signup?clientId=${clientId}` : "/signup";
+  // 현재 페이지의 모든 정보를 포함한 로그인/회원가입 URL 생성
+  const createAuthUrl = (type: "login" | "signup") => {
+    const currentParams = new URLSearchParams();
+
+    // 현재 페이지의 모든 파라미터를 가져와서 추가
+    searchParams.forEach((value, key) => {
+      currentParams.append(key, value);
+    });
+
+    // redirect URL을 현재 페이지로 설정
+    const currentPath = window.location.pathname;
+    if (currentPath === "/product") {
+      currentParams.append("redirect", "/product");
+    }
+
+    return `/${type}?${currentParams.toString()}`;
+  };
+
+  // 기본 URL (파라미터가 없는 경우)
+  const clientId = searchParams.get("clientId");
+  const defaultLoginUrl = clientId ? `/login?clientId=${clientId}` : "/login";
+  const defaultSignupUrl = clientId ? `/signup?clientId=${clientId}` : "/signup";
+
+  // 현재 경로가 /product인지 확인
+  const isProductPage = typeof window !== "undefined" && window.location.pathname === "/product";
+
+  const loginUrl = isProductPage ? createAuthUrl("login") : defaultLoginUrl;
+  const signupUrl = isProductPage ? createAuthUrl("signup") : defaultSignupUrl;
 
   return (
     <>
