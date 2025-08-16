@@ -4,3 +4,75 @@
   flex-direction: column;
   width: 100dvw;
 }
+
+/* servicecenter.module.css에 추가할 스타일 */
+
+/* 로딩 컨테이너 */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 40px 20px;
+}
+
+/* 로딩 스피너 */
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+/* 로딩 텍스트 */
+.loadingText {
+  font-size: 16px;
+  color: #666;
+  text-align: center;
+  margin: 0;
+}
+
+/* 리다이렉트 컨테이너 */
+.redirectContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 40px 20px;
+}
+
+/* 리다이렉트 텍스트 */
+.redirectText {
+  font-size: 16px;
+  color: #666;
+  text-align: center;
+  margin: 0;
+}
+
+/* 스피너 애니메이션 */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 모바일 대응 */
+@media (max-width: 480px) {
+  .loadingContainer,
+  .redirectContainer {
+    min-height: 300px;
+    padding: 20px 16px;
+  }
+
+  .loadingText,
+  .redirectText {
+    font-size: 14px;
+  }
+}

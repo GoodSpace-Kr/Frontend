@@ -45,13 +45,13 @@ export async function middleware(request: NextRequest) {
   const API_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://goodspace.duckdns.org/api";
   console.log("🔧 사용할 API URL:", API_URL);
 
-  // afterLogin 그룹의 모든 경로를 보호
+  // afterLogin 그룹의 모든 경로를 보호 (servicecenter 제외)
   const isAfterLoginRoute =
     pathname.startsWith("/main") ||
     pathname.startsWith("/mypage") ||
     pathname.startsWith("/product") ||
     pathname.startsWith("/order") ||
-    pathname.startsWith("/servicecenter") ||
+    // pathname.startsWith("/servicecenter") || // 제거됨
     pathname.startsWith("/shoppingcart") ||
     pathname.startsWith("/editpage") ||
     pathname.startsWith("/inquiry") ||
@@ -224,13 +224,13 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // afterLogin 그룹의 모든 경로에 대해 미들웨어 실행
+  // afterLogin 그룹의 모든 경로에 대해 미들웨어 실행 (servicecenter 제외)
   matcher: [
     "/main/:path*",
     "/mypage/:path*",
     "/product/:path*",
     "/order/:path*",
-    "/servicecenter/:path*",
+    // "/servicecenter/:path*", // 제거됨
     "/shoppingcart/:path*",
     "/editpage/:path*",
     "/inquiry/:path*",
